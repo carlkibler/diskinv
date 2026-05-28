@@ -17,7 +17,6 @@
 #import "FilesOutlineViewController.h"
 #import "Disk_Inventory_Xs-Swift.h"
 #import "FSItem.h"
-#import "FSItem-Utilities.h"
 // NSTableView-OAExtensions removed - using standard NSTableView
 #import "MainWindowController.h"
 #import "PreferenceKeys.h"

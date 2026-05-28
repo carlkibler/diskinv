@@ -18,7 +18,6 @@
 #import "InfoPanelController.h"
 #import "Timing.h"
 #import "TreeMapView.h"
-#import "FSItem-Utilities.h"
 #import "Disk_Inventory_Xs-Swift.h"
 #import "NSURL-Extensions.h"
 

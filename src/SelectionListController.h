@@ -21,7 +21,7 @@
 #import <Cocoa/Cocoa.h>
 #import "GenericArrayController.h"
 #import "FileSystemDoc.h"
-#import "FSItemIndex.h"
+#import "FSItemIndexType.h"
 
 @interface SelectionListController : GenericArrayController
 {

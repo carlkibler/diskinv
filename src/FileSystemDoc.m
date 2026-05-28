@@ -21,105 +21,10 @@
 #import "Disk_Inventory_Xs-Swift.h"
 #import "Timing.h"
 #import "InfoPanelController.h"
-#import "FSItem-Utilities.h"
 // NSArray-OFExtensions removed - using standard NSArray methods
 #import "NSFileManager-Extensions.h"
 
 NSString *CollectFileKindStatisticsCanceledException = @"CollectFileKindStatisticsCanceledException";
-
-//============ implementation FileKindStatistic ==========================================================
-
-@implementation FileKindStatistic
-
-- (id) initWithItem: (FSItem*) item
-{
-    self = [super init];
-    
-    _kindName = [item kindName];
-
-	_size = [item sizeValue];
-	
-	_items = [[NSMutableSet alloc] initWithObjects: item, nil];
-
-    return self;
-}
-
-- (void) addItem: (FSItem* )item
-{
-	NSParameterAssert( ![_items containsObject: item] );
-	
-	[_items addObject: item];
-	
-	_size += [item sizeValue];
-}
-
-- (void) removeItem: (FSItem* )item
-{
-	NSParameterAssert( [_items containsObject: item] );
-	
-	_size -= [item sizeValue];
-	
-	[_items removeObject: item];
-}
-
-- (NSString*) description
-{
-    return [[self kindName] stringByAppendingFormat: @" {%u files; %.1f kB}", [self fileCount], (float) [self size]/1024]; 
-}
-
-- (NSString*) kindName
-{
-    return _kindName;
-}
-
-//# of files of this kind
-- (unsigned) fileCount
-{
-	return (unsigned)[_items count];
-}
-
-//sum of sizes of files of this kind
-- (unsigned long long) size
-{
-	return _size;
-}
-
-- (void) recalculateSize
-{
-	NSEnumerator *itemEnum = [self itemEnumerator];
-	FSItem *item = nil;
-	_size = 0;
-	while ( (item = [itemEnum nextObject]) != nil )
-		_size += [item sizeValue];
-}
-
-- (NSSet*) items
-{
-	return _items;
-}
-
-- (NSEnumerator*) itemEnumerator
-{
-	return [_items objectEnumerator];
-}
-
-//compare the size descendingly
-- (NSComparisonResult) compareSizeDescendingly: (FileKindStatistic*) other
-{
-	UInt64 mySize = [self size];
-	UInt64 otherSize = [other size];
-	
-	//we want the sorting to be descending
-	if ( mySize < otherSize )
-		return NSOrderedDescending;
-	if ( mySize > otherSize )
-		return NSOrderedAscending;
-	
-	//if both object have the same size, order by their names
-	return [[self kindName] compare: [other kindName] options: NSNumericSearch];
-}
-
-@end
 
 //============ interface FileSystemDoc(Private) ==========================================================
 

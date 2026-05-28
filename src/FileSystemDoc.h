@@ -21,32 +21,10 @@
 #import "LoadingPanelController.h"
 @class FileTypeColors;
 
-//holds information about the count and size of the files of one kind (e.g. MP3 files)
-@interface FileKindStatistic : NSObject
-{
-    NSString *_kindName;
-	unsigned long long _size;
-	NSMutableSet *_items;
-}
-
-- (id) initWithItem: (FSItem*) item;
-
-- (void) addItem: (FSItem* )item;
-- (void) removeItem: (FSItem* )item;
-
-- (NSString*) kindName;
-- (NSString*) description;
-
-- (unsigned) fileCount;		//# of files of this kind
-- (unsigned long long) size; //sum of sizes of files of this kind
-- (void) recalculateSize;
-
-- (NSSet*) items;
-- (NSEnumerator*) itemEnumerator;
-
-- (NSComparisonResult) compareSizeDescendingly: (FileKindStatistic*) other;
-
-@end
+//FileKindStatistic (count + total size of all files of one kind, e.g. MP3s)
+//is now a Swift class; see FileKindStatistic.swift. Imported via the
+//generated Disk_Inventory_Xs-Swift.h by the .m files that use it.
+@class FileKindStatistic;
 
 @interface FileSystemDoc : NSDocument
 {

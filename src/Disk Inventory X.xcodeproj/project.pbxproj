@@ -14,6 +14,9 @@
 		44FE12ACF288FC0F2A8760EE /* NSView-BackingCoordsHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A3CD23C6064CBD6DA2D9151 /* NSView-BackingCoordsHelpers.m */; };
 		469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */; };
 		5F1CBF7747F6D9EE85CCB8B0 /* PreferenceKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B0B61085C56856795EC1CF /* PreferenceKeys.m */; };
+		6EB8830E53A30980E6488C2F /* FileKindStatistic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A21FBEA89EA20EA7BA85FE /* FileKindStatistic.swift */; };
+		7D12C2BB1B60E917BDA649DD /* FSItem-Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */; };
+		7DFA0CE01491BE4C4ADC6CB4 /* FSItemIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08826F8E677C447E8E141C12 /* FSItemIndex.swift */; };
 		99D6BD238CED231F67E5305E /* NSString+DIX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910371DEE0676DBED23D2C5D /* NSString+DIX.swift */; };
 		A38A5DC9B22A95B97DC718C0 /* NSDictionary+DIX.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE7DA50E548B4B914FF582F /* NSDictionary+DIX.swift */; };
 		C6DA1C2C1DB4AA7D782ADBE5 /* NSBitmapImageRep-CreationExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DF5FB2D8359C92710D022588 /* NSBitmapImageRep-CreationExtensions.m */; };
@@ -53,9 +56,7 @@
 		FCCFB31D097FA42B009EA2B6 /* TreeMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2E8097FA42B009EA2B6 /* TreeMapViewController.m */; };
 		FCCFB31E097FA42B009EA2B6 /* FileKindsTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2EB097FA42B009EA2B6 /* FileKindsTableController.m */; };
 		FCCFB31F097FA42B009EA2B6 /* FilesOutlineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2EF097FA42B009EA2B6 /* FilesOutlineViewController.m */; };
-		FCCFB321097FA42B009EA2B6 /* FSItemIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2F4097FA42B009EA2B6 /* FSItemIndex.m */; };
 		FCCFB322097FA42B009EA2B6 /* LoadingPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2F6097FA42B009EA2B6 /* LoadingPanelController.m */; };
-		FCCFB323097FA42B009EA2B6 /* FSItem-Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2F8097FA42B009EA2B6 /* FSItem-Utilities.m */; };
 		FCCFB324097FA42B009EA2B6 /* MyDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2F9097FA42B009EA2B6 /* MyDocumentController.m */; };
 		FCCFB325097FA42B009EA2B6 /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2FB097FA42B009EA2B6 /* MainWindowController.m */; };
 		FCCFB326097FA42B009EA2B6 /* FSItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2FE097FA42B009EA2B6 /* FSItem.m */; };
@@ -105,15 +106,18 @@
 
 /* Begin PBXFileReference section */
 		079776155C62C55A2ECBDE41 /* FileSizeTransformer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileSizeTransformer.swift; sourceTree = "<group>"; };
+		08826F8E677C447E8E141C12 /* FSItemIndex.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FSItemIndex.swift; sourceTree = "<group>"; };
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		2A0F85B4E2351AEEBDB018B0 /* VolumeNameTransformer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VolumeNameTransformer.swift; sourceTree = "<group>"; };
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32DBCF750370BD2300C91783 /* Disk Inventory X_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Disk Inventory X_Prefix.pch"; sourceTree = "<group>"; };
 		3550509A91502C4086AB207E /* TMVCushionRenderer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = TMVCushionRenderer.h; sourceTree = "<group>"; };
+		455B95D5A6C09B1A5E97A959 /* FSItemIndexType.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FSItemIndexType.h; sourceTree = "<group>"; };
 		528C509176676C148C6EBBEF /* NSView-BackingCoordsHelpers.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSView-BackingCoordsHelpers.h"; sourceTree = "<group>"; };
 		5B7C89F055C7202EF5EF2FF0 /* AppsForItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppsForItem.swift; sourceTree = "<group>"; };
 		61B0B61085C56856795EC1CF /* PreferenceKeys.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PreferenceKeys.m; sourceTree = "<group>"; };
+		65A21FBEA89EA20EA7BA85FE /* FileKindStatistic.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileKindStatistic.swift; sourceTree = "<group>"; };
 		66033061DBFC94D68DF83791 /* TMVItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = TMVItem.h; sourceTree = "<group>"; };
 		681C249233967AABE8164D38 /* Preferences.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		7A3CD23C6064CBD6DA2D9151 /* NSView-BackingCoordsHelpers.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSView-BackingCoordsHelpers.m"; sourceTree = "<group>"; };
@@ -123,6 +127,7 @@
 		8D15AC370486D014006FF6A4 /* Disk Inventory X.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Disk Inventory X.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		910371DEE0676DBED23D2C5D /* NSString+DIX.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSString+DIX.swift"; sourceTree = "<group>"; };
 		B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileSizeFormatter.swift; sourceTree = "<group>"; };
+		CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "FSItem-Utilities.swift"; sourceTree = "<group>"; };
 		D4C711675ADD6DE1D119706F /* NSBitmapImageRep-CreationExtensions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSBitmapImageRep-CreationExtensions.h"; sourceTree = "<group>"; };
 		D740DFAEA75BD4E158EE6A69 /* TreeMapView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = TreeMapView.h; sourceTree = "<group>"; };
 		DA1B4DF6ECB2A4849A7C5EFA /* VolumeUsageTransformer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VolumeUsageTransformer.swift; sourceTree = "<group>"; };
@@ -225,12 +230,8 @@
 		FCCFB2EC097FA42B009EA2B6 /* FileKindsTableController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FileKindsTableController.h; sourceTree = "<group>"; };
 		FCCFB2EE097FA42B009EA2B6 /* FilesOutlineViewController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FilesOutlineViewController.h; sourceTree = "<group>"; };
 		FCCFB2EF097FA42B009EA2B6 /* FilesOutlineViewController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FilesOutlineViewController.m; sourceTree = "<group>"; };
-		FCCFB2F3097FA42B009EA2B6 /* FSItemIndex.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FSItemIndex.h; sourceTree = "<group>"; };
-		FCCFB2F4097FA42B009EA2B6 /* FSItemIndex.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FSItemIndex.m; sourceTree = "<group>"; };
 		FCCFB2F5097FA42B009EA2B6 /* LoadingPanelController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LoadingPanelController.h; sourceTree = "<group>"; };
 		FCCFB2F6097FA42B009EA2B6 /* LoadingPanelController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LoadingPanelController.m; sourceTree = "<group>"; };
-		FCCFB2F7097FA42B009EA2B6 /* FSItem-Utilities.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "FSItem-Utilities.h"; sourceTree = "<group>"; };
-		FCCFB2F8097FA42B009EA2B6 /* FSItem-Utilities.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "FSItem-Utilities.m"; sourceTree = "<group>"; };
 		FCCFB2F9097FA42B009EA2B6 /* MyDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyDocumentController.m; sourceTree = "<group>"; };
 		FCCFB2FA097FA42B009EA2B6 /* MyDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyDocumentController.h; sourceTree = "<group>"; };
 		FCCFB2FB097FA42B009EA2B6 /* MainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MainWindowController.m; sourceTree = "<group>"; };
@@ -374,6 +375,10 @@
 				810DBD18401F6CB8CFDD4B8B /* PreferenceKeys.h */,
 				61B0B61085C56856795EC1CF /* PreferenceKeys.m */,
 				681C249233967AABE8164D38 /* Preferences.swift */,
+				CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */,
+				65A21FBEA89EA20EA7BA85FE /* FileKindStatistic.swift */,
+				08826F8E677C447E8E141C12 /* FSItemIndex.swift */,
+				455B95D5A6C09B1A5E97A959 /* FSItemIndexType.h */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -548,12 +553,8 @@
 		FCCFB2F0097FA42B009EA2B6 /* Main Classes */ = {
 			isa = PBXGroup;
 			children = (
-				FCCFB2F3097FA42B009EA2B6 /* FSItemIndex.h */,
-				FCCFB2F4097FA42B009EA2B6 /* FSItemIndex.m */,
 				FCCFB2F5097FA42B009EA2B6 /* LoadingPanelController.h */,
 				FCCFB2F6097FA42B009EA2B6 /* LoadingPanelController.m */,
-				FCCFB2F7097FA42B009EA2B6 /* FSItem-Utilities.h */,
-				FCCFB2F8097FA42B009EA2B6 /* FSItem-Utilities.m */,
 				FC2A42882219C89900A484D7 /* AppController.h */,
 				FC2A42892219C89900A484D7 /* AppController.m */,
 				FCCFB2F9097FA42B009EA2B6 /* MyDocumentController.m */,
@@ -764,9 +765,7 @@
 				FCCFB31D097FA42B009EA2B6 /* TreeMapViewController.m in Sources */,
 				FCCFB31E097FA42B009EA2B6 /* FileKindsTableController.m in Sources */,
 				FCCFB31F097FA42B009EA2B6 /* FilesOutlineViewController.m in Sources */,
-				FCCFB321097FA42B009EA2B6 /* FSItemIndex.m in Sources */,
 				FCCFB322097FA42B009EA2B6 /* LoadingPanelController.m in Sources */,
-				FCCFB323097FA42B009EA2B6 /* FSItem-Utilities.m in Sources */,
 				FCCFB324097FA42B009EA2B6 /* MyDocumentController.m in Sources */,
 				FCCFB325097FA42B009EA2B6 /* MainWindowController.m in Sources */,
 				FCCFB326097FA42B009EA2B6 /* FSItem.m in Sources */,
@@ -794,6 +793,9 @@
 				A38A5DC9B22A95B97DC718C0 /* NSDictionary+DIX.swift in Sources */,
 				5F1CBF7747F6D9EE85CCB8B0 /* PreferenceKeys.m in Sources */,
 				101D79A986332ECE07A0B9B6 /* Preferences.swift in Sources */,
+				7D12C2BB1B60E917BDA649DD /* FSItem-Utilities.swift in Sources */,
+				6EB8830E53A30980E6488C2F /* FileKindStatistic.swift in Sources */,
+				7DFA0CE01491BE4C4ADC6CB4 /* FSItemIndex.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -20,8 +20,6 @@
 #import "PreferenceKeys.h"
 #import "MainWindowController.h"
 
-#import "FSItemIndex.h"
-
 
 //============ interface FileKindsTableController(Private) ==========================================================
 

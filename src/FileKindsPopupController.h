@@ -21,11 +21,9 @@
 #import "GenericArrayController.h"
 #import "FileSystemDoc.h"
 
-//the first entry in the kinds popup button is a faked FileKindStatistic object
-//(it represents the "all kinds" entry)
-@interface FileKindStatistic(AllKinds)
-- (BOOL) isAllFileKindsItem;
-@end
+//the first entry in the kinds popup button is a faked "all kinds" entry,
+//represented by an NSDictionary (see FileKindsPopupController.m). The real
+//FileKindStatistic.isAllFileKindsItem lives in FileKindStatistic.swift.
 @interface NSDictionary(AllKinds)
 - (BOOL) isAllFileKindsItem;
 @end

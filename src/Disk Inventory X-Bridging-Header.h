@@ -25,6 +25,10 @@
 #import "FSItem.h"
 #import "TMVCushionRenderer.h"
 
+// FSItemIndexType.h is macro-clean (Foundation only). Exposes the
+// FSItemIndexType NS_OPTIONS bitmask to the Swift FSItemIndex port.
+#import "FSItemIndexType.h"
+
 // PreferenceKeys.h is macro-clean (Foundation only). Exposed so the Swift
 // Preferences port can reference the extern NSString* key constants.
 #import "PreferenceKeys.h"

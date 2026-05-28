@@ -18,13 +18,6 @@
 #import "NSBitmapImageRep-CreationExtensions.h"
 
 
-@implementation FileKindStatistic(AllKinds)
-- (BOOL) isAllFileKindsItem
-{
-	return ![self isKindOfClass: [FileKindStatistic class]];
-}
-@end
-
 @implementation NSDictionary(AllKinds)
 - (BOOL) isAllFileKindsItem
 {
