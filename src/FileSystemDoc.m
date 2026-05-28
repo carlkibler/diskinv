@@ -147,7 +147,7 @@ NSString *OldItem = @"OldItem";
 		[_rootItem setDelegate: self];
 		
         [_rootItem loadChildren];
-        
+
  		uint64_t doneLoadingTime = getTime();
 		LOG (@"loading time:  %.2f seconds", subtractTime(doneLoadingTime, startTime));
 		

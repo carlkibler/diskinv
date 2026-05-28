@@ -16,7 +16,8 @@
 
 
 #import <Cocoa/Cocoa.h>
-#import "FSItem.h"
+#import "FSItemSupport.h"
+#import "Disk_Inventory_Xs-Swift.h"
 #import "PreferenceKeys.h"
 #import "LoadingPanelController.h"
 @class FileTypeColors;
@@ -26,7 +27,7 @@
 //generated Disk_Inventory_Xs-Swift.h by the .m files that use it.
 @class FileKindStatistic;
 
-@interface FileSystemDoc : NSDocument
+@interface FileSystemDoc : NSDocument <FSItemDelegate>
 {
     FSItem *_rootItem;
     FSItem *_selectedItem;

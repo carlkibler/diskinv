@@ -20,9 +20,17 @@
 // transformers.
 #import "NSURL-Extensions.h"
 
-// FSItem.h and TMVCushionRenderer.h are macro-clean (FSItem was de-Carbonized:
-// UInt64 -> uint64_t). Exposed for the Swift FileTypeColors port.
-#import "FSItem.h"
+// FSItem itself is now a Swift class (FSItem.swift). Its non-class support
+// symbols (FSItemType enum, g_fileCount/g_folderCount, exception names, the
+// NSString compareAsFilesystemName: category) live in FSItemSupport.h, which
+// is macro-clean (Cocoa only) and needed by the Swift FSItem port.
+#import "FSItemSupport.h"
+
+// NTFilePasteboardSource.h is macro-clean (no .pch macros, no own imports);
+// the Swift FSItem.writeToPasteboard:withTypes: needs the +file:toPasteboard:types: API.
+#import "NTFilePasteboardSource.h"
+
+// TMVCushionRenderer.h is macro-clean. Exposed for the Swift FileTypeColors port.
 #import "TMVCushionRenderer.h"
 
 // FSItemIndexType.h is macro-clean (Foundation only). Exposes the

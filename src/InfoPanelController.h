@@ -14,7 +14,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "FSItem.h"
+@class FSItem;
 
 @class DIXFileInfoView;
 

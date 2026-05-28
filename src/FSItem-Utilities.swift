@@ -37,7 +37,7 @@ import Foundation
     // path e.g. /Applications/Utilities/Terminal.app
     @objc(findItemByAbsolutePath:allowAncestors:)
     func findItem(byAbsolutePath path: String, allowAncestors: Bool) -> FSItem? {
-        guard let myPath = self.path() else { return nil }
+        let myPath = self.path()
 
         if path == myPath {
             return self
