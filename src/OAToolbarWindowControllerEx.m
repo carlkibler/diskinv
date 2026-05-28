@@ -20,8 +20,6 @@
 
 - (void) setToolbarItem: (NSToolbarItem*) toolbarItem
 {
-	[toolbarItem retain];
-	[_toolbarItem release];
 	_toolbarItem = toolbarItem;
 }
 

@@ -79,12 +79,11 @@
     NSArray *topLevelObjects = nil;
     if ( ![[NSBundle mainBundle] loadNibNamed: @"VolumesPanel" owner: self topLevelObjects: &topLevelObjects] )
 	{
-		[self release];
 		self = nil;
 	}
 	else
 	{
-		_nibTopLevelObjects = [topLevelObjects retain];
+		_nibTopLevelObjects = topLevelObjects;
 
 		//the nib has "release when closed = YES"; turn it off so the panel's
 		//lifetime is governed by _nibTopLevelObjects only. Otherwise closing the
@@ -96,7 +95,7 @@
 		[_volumesTableView setDoubleAction: @selector(openVolume:)];
 		
 		//set FileSizeFormatter for the columns displaying sizes (capacity, free)
-		FileSizeFormatter *sizeFormatter = [[[FileSizeFormatter alloc] init] autorelease];
+		FileSizeFormatter *sizeFormatter = [[FileSizeFormatter alloc] init];
 		[[[_volumesTableView tableColumnWithIdentifier: @"totalSize"] dataCell] setFormatter: sizeFormatter];
 		[[[_volumesTableView tableColumnWithIdentifier: @"freeBytes"] dataCell] setFormatter: sizeFormatter];
 	}
@@ -109,12 +108,6 @@
 - (void) dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
-
-    [_volumes release];
-	[_progressIndicators release];
-	[_nibTopLevelObjects release];
-
-    [super dealloc];
 }
 
 - (NSArray*) volumes
@@ -187,7 +180,6 @@
     [self willChangeValueForKey: @"volumes"];
     
     NS_DURING
-    [_volumes release];
     _volumes = [[NSMutableArray alloc] initWithCapacity: [vols count]];
     
     for ( NSURL *volumeURL in vols )
@@ -229,7 +221,7 @@
 		NSProgressIndicator *progrInd = nil;
 		if ( i >= [_progressIndicators count] )
 		{
-			progrInd = [[[NSProgressIndicator alloc] init] autorelease];
+			progrInd = [[NSProgressIndicator alloc] init];
 			[progrInd setStyle: NSProgressIndicatorBarStyle];
 			[progrInd setIndeterminate: NO];
 			

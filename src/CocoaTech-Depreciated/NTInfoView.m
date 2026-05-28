@@ -60,12 +60,6 @@
 - (void)dealloc;
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-
-    [_URL release];
-    [_titledInfoView release];
-    [_calculatedFolderNumItems release];
-    
-    [super dealloc];
 }
 
 - (NSURL*) URL
@@ -77,7 +71,7 @@
 {    
     [self resetForNewItem];
 
-    _URL = [url retain];
+    _URL = url;
 
     [self updateInfoView];
 }
@@ -92,10 +86,8 @@
 {
     //[_calcSizeThread halt];
     
-    [_URL autorelease];
     _URL = nil;
-    
-    [_calculatedFolderNumItems release];
+
     _calculatedFolderNumItems = nil;
 }
 
@@ -104,7 +96,7 @@
     NSRect contentRect;
     NSScrollView* scrollView;
     
-    scrollView = [[[NSScrollView alloc] initWithFrame:[self bounds]] autorelease];
+    scrollView = [[NSScrollView alloc] initWithFrame:[self bounds]];
     
     [scrollView setAutohidesScrollers:YES];
     [scrollView setHasHorizontalScroller:NO];
@@ -171,7 +163,7 @@
         [infoPairs addObjectsFromArray:[self sizePairs]];
         
         {
-            NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
             [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
             [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
             [dateFormatter setLocale:[NSLocale currentLocale]];
@@ -408,13 +400,13 @@
     // this is nil for volumes
     if (totalValence)
     {
-        NSNumberFormatter* formatter = [[[NSNumberFormatter alloc] init] autorelease];
-        
+        NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+
         [formatter setPositiveFormat:@"#,###"];
         [formatter setAllowsFloats:NO];
-        [formatter setAttributedStringForZero:[[[NSAttributedString alloc] initWithString:@"0"] autorelease]];
-        
-        _calculatedFolderNumItems = [[[formatter stringForObjectValue:totalValence] stringByAppendingString:NSLocalizedString(@" items",@"")] retain];
+        [formatter setAttributedStringForZero:[[NSAttributedString alloc] initWithString:@"0"]];
+
+        _calculatedFolderNumItems = [[formatter stringForObjectValue:totalValence] stringByAppendingString:NSLocalizedString(@" items",@"")];
     }
 }
 

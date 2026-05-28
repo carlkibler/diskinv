@@ -64,13 +64,13 @@
     [[_outlineView outlineTableColumn] setDataCell: [ImageAndTextCell cell]];
 	
 	//set FileSizeFormatter for the size column
-	FileSizeFormatter *sizeFormatter = [[[FileSizeFormatter alloc] init] autorelease];
+	FileSizeFormatter *sizeFormatter = [[FileSizeFormatter alloc] init];
 	[[[_outlineView tableColumnWithIdentifier: @"size"] dataCell] setFormatter: sizeFormatter];
         
 	[[NSUserDefaultsController sharedUserDefaultsController] addObserver: self
 															  forKeyPath: [@"values." stringByAppendingString: UseSmallFontInFilesView]
 																 options: 0
-																 context: UseSmallFontInFilesView];
+																 context: (__bridge void *)UseSmallFontInFilesView];
 	
 	[doc addObserver: self forKeyPath: DocKeySelectedItem options: 0 context: nil];
 	
@@ -80,10 +80,6 @@
     [self reloadData];
 }
 
-- (void) dealloc
-{
-    [super dealloc];
-}
 
 - (FileSystemDoc*) document
 {
@@ -246,7 +242,7 @@ objectValueForTableColumn: (NSTableColumn *) tableColumn
 						change:(NSDictionary*)change
 					   context:(void*)context
 {
-	if ( context == UseSmallFontInFilesView )
+	if ( context == (__bridge void *)UseSmallFontInFilesView )
 	{
 		[self setOutlineViewFont];
 	}

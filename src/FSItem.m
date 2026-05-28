@@ -76,7 +76,7 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
 {
     self = [super init];
     
-    NSURL * url = [[[NSURL alloc] initFileURLWithPath:path] autorelease];
+    NSURL * url = [[NSURL alloc] initFileURLWithPath:path];
     
     return [self initWithURL:url];
 }
@@ -87,7 +87,7 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
     
     _type = FileFolderItem;
     
-    _fileURL = [url retain];
+    _fileURL = url;
     
     if ( [url isDirectory] )
         _childs = [[NSMutableArray alloc] init];
@@ -141,19 +141,12 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
 
 - (void) dealloc
 {
+	//nil out children's non-owning back-reference before ARC releases _childs
 	if ( _childs != nil )
-	{
 		[_childs makeObjectsPerformSelector: @selector(onParentDealloc)];
-		[_childs release];
-	}
-	
-    [_fileURL release];
-	[_size release];
-	[_icons release];
-    
-    //_parent and _delegate no release!
-	
-    [super dealloc];
+
+	//_childs/_fileURL/_size/_icons are released automatically under ARC;
+	//_parent and _delegate are __unsafe_unretained (non-owning)
 }
 
 - (FSItemType) type
@@ -178,8 +171,6 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
 {
 	NSAssert( ![self isSpecialItem], @"free and other space items don't habe a NTFileDesc object");
 	
-	[url retain];
-	[_fileURL release];
 	_fileURL = url;
 }
 
@@ -575,11 +566,11 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
     if ( g_kindNameDictionary == nil )
         g_kindNameDictionary = [[NSMutableDictionary alloc] init];
 
-    _kindName = [[g_kindNameDictionary objectForKey: uti] retain];
+    _kindName = [g_kindNameDictionary objectForKey: uti];
 
     if ( _kindName == nil )
     {
-        _kindName = (NSString*) UTTypeCopyDescription((CFStringRef)uti);
+        _kindName = CFBridgingRelease(UTTypeCopyDescription((__bridge CFStringRef)uti));
         
         //remember kind name for similar files
         if ( _kindName != nil )
@@ -589,7 +580,6 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
     if ( _kindName == nil )
     {
         _kindName = [[self fileURL] getCachedStringValue: NSURLLocalizedTypeDescriptionKey];
-        [_kindName retain];
     }
     
     //let our childs do the same
@@ -758,8 +748,8 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
 			|| ([type isEqualToString: NSTIFFPboardType] && UTTypeConformsTo((__bridge CFStringRef)uti, kUTTypeImage))
 			|| ([type isEqualToString: NSRTFPboardType] && [uti isEqualToString:(__bridge NSString*)kUTTypeRTF])
 			|| ([type isEqualToString: NSRTFDPboardType] && [uti isEqualToString:(__bridge NSString*)kUTTypeFlatRTFD])
-			|| ([type isEqualToString: NSHTMLPboardType] && [uti isEqualToString:(__bridge NSString*)NSHTMLPboardType])
-			|| ([type isEqualToString: NSPDFPboardType] && [uti isEqualToString:(__bridge NSString*)NSPDFPboardType]);
+			|| ([type isEqualToString: NSHTMLPboardType] && [uti isEqualToString: NSHTMLPboardType])
+			|| ([type isEqualToString: NSPDFPboardType] && [uti isEqualToString: NSPDFPboardType]);
 }
 
 - (void) writeToPasteboard: (NSPasteboard*) pboard
@@ -810,7 +800,7 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
         else if ( UTTypeConformsTo((__bridge CFStringRef)uti, kUTTypeImage) )
         {
             // open the image and return TIFFRepresentation
-            NSImage *image = [[[NSImage alloc] initWithContentsOfFile:[url path]] autorelease];
+            NSImage *image = [[NSImage alloc] initWithContentsOfFile:[url path]];
 
             if (image)
             {
@@ -831,7 +821,7 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
 		if ([uti isEqualToString:(__bridge NSString*)kUTTypeFlatRTFD])
 		{
 			NSError *error = nil;
-			NSFileWrapper *tempRTFDData = [[[NSFileWrapper alloc] initWithURL:[NSURL fileURLWithPath:path] options:0 error:&error] autorelease];
+			NSFileWrapper *tempRTFDData = [[NSFileWrapper alloc] initWithURL:[NSURL fileURLWithPath:path] options:0 error:&error];
 			if ( tempRTFDData != nil )
 				[pboard setData:[tempRTFDData serializedRepresentation] forType:NSRTFDPboardType];
 		}
@@ -871,7 +861,7 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
     
     //_hash = 0;	//will be generated on demand (see FSItem.hash)
 	
-    _fileURL = [url retain];
+    _fileURL = url;
 	
 	BOOL isFolder = [_fileURL isDirectory];
 
@@ -925,7 +915,6 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
         [NSException raise: FSItemLoadingCanceledException format: @""];
     }
 
-    [_childs release];
     _childs = [[NSMutableArray alloc] init];
 
     //should the kind strings of our childs should be set initially?
@@ -1077,8 +1066,6 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
         lastDirItem = lastItemWasDir ? currentItem : nil;
         
         lastEnumLevel = [dirEnum level];
-        
-        [currentItem release];
     }
  
     // signal exiting of remaining folders
@@ -1091,9 +1078,7 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
             [NSException raise: FSItemLoadingCanceledException format: @""];
         }
      }
-    
-    [itemStack release];
-    
+
 	[self recalculateSize:YES updateParent:NO];
 }
 
@@ -1118,9 +1103,8 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
 	
 	if ( _size != newSize )
 	{
-		[_size release];
-		_size = [newSize retain];
-		
+		_size = newSize;
+
 		_sizeValue = [_size unsignedLongLongValue];
 	}
 }
@@ -1128,7 +1112,6 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
 - (void) setSizeValue: (unsigned long long) newSize
 {
 	_sizeValue = newSize;
-	[_size release];
 	_size = nil;
 }
 
@@ -1141,9 +1124,6 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
 	
 	unsigned long long myOldSize = [self sizeValue];
 	unsigned long long myNewSize = myOldSize - oldSize + newSize;
-	
-	//child will be released by "removeChild", so prevent it from beeing freed
-	[[child retain] autorelease];
 	
 	//keep childs array sorted
 	[self removeChild: child updateParent: NO];

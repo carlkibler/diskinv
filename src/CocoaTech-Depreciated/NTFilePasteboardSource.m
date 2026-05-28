@@ -21,16 +21,9 @@
 {
     self = [super init];
 
-    _URLs = [URLs retain];
+    _URLs = URLs;
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [_URLs release];
-
-    [super dealloc];
 }
 
 + (NSArray<NSPasteboardType>*)defaultTypes;
@@ -67,7 +60,7 @@
 
 + (NTFilePasteboardSource*)files:(NSArray<NSURL*> *)URLs toPasteboard:(NSPasteboard *)pboard types:(NSArray<NSPasteboardType> *)types;
 {
-    NTFilePasteboardSource* source = [[[NTFilePasteboardSource alloc] initWithURLs:URLs] autorelease];
+    NTFilePasteboardSource* source = [[NTFilePasteboardSource alloc] initWithURLs:URLs];
     NSArray<NSPasteboardType>* pasteboardTypes = [source pasteboardTypes:types];
 
     if (pasteboardTypes)
@@ -160,7 +153,7 @@
                 else if ( UTTypeConformsTo((__bridge CFStringRef)uti, kUTTypeImage) )
                 {
                     // open the image and return TIFFRepresentation
-                    NSImage *image = [[[NSImage alloc] initWithContentsOfFile:[url path]] autorelease];
+                    NSImage *image = [[NSImage alloc] initWithContentsOfFile:[url path]];
 
                     if (image)
                     {
@@ -196,7 +189,7 @@
                 if ([uti isEqualToString: (__bridge NSString *)kUTTypeFlatRTFD])
                 {
                     NSError *error = nil;
-                    NSFileWrapper *tempRTFDData = [[[NSFileWrapper alloc] initWithURL:url options:0 error:&error] autorelease];
+                    NSFileWrapper *tempRTFDData = [[NSFileWrapper alloc] initWithURL:url options:0 error:&error];
                     if ( tempRTFDData != nil )
                         [pboard setData:[tempRTFDData serializedRepresentation] forType:NSRTFDPboardType];
                 }

@@ -36,12 +36,11 @@
 	NSArray *topLevelObjects = nil;
     if ( ![[NSBundle mainBundle] loadNibNamed: @"InfoPanel" owner: self topLevelObjects: &topLevelObjects] )
 	{
-		[self release];
 		self = nil;
 	}
 	else
 	{
-		_nibTopLevelObjects = [topLevelObjects retain];
+		_nibTopLevelObjects = topLevelObjects;
 
 		//the nib has "release when closed = YES"; turn it off so the panel's
 		//lifetime is governed by _nibTopLevelObjects only. Otherwise closing
@@ -63,12 +62,6 @@
 	}
 	
 	return self;
-}
-
-- (void) dealloc
-{
-    [_nibTopLevelObjects release];
-    [super dealloc];
 }
 
 - (BOOL) panelIsVisible

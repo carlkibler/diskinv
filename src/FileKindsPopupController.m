@@ -41,11 +41,6 @@
 
 @implementation FileKindsPopupController
 
-- (void) dealloc
-{
-	[super dealloc];
-}
-
 - (void) awakeFromNib
 {
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
@@ -59,16 +54,15 @@
 	[sharedDefsController addObserver: self
 						   forKeyPath: [@"values." stringByAppendingString: ShareKindColors]
 							  options: 0
-							  context: ShareKindColors];
+							  context: (__bridge void *)ShareKindColors];
 	
 	NSSortDescriptor *sortDesc = [[NSSortDescriptor alloc] initWithKey: @"kindName" ascending: YES selector: @selector(compareAsFilesystemName:)];
 	[self setSortDescriptors: [NSArray arrayWithObject: sortDesc]];
-	[sortDesc release];	
 }
 
 - (NSArray *)arrangeObjects:(NSArray *)objects
 {
-	NSMutableArray *arrangedObjects = [[objects mutableCopy] autorelease];
+	NSMutableArray *arrangedObjects = [objects mutableCopy];
 		
 	[arrangedObjects sortUsingDescriptors: [self sortDescriptors]];
 
@@ -128,7 +122,7 @@
 {
 	[super observeValueForKeyPath: keyPath ofObject: object change: change context: context];
 	
-	if ( context == ShareKindColors )
+	if ( context == (__bridge void *)ShareKindColors )
 	{
 		[self setFileKindsImages];
 	}
@@ -157,8 +151,8 @@
 		
 	TMVCushionRenderer *cushionRenderer = [(TMVCushionRenderer*)[TMVCushionRenderer alloc]
 										   initWithRect: NSMakeRect(0, 0, imageWidth, imageHeight)];
-	[cushionRenderer autorelease];
-	
+
+
 	[cushionRenderer addRidgeByHeightFactor: 0.6];
 	
 	FileTypeColors *kindColors = [[self document] fileTypeColors];
@@ -185,7 +179,6 @@
 			
 			//create an an image with this bitmap
 			NSImage *image = [bitmap suitableImageForView: _kindsPopUpButton];
-			[bitmap release];
 			
 			//set image in menu item
 			[menuItem setImage: image];

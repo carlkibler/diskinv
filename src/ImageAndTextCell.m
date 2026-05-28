@@ -52,29 +52,19 @@
 
 + (id) cell
 {
-	return [[[[self class] alloc] init] autorelease];
-}
-
-- (void)dealloc
-{
-    [_image release];
-    _image = nil;
-    [super dealloc];
+	return [[[self class] alloc] init];
 }
 
 - copyWithZone:(NSZone *)zone
 {
     ImageAndTextCell *cell = (ImageAndTextCell *)[super copyWithZone:zone];
-    cell->_image = [_image retain];
+    cell->_image = _image;
     return cell;
 }
 
 - (void)setImage:(NSImage *)anImage {
     if (anImage != _image)
-	{
-        [_image release];
-        _image = [anImage retain];
-    }
+        _image = anImage;
 }
 
 - (NSImage *)image
@@ -132,7 +122,7 @@
         else
         {
             // Create copy that will be the returned result
-            NSMutableString *truncatedString = [[string mutableCopy] autorelease];
+            NSMutableString *truncatedString = [string mutableCopy];
 
             // Get range for last character in string
             NSRange range = {truncatedString.length - 1, 1};

@@ -246,21 +246,19 @@
 		[alert setInformativeText: NSLocalizedString(@"Would you like to delete it immediately?",@"")];
 		[alert addButtonWithTitle: NSLocalizedString(@"No",@"")];	//NSAlertFirstButtonReturn
 		[alert addButtonWithTitle: NSLocalizedString(@"Yes",@"")];	//NSAlertSecondButtonReturn
-		FSItem *capturedItem = [selectedItem retain];
+		FSItem *capturedItem = selectedItem;
 		[alert beginSheetModalForWindow: [self window]
 					  completionHandler: ^(NSModalResponse returnCode) {
 			[self moveToTrashSheetDidDismiss: nil
 								  returnCode: (int)returnCode
-								 contextInfo: capturedItem];
-			[capturedItem release];
+								 contextInfo: (__bridge void *)capturedItem];
 		}];
-		[alert release];
 	}
 	else
 	{
 		[self moveToTrashSheetDidDismiss: nil
 							  returnCode: NSAlertSecondButtonReturn
-							 contextInfo: selectedItem];
+							 contextInfo: (__bridge void *)selectedItem];
 	}
 }
 
@@ -349,7 +347,6 @@
 	[alert setAlertStyle: NSAlertStyleInformational];
 	[alert setMessageText: msg];
 	[alert beginSheetModalForWindow: [_splitter window] completionHandler: nil];
-	[alert release];
 }
 
 - (IBAction) performLayoutBenchmark:(id)sender
@@ -367,7 +364,6 @@
 	[alert setAlertStyle: NSAlertStyleInformational];
 	[alert setMessageText: msg];
 	[alert beginSheetModalForWindow: [_splitter window] completionHandler: nil];
-	[alert release];
 }
 
 #pragma mark -----------------UI elment validation-----------------------
@@ -536,7 +532,7 @@
 		//the first and second menu item is the default app and a serperator item
 		if ( [_openWithSubMenu numberOfItems] == 0 )
 		{
-			[_openWithSubMenu addItem: [[[NSMenuItem alloc] init] autorelease]];
+			[_openWithSubMenu addItem: [[NSMenuItem alloc] init]];
 			[_openWithSubMenu addItem: [NSMenuItem separatorItem]];
 		}
 
@@ -559,7 +555,7 @@
 		{
 			unsigned menuItemIndex = i+2;
 			if ( menuItemIndex >= ((unsigned) [_openWithSubMenu numberOfItems]) )
-				[_openWithSubMenu addItem: [[[NSMenuItem alloc] init] autorelease]];
+				[_openWithSubMenu addItem: [[NSMenuItem alloc] init]];
 			
 			menuItem = [_openWithSubMenu itemAtIndex: menuItemIndex];
 			appURL = [appURLs objectAtIndex: i];
@@ -628,7 +624,7 @@
 		return;
 	
 	FileSystemDoc *doc = [self document];
-	FSItem *selectedItem = (FSItem*) contextInfo;
+	FSItem *selectedItem = (__bridge FSItem*) contextInfo;
 	
 	NSParameterAssert(	selectedItem != nil
 						&& selectedItem != [doc zoomedItem] 
@@ -668,7 +664,6 @@
         [failAlert setInformativeText: subMsg ?: @""];
         [failAlert addButtonWithTitle: NSLocalizedString(@"OK",@"")];
         [failAlert beginSheetModalForWindow: [self window] completionHandler: nil];
-        [failAlert release];
  	}
 }
 

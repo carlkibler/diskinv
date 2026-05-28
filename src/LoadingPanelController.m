@@ -27,7 +27,7 @@
 	NSArray *topLevelObjects = nil;
 	if ( ![[NSBundle mainBundle] loadNibNamed: @"LoadingPanel" owner: self topLevelObjects: &topLevelObjects] )
 		NSAssert( NO, @"couldn't load LoadingPanel.nib" );
-	_nibTopLevelObjects = [topLevelObjects retain];
+	_nibTopLevelObjects = topLevelObjects;
 
 	//the nib has "release when closed = YES"; turn it off so the panel's
 	//lifetime is governed by _nibTopLevelObjects only. Otherwise [_loadingPanel
@@ -57,7 +57,7 @@
 	NSArray *topLevelObjects = nil;
 	if ( ![[NSBundle mainBundle] loadNibNamed: @"LoadingPanel" owner: self topLevelObjects: &topLevelObjects] )
 		NSAssert( NO, @"couldn't load LoadingPanel.nib" );
-	_nibTopLevelObjects = [topLevelObjects retain];
+	_nibTopLevelObjects = topLevelObjects;
 
 	//see init - same reason.
 	[_loadingPanel setReleasedWhenClosed: NO];
@@ -83,9 +83,6 @@
 {
 	if ( _loadingPanel != nil )
 		[self close];
-
-	[_nibTopLevelObjects release];
-	[super dealloc];
 }
 
 - (void) close
@@ -148,8 +145,6 @@
 
 - (void) setMessageText: (NSString*) msg
 {
-	[msg retain];
-	[_message release];
 	_message = msg;
 }
 

@@ -163,12 +163,6 @@ BOOL g_EnableLogging;
 }
 
 
-- (void) dealloc
-{
-	[_donationPanelNibTopLevelObjects release];
-	[super dealloc];
-}
-
 #pragma mark --------app notifications-----------------
 
 - (void) applicationWillFinishLaunching: (NSNotification*) notification
@@ -201,7 +195,7 @@ BOOL g_EnableLogging;
 	{
 		NSArray *topLevelObjects = nil;
 		[[NSBundle mainBundle] loadNibNamed: @"DonationPanel" owner: self topLevelObjects: &topLevelObjects];
-		_donationPanelNibTopLevelObjects = [topLevelObjects retain];
+		_donationPanelNibTopLevelObjects = topLevelObjects;
 
 		//the nib has "release when closed = YES"; turn it off so the panel's
 		//lifetime is governed by _donationPanelNibTopLevelObjects only. Otherwise
@@ -236,7 +230,7 @@ BOOL g_EnableLogging;
 			fsItem = [zoomStack objectAtIndex: i-1];
 		
 		if ( i >= ((unsigned) [zoomStackMenu numberOfItems]) )
-			[zoomStackMenu addItem: [[[NSMenuItem alloc] init] autorelease]];
+			[zoomStackMenu addItem: [[NSMenuItem alloc] init]];
 		
 		NSMenuItem *menuItem = [zoomStackMenu itemAtIndex: i];
 		

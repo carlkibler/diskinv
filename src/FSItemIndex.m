@@ -30,7 +30,6 @@
 	{
 		objects = [[NSMutableArray alloc] initWithObjects: &object count: 1];
 		[self setObject: objects forKey: term];
-		[objects release];
 	}
 	else
 		[objects addObject: object];
@@ -58,7 +57,7 @@
 	
 	_displayNameIndex = [[NSMutableDictionary alloc] init];
 	_displayFolderIndex = [[NSMutableDictionary alloc] init];
-	_kindStatistics = [kindStatistics retain];
+	_kindStatistics = kindStatistics;
 	
 /*	_indexedItems = [[NSMutableDictionary alloc] init];
 	
@@ -76,20 +75,6 @@
 	CFRelease( searchArray );
 */	
 	return self;
-}
-
-- (void) dealloc
-{
-	[_kindStatistics release];
-	[_displayNameIndex release];
-	[_displayFolderIndex release];
-	
-/*	CFRelease( _searchGroupAll );	
-	CFRelease( _displayNameIndex );
-	CFRelease( _kindNameIndex );
-	[_indexedItems release];
-*/	
-	[super dealloc];
 }
 
 - (void) addItem: (FSItem*) item
@@ -133,25 +118,14 @@
 - (void) addItemsFromArray: (NSArray*) items
 {
 	NSUInteger i = [items count];
-	
-	NSAutoreleasePool *localPool = (i > 200) ? [[NSAutoreleasePool alloc] init] : nil;
-	
-	unsigned poolLoopCount = 0;
-	
+
 	while ( i-- )
 	{
-		[self addItem: [items objectAtIndex: i]];
-		
-		poolLoopCount++;
-		if ( poolLoopCount > 200 )
+		@autoreleasepool
 		{
-			poolLoopCount = 0;
-			[localPool release];
-			localPool = [[NSAutoreleasePool alloc] init];
+			[self addItem: [items objectAtIndex: i]];
 		}
 	}
-	
-	[localPool release];
 }
 
 - (NSArray*) searchItems: (NSString*) searchString inIndex: (FSItemIndexType) indexesToSearch
