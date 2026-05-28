@@ -30,6 +30,17 @@ import CoreServices
 //global cache for kind names
 private var g_kindNameDictionary = NSMutableDictionary()
 
+//MARK: - scan errors (replaces the former ObjC NSException-based cancellation)
+
+//Errors thrown by the recursive scanner. Both FSItem and its sole caller
+//(FileSystemDoc) are now Swift, so idiomatic Swift errors replace the
+//former FSItemLoadingCanceledException / FSItemLoadingFailedException
+//NSExceptions.
+enum FSItemError: Error {
+    case loadingCanceled   //delegate canceled the loading
+    case loadingFailed     //error while enumerating files/folders
+}
+
 @objc(FSItem) final class FSItem: NSObject {
 
     private var _fileURL: NSURL?
@@ -376,8 +387,8 @@ private var g_kindNameDictionary = NSMutableDictionary()
     }
 
     //if this is a folder, load all containing files
-    @objc(loadChildren)
-    func loadChildren() {
+    //Called only by FileSystemDoc (now Swift), so no @objc exposure is needed.
+    func loadChildren() throws {
         var usePhysicalSize = false
 
         if let d = delegateAsFSItemDelegate, let result = d.fsItemShouldUsePhysicalFileSize?(self) {
@@ -385,7 +396,7 @@ private var g_kindNameDictionary = NSMutableDictionary()
         }
 
         //use new optimized version of loadChilds
-        loadChildrenAndSetKindStrings(true, usePhysicalSize: usePhysicalSize)
+        try loadChildrenAndSetKindStrings(true, usePhysicalSize: usePhysicalSize)
     }
 
     //MARK: ----------------- sizes -----------------------
@@ -692,8 +703,7 @@ private var g_kindNameDictionary = NSMutableDictionary()
 
     //MARK: ----------------- the scanner -----------------------
 
-    @objc(loadChildrenAndSetKindStrings:usePhysicalSize:)
-    func loadChildrenAndSetKindStrings(_ setKindStringsParam: Bool, usePhysicalSize: Bool) {
+    func loadChildrenAndSetKindStrings(_ setKindStringsParam: Bool, usePhysicalSize: Bool) throws {
         if !isFolder() {
             return
         }
@@ -703,7 +713,7 @@ private var g_kindNameDictionary = NSMutableDictionary()
 
         //should we cancel the loading?
         if let d = delegate, d.fsItemEnteringFolder?(self) == false {
-            NSException(name: NSExceptionName(rawValue: FSItemLoadingCanceledException), reason: "", userInfo: nil).raise()
+            throw FSItemError.loadingCanceled
         }
 
         _childs = NSMutableArray()
@@ -757,7 +767,8 @@ private var g_kindNameDictionary = NSMutableDictionary()
 
         if let dirEnum = dirEnum {
             for case let current as URL in dirEnum {
-                autoreleasepool {
+                //autoreleasepool is `rethrows`, so a throwing body propagates out
+                try autoreleasepool {
                     let currentUrl = current as NSURL
 
                     // cache all needed properties (NSURL purges all values upon next pass through the run loop)
@@ -769,7 +780,7 @@ private var g_kindNameDictionary = NSMutableDictionary()
 
                         //should we cancel the loading?
                         if let d = delegate, d.fsItemEnteringFolder?(lastDirItem!) == false {
-                            NSException(name: NSExceptionName(rawValue: FSItemLoadingCanceledException), reason: "", userInfo: nil).raise()
+                            throw FSItemError.loadingCanceled
                         }
                     } else if dirEnum.level < lastEnumLevel {
                         // level can be one or more steps higher
@@ -779,7 +790,7 @@ private var g_kindNameDictionary = NSMutableDictionary()
                         for _ in 0..<levelsWalkedUp {
                             //should we cancel the loading?
                             if let d = delegate, let last = itemStack.lastObject as? FSItem, d.fsItemExittingFolder?(last) == false {
-                                NSException(name: NSExceptionName(rawValue: FSItemLoadingCanceledException), reason: "", userInfo: nil).raise()
+                                throw FSItemError.loadingCanceled
                             }
                             itemStack.removeLastObject()
                         }
@@ -794,7 +805,7 @@ private var g_kindNameDictionary = NSMutableDictionary()
                         // firmlinks are not followed by NSDirectoryEnumerator, but Apple may
                         // change that, so we tell the enumerator to not enter the directory
                         dirEnum.skipDescendants()
-                        currentItem.loadChildrenAndSetKindStrings(setKindStrings, usePhysicalSize: usePhysicalSize)
+                        try currentItem.loadChildrenAndSetKindStrings(setKindStrings, usePhysicalSize: usePhysicalSize)
                     } else if currentUrl.isVolume() {
                         // on 10.15 Beta 7 the mount point /System/Volume/data is followed,
                         // although this should not be the case according to the docs
@@ -812,7 +823,7 @@ private var g_kindNameDictionary = NSMutableDictionary()
         for case let stackItem as FSItem in itemStack.reverseObjectEnumerator() {
             //should we cancel the loading?
             if let d = delegate, d.fsItemExittingFolder?(stackItem) == false {
-                NSException(name: NSExceptionName(rawValue: FSItemLoadingCanceledException), reason: "", userInfo: nil).raise()
+                throw FSItemError.loadingCanceled
             }
         }
 

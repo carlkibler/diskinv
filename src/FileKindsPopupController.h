@@ -19,7 +19,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "GenericArrayController.h"
-#import "FileSystemDoc.h"
+@class FileSystemDoc;
 
 //the first entry in the kinds popup button is a faked "all kinds" entry,
 //represented by an NSDictionary (see FileKindsPopupController.m). The real

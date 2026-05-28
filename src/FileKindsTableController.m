@@ -13,6 +13,7 @@
 //
 
 #import "FileKindsTableController.h"
+#import "FileSystemDocSupport.h"
 #import "Disk_Inventory_Xs-Swift.h"
 // NSTableView-OAExtensions removed - using standard NSTableView
 #import "TMVCushionRenderer.h"

@@ -20,7 +20,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "FileSystemDoc.h"
+@class FileSystemDoc;
 #import "GenericArrayController.h"
 #import "MainWindowController.h"
 #import "FileKindsPopupController.h"

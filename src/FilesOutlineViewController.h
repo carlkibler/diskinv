@@ -1,7 +1,8 @@
 /* FilesOutlineViewController */
 
 #import <Cocoa/Cocoa.h>
-#import "FileSystemDoc.h"
+@class FileSystemDoc;
+@class FSItem;
 #import "ImageAndTextCell.h"
 #import "DIXOutlineView.h"
 

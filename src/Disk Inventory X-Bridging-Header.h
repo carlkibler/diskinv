@@ -41,4 +41,21 @@
 // Preferences port can reference the extern NSString* key constants.
 #import "PreferenceKeys.h"
 
+// FileSystemDocSupport.h is macro-clean (Foundation only). Holds the KVO
+// key and notification-name extern NSString* constants needed by the Swift
+// FileSystemDoc port (extern C string constants cannot live in Swift).
+#import "FileSystemDocSupport.h"
+
+// LoadingPanelController.h is needed by the Swift FileSystemDoc (the scan
+// progress panel). Macro-clean (Cocoa only).
+#import "LoadingPanelController.h"
+
+// NSFileManager-Extensions.h is macro-clean (Foundation only). The Swift
+// FileSystemDoc uses privacyProtectedFoldersInURL: / triggerConsentDialog...
+#import "NSFileManager-Extensions.h"
+
+// InfoPanelController.h is macro-clean (Cocoa + @class FSItem). The Swift
+// FileSystemDoc keeps the info panel in sync on selection changes.
+#import "InfoPanelController.h"
+
 #endif /* DiskInventoryX_BridgingHeader_h */

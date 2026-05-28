@@ -1,7 +1,7 @@
 /* MainWindowController */
 
 #import <Cocoa/Cocoa.h>
-#import "FileSystemDoc.h"
+@class FileSystemDoc;
 #import "TreeMapView.h"
 #import "OAToolbarWindowControllerEx.h"
 

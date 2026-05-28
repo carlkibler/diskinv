@@ -14,7 +14,7 @@
 //
 
 #import "SelectionListController.h"
-#import "FileSystemDoc.h"
+#import "FileSystemDocSupport.h"
 #import "FileKindsPopupController.h"
 #import "Disk_Inventory_Xs-Swift.h"
 #import "Timing.h"

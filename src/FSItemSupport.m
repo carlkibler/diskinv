@@ -15,10 +15,6 @@
 unsigned g_fileCount;
 unsigned g_folderCount;
 
-//exceptions
-NSString* FSItemLoadingCanceledException = @"FSItemLoadingCanceledException";
-NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
-
 @implementation NSString (ComparisonAdditions)
 - (NSComparisonResult) compareAsFilesystemName: (NSString*) other
 {

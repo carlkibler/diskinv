@@ -18,11 +18,10 @@
 extern unsigned g_fileCount;
 extern unsigned g_folderCount;
 
-//Exceptions raised by FSItem
-//delegate canceled the loading
-extern NSString* FSItemLoadingCanceledException;
-//error while enumerating files/folders (e.g. volume has been ejected (unmounted))
-extern NSString* FSItemLoadingFailedException;
+//(Scan cancellation/failure is now signaled via the Swift FSItemError
+//enum thrown by FSItem.loadChildren(); the former
+//FSItemLoadingCanceledException/FSItemLoadingFailedException constants
+//have been removed.)
 
 typedef enum
 {

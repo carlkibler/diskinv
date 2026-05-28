@@ -1,7 +1,8 @@
 /* TreeMapViewController */
 
 #import <Cocoa/Cocoa.h>
-#import "FileSystemDoc.h"
+@class FileSystemDoc;
+@class FSItem;
 
 @interface TreeMapViewController : NSObject
 {
