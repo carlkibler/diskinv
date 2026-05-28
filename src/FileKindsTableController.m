@@ -13,10 +13,11 @@
 //
 
 #import "FileKindsTableController.h"
+#import "Disk_Inventory_Xs-Swift.h"
 // NSTableView-OAExtensions removed - using standard NSTableView
-#import <TreeMapView/TMVCushionRenderer.h>
-#import <TreeMapView/NSBitmapImageRep-CreationExtensions.h>
-#import "Preferences.h"
+#import "TMVCushionRenderer.h"
+#import "NSBitmapImageRep-CreationExtensions.h"
+#import "PreferenceKeys.h"
 #import "MainWindowController.h"
 
 #import "FSItemIndex.h"

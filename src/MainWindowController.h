@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "FileSystemDoc.h"
-#import <TreeMapView/TreeMapView.h>
+#import "TreeMapView.h"
 #import "OAToolbarWindowControllerEx.h"
 
 // NSDrawer was deprecated in 10.13 with the suggestion to "consider using NSSplitViewController",

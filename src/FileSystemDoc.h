@@ -17,9 +17,9 @@
 
 #import <Cocoa/Cocoa.h>
 #import "FSItem.h"
-#import "Preferences.h"
+#import "PreferenceKeys.h"
 #import "LoadingPanelController.h"
-#import "FileTypeColors.h"
+@class FileTypeColors;
 
 //holds information about the count and size of the files of one kind (e.g. MP3 files)
 @interface FileKindStatistic : NSObject

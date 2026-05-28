@@ -16,7 +16,6 @@
 
 #import "FSItem.h"
 #import "NSURL-Extensions.h"
-#import "NSMutableArray+DIXExtensions.h"
 #import "NTFilePasteboardSource.h"
 
 //for debugging and logging purposes
@@ -349,7 +348,13 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
 	[newChild setParent: self];
 	
 	//insert child sorted by size
-	[_childs insertObject: newChild inArraySortedUsingSelector: @selector(compareSizeDescendingly:)];
+	NSUInteger insertIndex = [_childs indexOfObject: newChild
+	                                   inSortedRange: NSMakeRange(0, [_childs count])
+	                                         options: NSBinarySearchingInsertionIndex
+	                                 usingComparator: ^NSComparisonResult(FSItem *a, FSItem *b) {
+	                                     return [a compareSizeDescendingly: b];
+	                                 }];
+	[_childs insertObject: newChild atIndex: insertIndex];
 	
 	[self setSizeValue: [self sizeValue] + [newChild sizeValue]];
 	
@@ -408,7 +413,7 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
 - (void) recalculateSize: (BOOL) usePhysicalSize updateParent: (BOOL) updateParent
 {
 	unsigned long long oldSize = [self sizeValue];
-	UInt64 size = 0;
+	uint64_t size = 0;
 	
 	switch ( [self type] )
 	{
@@ -448,8 +453,8 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
                 NSNumber *totalSpace = [[self fileURL] getCachedNumberValue: NSURLVolumeTotalCapacityKey];
                 NSNumber *freeSpace = [[self fileURL] getCachedNumberValue: NSURLVolumeAvailableCapacityKey];
 
-                UInt64 totalSpaceVal = totalSpace == nil ? 0 : [totalSpace unsignedLongLongValue];
-                UInt64 freeSpaceVal = freeSpace == nil ? 0 : [freeSpace unsignedLongLongValue];
+                uint64_t totalSpaceVal = totalSpace == nil ? 0 : [totalSpace unsignedLongLongValue];
+                uint64_t freeSpaceVal = freeSpace == nil ? 0 : [freeSpace unsignedLongLongValue];
 
                 //the root item must has finished calculating it's size, otherwise this doesn't work
                 size = totalSpaceVal
@@ -697,8 +702,8 @@ NSString* FSItemLoadingFailedException = @"FSItemLoadingFailedException";
 	if ( [self isSpecialItem] ^ [other isSpecialItem] )
 		return NSOrderedDescending;
 	
-	UInt64 mySize = [self sizeValue];
-	UInt64 otherSize = [other sizeValue];
+	uint64_t mySize = [self sizeValue];
+	uint64_t otherSize = [other sizeValue];
 	
 	if ( mySize > otherSize )
 		return NSOrderedDescending;

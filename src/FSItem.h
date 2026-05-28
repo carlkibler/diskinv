@@ -14,6 +14,8 @@
 
 //
 
+#import <Cocoa/Cocoa.h>
+
 extern unsigned g_fileCount;
 extern unsigned g_folderCount;
 
@@ -34,7 +36,7 @@ typedef enum
 	NSMutableDictionary *_icons; //holds icons in various sizes (see iconWithSize:)
 	FSItemType _type;
     NSNumber *_size;
-	UInt64 _sizeValue;
+	uint64_t _sizeValue;
     NSString *_kindName;
     //unsigned _hash;
     NSMutableArray<FSItem*> *_childs;

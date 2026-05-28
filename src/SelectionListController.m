@@ -16,7 +16,7 @@
 #import "SelectionListController.h"
 #import "FileSystemDoc.h"
 #import "FileKindsPopupController.h"
-#import "NSString+DIXExtensions.h"
+#import "Disk_Inventory_Xs-Swift.h"
 #import "Timing.h"
 
 @interface SelectionListController(Privat)

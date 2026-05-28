@@ -8,7 +8,7 @@
 
 #import "NTInfoView.h"
 #import "NTTitledInfoPair.h"
-#import "AppsForItem.h"
+#import "Disk_Inventory_Xs-Swift.h"
 #import "NSURL-Extensions.h"
 
 #pragma warning "ID3 support removed"

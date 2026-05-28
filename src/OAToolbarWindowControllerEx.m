@@ -14,7 +14,7 @@
 //
 
 #import "OAToolbarWindowControllerEx.h"
-#import "NSString+DIXExtensions.h"
+#import "Disk_Inventory_Xs-Swift.h"
 
 @implementation NSToolbarItemValidationAdapter
 

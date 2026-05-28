@@ -13,8 +13,9 @@
 //
 
 #import "FileKindsPopupController.h"
-#import <TreeMapView/TMVCushionRenderer.h>
-#import <TreeMapView/NSBitmapImageRep-CreationExtensions.h>
+#import "Disk_Inventory_Xs-Swift.h"
+#import "TMVCushionRenderer.h"
+#import "NSBitmapImageRep-CreationExtensions.h"
 
 
 @implementation FileKindStatistic(AllKinds)

@@ -43,7 +43,7 @@
 */
 
 #import "ImageAndTextCell.h"
-#import "NSString+DIXUnicode.h"
+#import "Disk_Inventory_Xs-Swift.h"
 
 #define TEXT_OFFSET	10	//space between image and text
 #define IMAGE_OFFSET	5	//space between left side of cell rect and image

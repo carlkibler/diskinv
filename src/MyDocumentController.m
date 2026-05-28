@@ -16,8 +16,7 @@
 
 #import "MyDocumentController.h"
 #import "DrivesPanelController.h"
-#import "Preferences.h"
-#import "PrefsPanelController.h"
+#import "PreferenceKeys.h"
 #import "FileSystemDoc.h"
 #import "AppController.h"
 
@@ -87,17 +86,17 @@ BOOL g_EnableLogging;
     return NO;
 }
 
-- (id)makeDocumentWithContentsOfFile:(NSString *)fileName ofType:(NSString *)docType
+- (id)makeDocumentWithContentsOfURL:(NSURL *)url ofType:(NSString *)docType error:(NSError **)outError
 {
-	//check whether "fileName" is a folder
-	NSDictionary *attribs = [[NSFileManager defaultManager] fileAttributesAtPath: fileName traverseLink: NO];
+	//check whether "url" is a folder
+	NSDictionary *attribs = [[NSFileManager defaultManager] attributesOfItemAtPath: url.path error: NULL];
     if ( attribs != nil )
 	{
 		NSString *type = [attribs fileType];
 		if ( type != nil && [type isEqualToString: NSFileTypeDirectory] )
-			return [super makeDocumentWithContentsOfFile:fileName ofType: @"Folder"];
+			return [super makeDocumentWithContentsOfURL:url ofType: @"Folder" error: outError];
 	}
-	
+
 	return nil;
 }
 
@@ -152,12 +151,6 @@ BOOL g_EnableLogging;
 		return [super typeFromFileExtension: fileExtensionOrHFSFileType];
 }
 
-- (IBAction) showPreferencesPanel: (id) sender
-{
-	[[PrefsPanelController sharedPreferenceController] showPreferencesPanel: self];
-	//[[OAPreferenceController sharedPreferenceController] showPreferencesPanel: self];
-}
-
 - (IBAction) gotoHomepage: (id) sender
 {
 	[[NSWorkspace sharedWorkspace] openURL: [NSURL URLWithString: @"http://www.derlien.com"]];
@@ -191,6 +184,11 @@ BOOL g_EnableLogging;
 	//show the drives panel before "applicationDidFinishLaunching" so the panel is visible before the first document is loaded
 	//(e.g. through drag&drop)
 	[[DrivesPanelController sharedController] showPanel];
+}
+
+- (BOOL) applicationSupportsSecureRestorableState:(NSApplication *)app
+{
+    return YES;
 }
 
 - (void) applicationDidFinishLaunching:(NSNotification *)notification

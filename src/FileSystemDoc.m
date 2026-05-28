@@ -18,7 +18,7 @@
 #import "NSURL-Extensions.h"
 #import "MainWindowController.h"
 #import "DrivesPanelController.h"
-#import "FileSizeFormatter.h"
+#import "Disk_Inventory_Xs-Swift.h"
 #import "Timing.h"
 #import "InfoPanelController.h"
 #import "FSItem-Utilities.h"
@@ -170,6 +170,11 @@ NSString *OldItem = @"OldItem";
 
 @implementation FileSystemDoc
 
++ (BOOL)autosavesInPlace
+{
+    return NO;
+}
+
 - (id)init
 {
     self = [super init];
@@ -180,7 +185,7 @@ NSString *OldItem = @"OldItem";
 		
         _zoomStack = [[NSMutableArray alloc] init];
 		
-		_viewOptions = [[NSMutableDictionary alloc] initWithDefaults];
+		_viewOptions = [[NSMutableDictionary dictionaryWithDefaults] retain];
 		
 		NSUserDefaultsController *sharedDefsController = [NSUserDefaultsController sharedUserDefaultsController];
 		[sharedDefsController addObserver: self

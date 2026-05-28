@@ -14,7 +14,7 @@
 //
 
 #import "FSItemIndex.h"
-#import "NSString+DIXExtensions.h"
+#import "Disk_Inventory_Xs-Swift.h"
 
 @interface NSMutableDictionary(Indexing)
 - (void) addObject: (id) object forTerm: (id) term; 

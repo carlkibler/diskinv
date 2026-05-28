@@ -15,9 +15,9 @@
 //
 
 #import "TreeMapViewController.h"
-#import <TreeMapView/TreeMapView.h>
+#import "TreeMapView.h"
 #import "MainWindowController.h"
-#import "FileSizeFormatter.h"
+#import "Disk_Inventory_Xs-Swift.h"
 #import "FSItem-Utilities.h"
 
 @interface TreeMapViewController(Private)

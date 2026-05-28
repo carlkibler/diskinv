@@ -17,11 +17,9 @@
 #import "MainWindowController.h"
 #import "InfoPanelController.h"
 #import "Timing.h"
-#import <TreeMapView/TreeMapView.h>
+#import "TreeMapView.h"
 #import "FSItem-Utilities.h"
-#import "FileSizeTransformer.h"
-#import "AppsForItem.h"
-#import "NSString+DIXExtensions.h"
+#import "Disk_Inventory_Xs-Swift.h"
 #import "NSURL-Extensions.h"
 
 @interface MainWindowController(Private)

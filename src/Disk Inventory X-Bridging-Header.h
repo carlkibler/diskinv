@@ -15,4 +15,18 @@
 
 #import <Cocoa/Cocoa.h>
 
+// NSURL-Extensions.h has a clean dependency cone (Foundation only, no .pch
+// macros), so it is safe to expose to Swift here. Used by the volume
+// transformers.
+#import "NSURL-Extensions.h"
+
+// FSItem.h and TMVCushionRenderer.h are macro-clean (FSItem was de-Carbonized:
+// UInt64 -> uint64_t). Exposed for the Swift FileTypeColors port.
+#import "FSItem.h"
+#import "TMVCushionRenderer.h"
+
+// PreferenceKeys.h is macro-clean (Foundation only). Exposed so the Swift
+// Preferences port can reference the extern NSString* key constants.
+#import "PreferenceKeys.h"
+
 #endif /* DiskInventoryX_BridgingHeader_h */

@@ -7,6 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		101D79A986332ECE07A0B9B6 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681C249233967AABE8164D38 /* Preferences.swift */; };
+		1C2EDD51A666C3536670482C /* VolumeNameTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F85B4E2351AEEBDB018B0 /* VolumeNameTransformer.swift */; };
+		1DB953EBF4BCB2797CEFC524 /* FileSizeTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079776155C62C55A2ECBDE41 /* FileSizeTransformer.swift */; };
+		35074B7B31895E36C7AF2663 /* TMVItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F97F95665DD8F2852C15F13C /* TMVItem.m */; };
+		44FE12ACF288FC0F2A8760EE /* NSView-BackingCoordsHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A3CD23C6064CBD6DA2D9151 /* NSView-BackingCoordsHelpers.m */; };
+		469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */; };
+		5F1CBF7747F6D9EE85CCB8B0 /* PreferenceKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B0B61085C56856795EC1CF /* PreferenceKeys.m */; };
+		99D6BD238CED231F67E5305E /* NSString+DIX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910371DEE0676DBED23D2C5D /* NSString+DIX.swift */; };
+		A38A5DC9B22A95B97DC718C0 /* NSDictionary+DIX.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE7DA50E548B4B914FF582F /* NSDictionary+DIX.swift */; };
+		C6DA1C2C1DB4AA7D782ADBE5 /* NSBitmapImageRep-CreationExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DF5FB2D8359C92710D022588 /* NSBitmapImageRep-CreationExtensions.m */; };
+		C74AB5AA1EA81A337C0524FA /* AppsForItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7C89F055C7202EF5EF2FF0 /* AppsForItem.swift */; };
+		DAEFEF161562551BD14B8E4F /* VolumeUsageTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1B4DF6ECB2A4849A7C5EFA /* VolumeUsageTransformer.swift */; };
+		E526153216CF337C89AD16B8 /* FileTypeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C3BB9BCC1F32AEEE06510E /* FileTypeColors.swift */; };
+		E74D9EE0845E3ED4C6AF5C2D /* ZoomInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EDDC05C3ADA9FCDE2767C72D /* ZoomInfo.m */; };
+		EBA3BE2276EC5BDFB787C989 /* TreeMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8352AD9AF82D652ED4566153 /* TreeMapView.m */; };
+		ECF1D67BB66D42F7AE669B1A /* TMVCushionRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = EF11155A43F422D388132998 /* TMVCushionRenderer.m */; };
 		FC2A428A2219C89900A484D7 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC2A42892219C89900A484D7 /* AppController.m */; };
 		FC2B2BBB277E472C0040ED6C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		FC2B2BBC277E472F0040ED6C /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */; };
@@ -15,45 +31,25 @@
 		FC2C2CA3238C802600D04E20 /* macOS privacy protected folders.txt in Resources */ = {isa = PBXBuildFile; fileRef = FC2C2CA1238C802600D04E20 /* macOS privacy protected folders.txt */; };
 		FC2E58FF21D3BFDF00F6F03B /* Disk Inventory Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = FC2E58FE21D3BFDF00F6F03B /* Disk Inventory Icon.png */; };
 		FC33B45A230C846F00133632 /* NSURL-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = FC33B459230C846F00133632 /* NSURL-Extensions.m */; };
-		FCDIX001000000000001 /* NSString+DIXExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDIX002000000000001 /* NSString+DIXExtensions.m */; };
-		FCDIX001000000000002 /* NSMutableArray+DIXExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDIX002000000000002 /* NSMutableArray+DIXExtensions.m */; };
-		FCDIX001000000000003 /* NSDictionary+DIXExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDIX002000000000003 /* NSDictionary+DIXExtensions.m */; };
-		FCDIX001000000000004 /* NSString+DIXUnicode.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDIX002000000000004 /* NSString+DIXUnicode.m */; };
-		FCDIX001000000000005 /* DIXToolbarWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDIX002000000000005 /* DIXToolbarWindowController.m */; };
-		FCDIX001000000000006 /* DIXPreferenceClient.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDIX002000000000006 /* DIXPreferenceClient.m */; };
-		FCDIX001000000000007 /* DIXPreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDIX002000000000007 /* DIXPreferenceController.m */; };
-		FC347FA722CBE0340002CDED /* TreeMapView.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = FC347F9822CBDF870002CDED /* TreeMapView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		FC4C4AC109802035004CCA22 /* Help in Resources */ = {isa = PBXBuildFile; fileRef = FC4C4ABF09802035004CCA22 /* Help */; };
-		FC4C4FF70981520A004CCA22 /* AppsForItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FC4C4FF50981520A004CCA22 /* AppsForItem.m */; };
 		FC7F775D1067BAB10090E839 /* NTFilePasteboardSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7F775C1067BAB10090E839 /* NTFilePasteboardSource.m */; };
 		FC7F77641067BC310090E839 /* NTInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7F77631067BC310090E839 /* NTInfoView.m */; };
 		FC7F77D71067C9500090E839 /* NTTitledInfoPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7F77D41067C9500090E839 /* NTTitledInfoPair.m */; };
 		FC7F77D81067C9500090E839 /* NTTitledInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7F77D61067C9500090E839 /* NTTitledInfoView.m */; };
-		FC9CF15627E138DC00BEB93D /* TreeMapView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC347F9822CBDF870002CDED /* TreeMapView.framework */; };
 		FCB2FDC42375F4E100DC4806 /* NSFileManager-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = FCB2FDC32375F4E100DC4806 /* NSFileManager-Extensions.m */; };
 		FCCFB2AA097FA3FD009EA2B6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2A9097FA3FD009EA2B6 /* main.m */; };
-		FCSWFT010000000000001 /* Shim.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCSWFT020000000000001 /* Shim.swift */; };
 		FCCFB303097FA42B009EA2B6 /* DIXTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2AD097FA42B009EA2B6 /* DIXTableView.m */; };
 		FCCFB304097FA42B009EA2B6 /* DIXOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2AF097FA42B009EA2B6 /* DIXOutlineView.m */; };
 		FCCFB305097FA42B009EA2B6 /* GenericArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2B0097FA42B009EA2B6 /* GenericArrayController.m */; };
 		FCCFB306097FA42B009EA2B6 /* ImageAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2B3097FA42B009EA2B6 /* ImageAndTextCell.m */; };
 		FCCFB307097FA42B009EA2B6 /* OAToolbarWindowControllerEx.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2B6097FA42B009EA2B6 /* OAToolbarWindowControllerEx.m */; };
-		FCCFB30C097FA42B009EA2B6 /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2C2097FA42B009EA2B6 /* Preferences.m */; };
-		FCCFB30D097FA42B009EA2B6 /* PrefsPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2C4097FA42B009EA2B6 /* PrefsPanelController.m */; };
-		FCCFB30E097FA42B009EA2B6 /* PrefsPageBase.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2C6097FA42B009EA2B6 /* PrefsPageBase.m */; };
-		FCCFB30F097FA42B009EA2B6 /* TreeMapPrefPage.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2C8097FA42B009EA2B6 /* TreeMapPrefPage.m */; };
-		FCCFB310097FA42B009EA2B6 /* GeneralPrefPage.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2CA097FA42B009EA2B6 /* GeneralPrefPage.m */; };
 		FCCFB312097FA42B009EA2B6 /* Timing.c in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2CE097FA42B009EA2B6 /* Timing.c */; };
-		FCCFB313097FA42B009EA2B6 /* FileSizeFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2D1097FA42B009EA2B6 /* FileSizeFormatter.m */; };
-		FCCFB314097FA42B009EA2B6 /* FileSizeTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2D3097FA42B009EA2B6 /* FileSizeTransformer.m */; };
 		FCCFB315097FA42B009EA2B6 /* DIXFileInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2D6097FA42B009EA2B6 /* DIXFileInfoView.m */; };
 		FCCFB316097FA42B009EA2B6 /* InfoPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2D8097FA42B009EA2B6 /* InfoPanelController.m */; };
 		FCCFB317097FA42B009EA2B6 /* SelectionListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2DB097FA42B009EA2B6 /* SelectionListController.m */; };
 		FCCFB318097FA42B009EA2B6 /* FileKindsPopupController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2DD097FA42B009EA2B6 /* FileKindsPopupController.m */; };
 		FCCFB319097FA42B009EA2B6 /* SelectionListTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2DF097FA42B009EA2B6 /* SelectionListTableController.m */; };
 		FCCFB31A097FA42B009EA2B6 /* DrivesPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2E2097FA42B009EA2B6 /* DrivesPanelController.m */; };
-		FCCFB31B097FA42B009EA2B6 /* VolumeNameTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2E4097FA42B009EA2B6 /* VolumeNameTransformer.m */; };
-		FCCFB31C097FA42B009EA2B6 /* VolumeUsageTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2E6097FA42B009EA2B6 /* VolumeUsageTransformer.m */; };
 		FCCFB31D097FA42B009EA2B6 /* TreeMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2E8097FA42B009EA2B6 /* TreeMapViewController.m */; };
 		FCCFB31E097FA42B009EA2B6 /* FileKindsTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2EB097FA42B009EA2B6 /* FileKindsTableController.m */; };
 		FCCFB31F097FA42B009EA2B6 /* FilesOutlineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2EF097FA42B009EA2B6 /* FilesOutlineViewController.m */; };
@@ -63,7 +59,6 @@
 		FCCFB324097FA42B009EA2B6 /* MyDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2F9097FA42B009EA2B6 /* MyDocumentController.m */; };
 		FCCFB325097FA42B009EA2B6 /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2FB097FA42B009EA2B6 /* MainWindowController.m */; };
 		FCCFB326097FA42B009EA2B6 /* FSItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2FE097FA42B009EA2B6 /* FSItem.m */; };
-		FCCFB327097FA42B009EA2B6 /* FileTypeColors.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2FF097FA42B009EA2B6 /* FileTypeColors.m */; };
 		FCCFB328097FA42B009EA2B6 /* FileSystemDoc.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB301097FA42B009EA2B6 /* FileSystemDoc.m */; };
 		FCCFB33C097FA44A009EA2B6 /* MainWindowToolbar.toolbar in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB32A097FA44A009EA2B6 /* MainWindowToolbar.toolbar */; };
 		FCCFB33D097FA44A009EA2B6 /* ZoomOut.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB32B097FA44A009EA2B6 /* ZoomOut.tiff */; };
@@ -82,8 +77,6 @@
 		FCCFB34A097FA44A009EA2B6 /* FinderCMPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB339097FA44A009EA2B6 /* FinderCMPreferences.tiff */; };
 		FCCFB370097FA4C1009EA2B6 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB34D097FA4C1009EA2B6 /* Credits.rtf */; };
 		FCCFB371097FA4C1009EA2B6 /* DonationPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB34F097FA4C1009EA2B6 /* DonationPanel.nib */; };
-		FCCFB372097FA4C1009EA2B6 /* FinderCMPreferencesPage.nib in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB351097FA4C1009EA2B6 /* FinderCMPreferencesPage.nib */; };
-		FCCFB373097FA4C1009EA2B6 /* GeneralPreferencesPage.nib in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB353097FA4C1009EA2B6 /* GeneralPreferencesPage.nib */; };
 		FCCFB37A097FA4C1009EA2B6 /* InfoPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB35E097FA4C1009EA2B6 /* InfoPanel.nib */; };
 		FCCFB37B097FA4C1009EA2B6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB360097FA4C1009EA2B6 /* InfoPlist.strings */; };
 		FCCFB37C097FA4C1009EA2B6 /* LoadingPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB362097FA4C1009EA2B6 /* LoadingPanel.nib */; };
@@ -91,10 +84,11 @@
 		FCCFB37E097FA4C1009EA2B6 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB366097FA4C1009EA2B6 /* MainMenu.nib */; };
 		FCCFB37F097FA4C1009EA2B6 /* Preferences.strings in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB368097FA4C1009EA2B6 /* Preferences.strings */; };
 		FCCFB380097FA4C1009EA2B6 /* TreeMap.nib in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB36A097FA4C1009EA2B6 /* TreeMap.nib */; };
-		FCCFB381097FA4C1009EA2B6 /* TreeMapPreferencesPage.nib in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB36C097FA4C1009EA2B6 /* TreeMapPreferencesPage.nib */; };
 		FCCFB382097FA4C1009EA2B6 /* VolumesPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB36E097FA4C1009EA2B6 /* VolumesPanel.nib */; };
 		FCD5DAFE09CDD4260051C1CF /* MainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FCD5DAFC09CDD4260051C1CF /* MainWindow.m */; };
+		FCDIX001000000000005 /* DIXToolbarWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDIX002000000000005 /* DIXToolbarWindowController.m */; };
 		FCFB17B621B876A400E3F8C4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FCFB17B521B876A400E3F8C4 /* Images.xcassets */; };
+		FCSWFT010000000000001 /* Shim.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCSWFT020000000000001 /* Shim.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -104,18 +98,39 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				FC347FA722CBE0340002CDED /* TreeMapView.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		079776155C62C55A2ECBDE41 /* FileSizeTransformer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileSizeTransformer.swift; sourceTree = "<group>"; };
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		2A0F85B4E2351AEEBDB018B0 /* VolumeNameTransformer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VolumeNameTransformer.swift; sourceTree = "<group>"; };
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32DBCF750370BD2300C91783 /* Disk Inventory X_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Disk Inventory X_Prefix.pch"; sourceTree = "<group>"; };
+		3550509A91502C4086AB207E /* TMVCushionRenderer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = TMVCushionRenderer.h; sourceTree = "<group>"; };
+		528C509176676C148C6EBBEF /* NSView-BackingCoordsHelpers.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSView-BackingCoordsHelpers.h"; sourceTree = "<group>"; };
+		5B7C89F055C7202EF5EF2FF0 /* AppsForItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppsForItem.swift; sourceTree = "<group>"; };
+		61B0B61085C56856795EC1CF /* PreferenceKeys.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PreferenceKeys.m; sourceTree = "<group>"; };
+		66033061DBFC94D68DF83791 /* TMVItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = TMVItem.h; sourceTree = "<group>"; };
+		681C249233967AABE8164D38 /* Preferences.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		7A3CD23C6064CBD6DA2D9151 /* NSView-BackingCoordsHelpers.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSView-BackingCoordsHelpers.m"; sourceTree = "<group>"; };
+		810DBD18401F6CB8CFDD4B8B /* PreferenceKeys.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = PreferenceKeys.h; sourceTree = "<group>"; };
+		8352AD9AF82D652ED4566153 /* TreeMapView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = TreeMapView.m; sourceTree = "<group>"; };
+		85C3BB9BCC1F32AEEE06510E /* FileTypeColors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileTypeColors.swift; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Disk Inventory X.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Disk Inventory X.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		910371DEE0676DBED23D2C5D /* NSString+DIX.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSString+DIX.swift"; sourceTree = "<group>"; };
+		B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileSizeFormatter.swift; sourceTree = "<group>"; };
+		D4C711675ADD6DE1D119706F /* NSBitmapImageRep-CreationExtensions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSBitmapImageRep-CreationExtensions.h"; sourceTree = "<group>"; };
+		D740DFAEA75BD4E158EE6A69 /* TreeMapView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = TreeMapView.h; sourceTree = "<group>"; };
+		DA1B4DF6ECB2A4849A7C5EFA /* VolumeUsageTransformer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VolumeUsageTransformer.swift; sourceTree = "<group>"; };
+		DF5FB2D8359C92710D022588 /* NSBitmapImageRep-CreationExtensions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSBitmapImageRep-CreationExtensions.m"; sourceTree = "<group>"; };
+		EC91DB81DF2474FB08912405 /* ZoomInfo.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ZoomInfo.h; sourceTree = "<group>"; };
+		EDDC05C3ADA9FCDE2767C72D /* ZoomInfo.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ZoomInfo.m; sourceTree = "<group>"; };
+		EF11155A43F422D388132998 /* TMVCushionRenderer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = TMVCushionRenderer.m; sourceTree = "<group>"; };
+		F97F95665DD8F2852C15F13C /* TMVItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = TMVItem.m; sourceTree = "<group>"; };
 		FC2A42882219C89900A484D7 /* AppController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		FC2A42892219C89900A484D7 /* AppController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
 		FC2B2B7A277E43D00040ED6C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
@@ -128,14 +143,9 @@
 		FC2B2B81277E43D10040ED6C /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		FC2B2B82277E43D10040ED6C /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/TreeMap.nib; sourceTree = "<group>"; };
 		FC2B2B83277E43D10040ED6C /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/VolumesPanel.nib; sourceTree = "<group>"; };
-		FC2B2B84277E43D10040ED6C /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/FinderCMPreferencesPage.nib; sourceTree = "<group>"; };
-		FC2B2B85277E43D10040ED6C /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/GeneralPreferencesPage.nib; sourceTree = "<group>"; };
 		FC2B2B86277E43D10040ED6C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Preferences.strings; sourceTree = "<group>"; };
-		FC2B2B87277E43D10040ED6C /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/TreeMapPreferencesPage.nib; sourceTree = "<group>"; };
 		FC2C2CA0238C802600D04E20 /* memory usage using NSURL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "memory usage using NSURL.txt"; path = "documentation/memory usage using NSURL.txt"; sourceTree = "<group>"; };
 		FC2C2CA1238C802600D04E20 /* macOS privacy protected folders.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "macOS privacy protected folders.txt"; path = "documentation/macOS privacy protected folders.txt"; sourceTree = "<group>"; };
-		FC2D7D7221FE4ABB004D0614 /* de */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = de; path = de.lproj/TreeMapPreferencesPage.nib; sourceTree = "<group>"; };
-		FC2D7D7321FE4ABB004D0614 /* de */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = de; path = de.lproj/GeneralPreferencesPage.nib; sourceTree = "<group>"; };
 		FC2D7D7421FE4ABB004D0614 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Preferences.strings; sourceTree = "<group>"; };
 		FC2D7D7521FE4ABB004D0614 /* de */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = de; path = de.lproj/DonationPanel.nib; sourceTree = "<group>"; };
 		FC2D7D7621FE4ABB004D0614 /* de */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = de; path = de.lproj/InfoPanel.nib; sourceTree = "<group>"; };
@@ -151,24 +161,6 @@
 		FC2E58FE21D3BFDF00F6F03B /* Disk Inventory Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Disk Inventory Icon.png"; sourceTree = "<group>"; };
 		FC33B458230C846F00133632 /* NSURL-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL-Extensions.h"; sourceTree = SOURCE_ROOT; };
 		FC33B459230C846F00133632 /* NSURL-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL-Extensions.m"; sourceTree = SOURCE_ROOT; };
-		FCDIX002000000000001 /* NSString+DIXExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+DIXExtensions.m"; sourceTree = "<group>"; };
-		FCDIX002000000000011 /* NSString+DIXExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+DIXExtensions.h"; sourceTree = "<group>"; };
-		FCDIX002000000000002 /* NSMutableArray+DIXExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+DIXExtensions.m"; sourceTree = "<group>"; };
-		FCDIX002000000000012 /* NSMutableArray+DIXExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+DIXExtensions.h"; sourceTree = "<group>"; };
-		FCDIX002000000000003 /* NSDictionary+DIXExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+DIXExtensions.m"; sourceTree = "<group>"; };
-		FCDIX002000000000013 /* NSDictionary+DIXExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+DIXExtensions.h"; sourceTree = "<group>"; };
-		FCDIX002000000000004 /* NSString+DIXUnicode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+DIXUnicode.m"; sourceTree = "<group>"; };
-		FCDIX002000000000014 /* NSString+DIXUnicode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+DIXUnicode.h"; sourceTree = "<group>"; };
-		FCDIX002000000000005 /* DIXToolbarWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "DIXToolbarWindowController.m"; sourceTree = "<group>"; };
-		FCDIX002000000000015 /* DIXToolbarWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DIXToolbarWindowController.h"; sourceTree = "<group>"; };
-		FCDIX002000000000006 /* DIXPreferenceClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "DIXPreferenceClient.m"; sourceTree = "<group>"; };
-		FCDIX002000000000016 /* DIXPreferenceClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DIXPreferenceClient.h"; sourceTree = "<group>"; };
-		FCDIX002000000000007 /* DIXPreferenceController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "DIXPreferenceController.m"; sourceTree = "<group>"; };
-		FCDIX002000000000017 /* DIXPreferenceController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DIXPreferenceController.h"; sourceTree = "<group>"; };
-		FC347F9822CBDF870002CDED /* TreeMapView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TreeMapView.framework; path = Frameworks/TreeMapView.framework; sourceTree = "<group>"; };
-		FC42B8622202405A0080570A /* es */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = es; path = es.lproj/TreeMapPreferencesPage.nib; sourceTree = "<group>"; };
-		FC42B8632202405A0080570A /* es */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = es; path = es.lproj/GeneralPreferencesPage.nib; sourceTree = "<group>"; };
-		FC42B8642202405A0080570A /* es */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = es; path = es.lproj/FinderCMPreferencesPage.nib; sourceTree = "<group>"; };
 		FC42B8652202405A0080570A /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Preferences.strings; sourceTree = "<group>"; };
 		FC42B8662202405A0080570A /* es */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = es; path = es.lproj/DonationPanel.nib; sourceTree = "<group>"; };
 		FC42B8672202405A0080570A /* es */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = es; path = es.lproj/InfoPanel.nib; sourceTree = "<group>"; };
@@ -180,8 +172,6 @@
 		FC42B86D2202405A0080570A /* es */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = es; path = es.lproj/Credits.rtf; sourceTree = "<group>"; };
 		FC42B86E2202405A0080570A /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FC42B86F2202405A0080570A /* es */ = {isa = PBXFileReference; lastKnownFileType = folder; name = es; path = es.lproj/Help; sourceTree = "<group>"; };
-		FC4C4FF40981520A004CCA22 /* AppsForItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppsForItem.h; sourceTree = "<group>"; };
-		FC4C4FF50981520A004CCA22 /* AppsForItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppsForItem.m; sourceTree = "<group>"; };
 		FC7F775B1067BAB10090E839 /* NTFilePasteboardSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTFilePasteboardSource.h; sourceTree = "<group>"; };
 		FC7F775C1067BAB10090E839 /* NTFilePasteboardSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTFilePasteboardSource.m; sourceTree = "<group>"; };
 		FC7F77621067BC310090E839 /* NTInfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTInfoView.h; sourceTree = "<group>"; };
@@ -190,11 +180,6 @@
 		FC7F77D41067C9500090E839 /* NTTitledInfoPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTTitledInfoPair.m; sourceTree = "<group>"; };
 		FC7F77D51067C9500090E839 /* NTTitledInfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTTitledInfoView.h; sourceTree = "<group>"; };
 		FC7F77D61067C9500090E839 /* NTTitledInfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTTitledInfoView.m; sourceTree = "<group>"; };
-		FC7F77F31067CA7D0090E839 /* NTID3Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTID3Helper.h; sourceTree = "<group>"; };
-		FC7F77F41067CA7D0090E839 /* NTID3Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTID3Helper.m; sourceTree = "<group>"; };
-		FCA1D0BA2205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = fr; path = fr.lproj/TreeMapPreferencesPage.nib; sourceTree = "<group>"; };
-		FCA1D0BB2205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = fr; path = fr.lproj/GeneralPreferencesPage.nib; sourceTree = "<group>"; };
-		FCA1D0BC2205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = fr; path = fr.lproj/FinderCMPreferencesPage.nib; sourceTree = "<group>"; };
 		FCA1D0BD2205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Preferences.strings; sourceTree = "<group>"; };
 		FCA1D0BE2205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = fr; path = fr.lproj/DonationPanel.nib; sourceTree = "<group>"; };
 		FCA1D0BF2205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = fr; path = fr.lproj/InfoPanel.nib; sourceTree = "<group>"; };
@@ -210,8 +195,6 @@
 		FCB2FDC32375F4E100DC4806 /* NSFileManager-Extensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager-Extensions.m"; sourceTree = "<group>"; };
 		FCB5709822CD2DE60014B794 /* BuildRelease.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = BuildRelease.sh; sourceTree = "<group>"; };
 		FCCFB2A9097FA3FD009EA2B6 /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		FCSWFT020000000000001 /* Shim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shim.swift; sourceTree = "<group>"; };
-		FCSWFT020000000000002 /* Disk Inventory X-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Disk Inventory X-Bridging-Header.h"; sourceTree = "<group>"; };
 		FCCFB2AC097FA42B009EA2B6 /* DIXTableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DIXTableView.h; sourceTree = "<group>"; };
 		FCCFB2AD097FA42B009EA2B6 /* DIXTableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DIXTableView.m; sourceTree = "<group>"; };
 		FCCFB2AE097FA42B009EA2B6 /* DIXOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DIXOutlineView.h; sourceTree = "<group>"; };
@@ -222,22 +205,8 @@
 		FCCFB2B3097FA42B009EA2B6 /* ImageAndTextCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ImageAndTextCell.m; sourceTree = "<group>"; };
 		FCCFB2B5097FA42B009EA2B6 /* OAToolbarWindowControllerEx.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OAToolbarWindowControllerEx.h; sourceTree = "<group>"; };
 		FCCFB2B6097FA42B009EA2B6 /* OAToolbarWindowControllerEx.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OAToolbarWindowControllerEx.m; sourceTree = "<group>"; };
-		FCCFB2C1097FA42B009EA2B6 /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Preferences.h; sourceTree = "<group>"; };
-		FCCFB2C2097FA42B009EA2B6 /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Preferences.m; sourceTree = "<group>"; };
-		FCCFB2C3097FA42B009EA2B6 /* PrefsPanelController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PrefsPanelController.h; sourceTree = "<group>"; };
-		FCCFB2C4097FA42B009EA2B6 /* PrefsPanelController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PrefsPanelController.m; sourceTree = "<group>"; };
-		FCCFB2C5097FA42B009EA2B6 /* PrefsPageBase.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PrefsPageBase.h; sourceTree = "<group>"; };
-		FCCFB2C6097FA42B009EA2B6 /* PrefsPageBase.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PrefsPageBase.m; sourceTree = "<group>"; };
-		FCCFB2C7097FA42B009EA2B6 /* TreeMapPrefPage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TreeMapPrefPage.h; sourceTree = "<group>"; };
-		FCCFB2C8097FA42B009EA2B6 /* TreeMapPrefPage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TreeMapPrefPage.m; sourceTree = "<group>"; };
-		FCCFB2C9097FA42B009EA2B6 /* GeneralPrefPage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = GeneralPrefPage.h; sourceTree = "<group>"; };
-		FCCFB2CA097FA42B009EA2B6 /* GeneralPrefPage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = GeneralPrefPage.m; sourceTree = "<group>"; };
 		FCCFB2CE097FA42B009EA2B6 /* Timing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = Timing.c; sourceTree = "<group>"; };
 		FCCFB2CF097FA42B009EA2B6 /* Timing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Timing.h; sourceTree = "<group>"; };
-		FCCFB2D0097FA42B009EA2B6 /* FileSizeFormatter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FileSizeFormatter.h; sourceTree = "<group>"; };
-		FCCFB2D1097FA42B009EA2B6 /* FileSizeFormatter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FileSizeFormatter.m; sourceTree = "<group>"; };
-		FCCFB2D2097FA42B009EA2B6 /* FileSizeTransformer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FileSizeTransformer.h; sourceTree = "<group>"; };
-		FCCFB2D3097FA42B009EA2B6 /* FileSizeTransformer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FileSizeTransformer.m; sourceTree = "<group>"; };
 		FCCFB2D5097FA42B009EA2B6 /* DIXFileInfoView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DIXFileInfoView.h; sourceTree = "<group>"; };
 		FCCFB2D6097FA42B009EA2B6 /* DIXFileInfoView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DIXFileInfoView.m; sourceTree = "<group>"; };
 		FCCFB2D7097FA42B009EA2B6 /* InfoPanelController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = InfoPanelController.h; sourceTree = "<group>"; };
@@ -250,10 +219,6 @@
 		FCCFB2DF097FA42B009EA2B6 /* SelectionListTableController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SelectionListTableController.m; sourceTree = "<group>"; };
 		FCCFB2E1097FA42B009EA2B6 /* DrivesPanelController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DrivesPanelController.h; sourceTree = "<group>"; };
 		FCCFB2E2097FA42B009EA2B6 /* DrivesPanelController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DrivesPanelController.m; sourceTree = "<group>"; };
-		FCCFB2E3097FA42B009EA2B6 /* VolumeNameTransformer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VolumeNameTransformer.h; sourceTree = "<group>"; };
-		FCCFB2E4097FA42B009EA2B6 /* VolumeNameTransformer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = VolumeNameTransformer.m; sourceTree = "<group>"; };
-		FCCFB2E5097FA42B009EA2B6 /* VolumeUsageTransformer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VolumeUsageTransformer.h; sourceTree = "<group>"; };
-		FCCFB2E6097FA42B009EA2B6 /* VolumeUsageTransformer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = VolumeUsageTransformer.m; sourceTree = "<group>"; };
 		FCCFB2E8097FA42B009EA2B6 /* TreeMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TreeMapViewController.m; sourceTree = "<group>"; };
 		FCCFB2E9097FA42B009EA2B6 /* TreeMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TreeMapViewController.h; sourceTree = "<group>"; };
 		FCCFB2EB097FA42B009EA2B6 /* FileKindsTableController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FileKindsTableController.m; sourceTree = "<group>"; };
@@ -272,8 +237,6 @@
 		FCCFB2FC097FA42B009EA2B6 /* MainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MainWindowController.h; sourceTree = "<group>"; };
 		FCCFB2FD097FA42B009EA2B6 /* FSItem.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FSItem.h; sourceTree = "<group>"; };
 		FCCFB2FE097FA42B009EA2B6 /* FSItem.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FSItem.m; sourceTree = "<group>"; };
-		FCCFB2FF097FA42B009EA2B6 /* FileTypeColors.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FileTypeColors.m; sourceTree = "<group>"; };
-		FCCFB300097FA42B009EA2B6 /* FileTypeColors.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FileTypeColors.h; sourceTree = "<group>"; };
 		FCCFB301097FA42B009EA2B6 /* FileSystemDoc.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FileSystemDoc.m; sourceTree = "<group>"; };
 		FCCFB302097FA42B009EA2B6 /* FileSystemDoc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FileSystemDoc.h; sourceTree = "<group>"; };
 		FCCFB32A097FA44A009EA2B6 /* MainWindowToolbar.toolbar */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = MainWindowToolbar.toolbar; sourceTree = "<group>"; };
@@ -297,8 +260,12 @@
 		FCD71DB50984141E00590D16 /* feature suggestions.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = "feature suggestions.txt"; path = "documentation/feature suggestions.txt"; sourceTree = "<group>"; };
 		FCD71DB60984141E00590D16 /* known bugs.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = "known bugs.txt"; path = "documentation/known bugs.txt"; sourceTree = "<group>"; };
 		FCD71DB70984141E00590D16 /* release notes.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = "release notes.txt"; path = "documentation/release notes.txt"; sourceTree = "<group>"; };
-		FCEEFC0421FE5B6700E9785E /* de */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = de; path = de.lproj/FinderCMPreferencesPage.nib; sourceTree = "<group>"; };
+		FCDIX002000000000005 /* DIXToolbarWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIXToolbarWindowController.m; sourceTree = "<group>"; };
+		FCDIX002000000000015 /* DIXToolbarWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIXToolbarWindowController.h; sourceTree = "<group>"; };
+		FCE7DA50E548B4B914FF582F /* NSDictionary+DIX.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSDictionary+DIX.swift"; sourceTree = "<group>"; };
 		FCFB17B521B876A400E3F8C4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Disk Inventory X/Images.xcassets"; sourceTree = "<group>"; };
+		FCSWFT020000000000001 /* Shim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shim.swift; sourceTree = "<group>"; };
+		FCSWFT020000000000002 /* Disk Inventory X-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Disk Inventory X-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -306,7 +273,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FC9CF15627E138DC00BEB93D /* TreeMapView.framework in Frameworks */,
 				FC2B2BBD277E47320040ED6C /* Foundation.framework in Frameworks */,
 				FC2B2BBB277E472C0040ED6C /* Cocoa.framework in Frameworks */,
 				FC2B2BBC277E472F0040ED6C /* AppKit.framework in Frameworks */,
@@ -316,12 +282,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		050491EFA0C121A96FFE1552 /* TreeMap */ = {
+			isa = PBXGroup;
+			children = (
+				3550509A91502C4086AB207E /* TMVCushionRenderer.h */,
+				EF11155A43F422D388132998 /* TMVCushionRenderer.m */,
+				528C509176676C148C6EBBEF /* NSView-BackingCoordsHelpers.h */,
+				7A3CD23C6064CBD6DA2D9151 /* NSView-BackingCoordsHelpers.m */,
+				66033061DBFC94D68DF83791 /* TMVItem.h */,
+				F97F95665DD8F2852C15F13C /* TMVItem.m */,
+				D740DFAEA75BD4E158EE6A69 /* TreeMapView.h */,
+				8352AD9AF82D652ED4566153 /* TreeMapView.m */,
+				D4C711675ADD6DE1D119706F /* NSBitmapImageRep-CreationExtensions.h */,
+				DF5FB2D8359C92710D022588 /* NSBitmapImageRep-CreationExtensions.m */,
+				EC91DB81DF2474FB08912405 /* ZoomInfo.h */,
+				EDDC05C3ADA9FCDE2767C72D /* ZoomInfo.m */,
+			);
+			name = TreeMap;
+			path = TreeMap;
+			sourceTree = "<group>";
+		};
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
 			);
-			includeInIndex = 0;
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
 		};
@@ -331,7 +316,6 @@
 				2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */,
 				2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */,
 			);
-			includeInIndex = 0;
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
@@ -343,7 +327,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		2A37F4AAFDCFA73011CA2CEA /* Disk Inventory X */ = {
+		2A37F4AAFDCFA73011CA2CEA = {
 			isa = PBXGroup;
 			children = (
 				FCB5709822CD2DE60014B794 /* BuildRelease.sh */,
@@ -367,6 +351,7 @@
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				FCEE299D106266CB00B16DBB /* Project References */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
+				050491EFA0C121A96FFE1552 /* TreeMap */,
 			);
 			name = "Disk Inventory X";
 			sourceTree = "<group>";
@@ -378,8 +363,18 @@
 				FCSWFT020000000000002 /* Disk Inventory X-Bridging-Header.h */,
 				FCSWFT020000000000001 /* Shim.swift */,
 				FCCFB2A9097FA3FD009EA2B6 /* main.m */,
+				B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */,
+				079776155C62C55A2ECBDE41 /* FileSizeTransformer.swift */,
+				2A0F85B4E2351AEEBDB018B0 /* VolumeNameTransformer.swift */,
+				DA1B4DF6ECB2A4849A7C5EFA /* VolumeUsageTransformer.swift */,
+				5B7C89F055C7202EF5EF2FF0 /* AppsForItem.swift */,
+				85C3BB9BCC1F32AEEE06510E /* FileTypeColors.swift */,
+				910371DEE0676DBED23D2C5D /* NSString+DIX.swift */,
+				FCE7DA50E548B4B914FF582F /* NSDictionary+DIX.swift */,
+				810DBD18401F6CB8CFDD4B8B /* PreferenceKeys.h */,
+				61B0B61085C56856795EC1CF /* PreferenceKeys.m */,
+				681C249233967AABE8164D38 /* Preferences.swift */,
 			);
-			includeInIndex = 0;
 			name = "Other Sources";
 			sourceTree = "<group>";
 		};
@@ -402,19 +397,16 @@
 				FC2E58FE21D3BFDF00F6F03B /* Disk Inventory Icon.png */,
 				FC4C4ABF09802035004CCA22 /* Help */,
 			);
-			includeInIndex = 0;
 			name = Resources;
 			sourceTree = "<group>";
 		};
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FC347F9822CBDF870002CDED /* TreeMapView.framework */,
 				FC66DCF5107A28A500F46D76 /* OmniGroup */,
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
 			);
-			includeInIndex = 0;
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
@@ -447,8 +439,6 @@
 				FC7F77D41067C9500090E839 /* NTTitledInfoPair.m */,
 				FC7F77D51067C9500090E839 /* NTTitledInfoView.h */,
 				FC7F77D61067C9500090E839 /* NTTitledInfoView.m */,
-				FC7F77F31067CA7D0090E839 /* NTID3Helper.h */,
-				FC7F77F41067CA7D0090E839 /* NTID3Helper.m */,
 			);
 			path = "CocoaTech-Depreciated";
 			sourceTree = "<group>";
@@ -473,20 +463,8 @@
 			children = (
 				FCCFB2B5097FA42B009EA2B6 /* OAToolbarWindowControllerEx.h */,
 				FCCFB2B6097FA42B009EA2B6 /* OAToolbarWindowControllerEx.m */,
-				FCDIX002000000000011 /* NSString+DIXExtensions.h */,
-				FCDIX002000000000001 /* NSString+DIXExtensions.m */,
-				FCDIX002000000000012 /* NSMutableArray+DIXExtensions.h */,
-				FCDIX002000000000002 /* NSMutableArray+DIXExtensions.m */,
-				FCDIX002000000000013 /* NSDictionary+DIXExtensions.h */,
-				FCDIX002000000000003 /* NSDictionary+DIXExtensions.m */,
-				FCDIX002000000000014 /* NSString+DIXUnicode.h */,
-				FCDIX002000000000004 /* NSString+DIXUnicode.m */,
 				FCDIX002000000000015 /* DIXToolbarWindowController.h */,
 				FCDIX002000000000005 /* DIXToolbarWindowController.m */,
-				FCDIX002000000000016 /* DIXPreferenceClient.h */,
-				FCDIX002000000000006 /* DIXPreferenceClient.m */,
-				FCDIX002000000000017 /* DIXPreferenceController.h */,
-				FCDIX002000000000007 /* DIXPreferenceController.m */,
 			);
 			name = OmniAppKitExtensions;
 			sourceTree = "<group>";
@@ -494,16 +472,6 @@
 		FCCFB2C0097FA42B009EA2B6 /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
-				FCCFB2C1097FA42B009EA2B6 /* Preferences.h */,
-				FCCFB2C2097FA42B009EA2B6 /* Preferences.m */,
-				FCCFB2C3097FA42B009EA2B6 /* PrefsPanelController.h */,
-				FCCFB2C4097FA42B009EA2B6 /* PrefsPanelController.m */,
-				FCCFB2C5097FA42B009EA2B6 /* PrefsPageBase.h */,
-				FCCFB2C6097FA42B009EA2B6 /* PrefsPageBase.m */,
-				FCCFB2C7097FA42B009EA2B6 /* TreeMapPrefPage.h */,
-				FCCFB2C8097FA42B009EA2B6 /* TreeMapPrefPage.m */,
-				FCCFB2C9097FA42B009EA2B6 /* GeneralPrefPage.h */,
-				FCCFB2CA097FA42B009EA2B6 /* GeneralPrefPage.m */,
 			);
 			name = Preferences;
 			sourceTree = "<group>";
@@ -513,12 +481,6 @@
 			children = (
 				FCCFB2CE097FA42B009EA2B6 /* Timing.c */,
 				FCCFB2CF097FA42B009EA2B6 /* Timing.h */,
-				FCCFB2D0097FA42B009EA2B6 /* FileSizeFormatter.h */,
-				FCCFB2D1097FA42B009EA2B6 /* FileSizeFormatter.m */,
-				FCCFB2D2097FA42B009EA2B6 /* FileSizeTransformer.h */,
-				FCCFB2D3097FA42B009EA2B6 /* FileSizeTransformer.m */,
-				FC4C4FF40981520A004CCA22 /* AppsForItem.h */,
-				FC4C4FF50981520A004CCA22 /* AppsForItem.m */,
 			);
 			name = "Helper Classes";
 			sourceTree = "<group>";
@@ -552,10 +514,6 @@
 			children = (
 				FCCFB2E1097FA42B009EA2B6 /* DrivesPanelController.h */,
 				FCCFB2E2097FA42B009EA2B6 /* DrivesPanelController.m */,
-				FCCFB2E3097FA42B009EA2B6 /* VolumeNameTransformer.h */,
-				FCCFB2E4097FA42B009EA2B6 /* VolumeNameTransformer.m */,
-				FCCFB2E5097FA42B009EA2B6 /* VolumeUsageTransformer.h */,
-				FCCFB2E6097FA42B009EA2B6 /* VolumeUsageTransformer.m */,
 			);
 			name = DrivesPanel;
 			sourceTree = "<group>";
@@ -606,8 +564,6 @@
 				FCCFB2FC097FA42B009EA2B6 /* MainWindowController.h */,
 				FCCFB2FD097FA42B009EA2B6 /* FSItem.h */,
 				FCCFB2FE097FA42B009EA2B6 /* FSItem.m */,
-				FCCFB2FF097FA42B009EA2B6 /* FileTypeColors.m */,
-				FCCFB300097FA42B009EA2B6 /* FileTypeColors.h */,
 				FCCFB301097FA42B009EA2B6 /* FileSystemDoc.m */,
 				FCCFB302097FA42B009EA2B6 /* FileSystemDoc.h */,
 			);
@@ -636,9 +592,6 @@
 		FCCFB336097FA44A009EA2B6 /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
-				FCCFB36C097FA4C1009EA2B6 /* TreeMapPreferencesPage.nib */,
-				FCCFB353097FA4C1009EA2B6 /* GeneralPreferencesPage.nib */,
-				FCCFB351097FA4C1009EA2B6 /* FinderCMPreferencesPage.nib */,
 				FCCFB368097FA4C1009EA2B6 /* Preferences.strings */,
 				FCCFB337097FA44A009EA2B6 /* TreeMapPreferences.tiff */,
 				FCCFB338097FA44A009EA2B6 /* GeneralPreferences.tiff */,
@@ -720,7 +673,8 @@
 				es,
 				fr,
 			);
-			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* Disk Inventory X */;
+			mainGroup = 2A37F4AAFDCFA73011CA2CEA;
+			productRefGroup = 19C28FB0FE9D524F11CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -754,8 +708,6 @@
 				FCCFB34A097FA44A009EA2B6 /* FinderCMPreferences.tiff in Resources */,
 				FCCFB370097FA4C1009EA2B6 /* Credits.rtf in Resources */,
 				FCCFB371097FA4C1009EA2B6 /* DonationPanel.nib in Resources */,
-				FCCFB372097FA4C1009EA2B6 /* FinderCMPreferencesPage.nib in Resources */,
-				FCCFB373097FA4C1009EA2B6 /* GeneralPreferencesPage.nib in Resources */,
 				FCCFB37A097FA4C1009EA2B6 /* InfoPanel.nib in Resources */,
 				FCCFB37B097FA4C1009EA2B6 /* InfoPlist.strings in Resources */,
 				FCCFB37C097FA4C1009EA2B6 /* LoadingPanel.nib in Resources */,
@@ -763,7 +715,6 @@
 				FCCFB37E097FA4C1009EA2B6 /* MainMenu.nib in Resources */,
 				FCCFB37F097FA4C1009EA2B6 /* Preferences.strings in Resources */,
 				FCCFB380097FA4C1009EA2B6 /* TreeMap.nib in Resources */,
-				FCCFB381097FA4C1009EA2B6 /* TreeMapPreferencesPage.nib in Resources */,
 				FC2C2CA2238C802600D04E20 /* memory usage using NSURL.txt in Resources */,
 				FCCFB382097FA4C1009EA2B6 /* VolumesPanel.nib in Resources */,
 				FC4C4AC109802035004CCA22 /* Help in Resources */,
@@ -801,14 +752,7 @@
 				FCCFB305097FA42B009EA2B6 /* GenericArrayController.m in Sources */,
 				FCCFB306097FA42B009EA2B6 /* ImageAndTextCell.m in Sources */,
 				FCCFB307097FA42B009EA2B6 /* OAToolbarWindowControllerEx.m in Sources */,
-				FCCFB30C097FA42B009EA2B6 /* Preferences.m in Sources */,
-				FCCFB30D097FA42B009EA2B6 /* PrefsPanelController.m in Sources */,
-				FCCFB30E097FA42B009EA2B6 /* PrefsPageBase.m in Sources */,
-				FCCFB30F097FA42B009EA2B6 /* TreeMapPrefPage.m in Sources */,
-				FCCFB310097FA42B009EA2B6 /* GeneralPrefPage.m in Sources */,
 				FCCFB312097FA42B009EA2B6 /* Timing.c in Sources */,
-				FCCFB313097FA42B009EA2B6 /* FileSizeFormatter.m in Sources */,
-				FCCFB314097FA42B009EA2B6 /* FileSizeTransformer.m in Sources */,
 				FCCFB315097FA42B009EA2B6 /* DIXFileInfoView.m in Sources */,
 				FCCFB316097FA42B009EA2B6 /* InfoPanelController.m in Sources */,
 				FCCFB317097FA42B009EA2B6 /* SelectionListController.m in Sources */,
@@ -816,8 +760,6 @@
 				FCB2FDC42375F4E100DC4806 /* NSFileManager-Extensions.m in Sources */,
 				FCCFB319097FA42B009EA2B6 /* SelectionListTableController.m in Sources */,
 				FCCFB31A097FA42B009EA2B6 /* DrivesPanelController.m in Sources */,
-				FCCFB31B097FA42B009EA2B6 /* VolumeNameTransformer.m in Sources */,
-				FCCFB31C097FA42B009EA2B6 /* VolumeUsageTransformer.m in Sources */,
 				FC2A428A2219C89900A484D7 /* AppController.m in Sources */,
 				FCCFB31D097FA42B009EA2B6 /* TreeMapViewController.m in Sources */,
 				FCCFB31E097FA42B009EA2B6 /* FileKindsTableController.m in Sources */,
@@ -828,22 +770,30 @@
 				FCCFB324097FA42B009EA2B6 /* MyDocumentController.m in Sources */,
 				FCCFB325097FA42B009EA2B6 /* MainWindowController.m in Sources */,
 				FCCFB326097FA42B009EA2B6 /* FSItem.m in Sources */,
-				FCCFB327097FA42B009EA2B6 /* FileTypeColors.m in Sources */,
 				FCCFB328097FA42B009EA2B6 /* FileSystemDoc.m in Sources */,
-				FC4C4FF70981520A004CCA22 /* AppsForItem.m in Sources */,
 				FCD5DAFE09CDD4260051C1CF /* MainWindow.m in Sources */,
 				FC7F775D1067BAB10090E839 /* NTFilePasteboardSource.m in Sources */,
 				FC7F77641067BC310090E839 /* NTInfoView.m in Sources */,
 				FC7F77D71067C9500090E839 /* NTTitledInfoPair.m in Sources */,
 				FC7F77D81067C9500090E839 /* NTTitledInfoView.m in Sources */,
 				FC33B45A230C846F00133632 /* NSURL-Extensions.m in Sources */,
-				FCDIX001000000000001 /* NSString+DIXExtensions.m in Sources */,
-				FCDIX001000000000002 /* NSMutableArray+DIXExtensions.m in Sources */,
-				FCDIX001000000000003 /* NSDictionary+DIXExtensions.m in Sources */,
-				FCDIX001000000000004 /* NSString+DIXUnicode.m in Sources */,
 				FCDIX001000000000005 /* DIXToolbarWindowController.m in Sources */,
-				FCDIX001000000000006 /* DIXPreferenceClient.m in Sources */,
-				FCDIX001000000000007 /* DIXPreferenceController.m in Sources */,
+				ECF1D67BB66D42F7AE669B1A /* TMVCushionRenderer.m in Sources */,
+				44FE12ACF288FC0F2A8760EE /* NSView-BackingCoordsHelpers.m in Sources */,
+				35074B7B31895E36C7AF2663 /* TMVItem.m in Sources */,
+				EBA3BE2276EC5BDFB787C989 /* TreeMapView.m in Sources */,
+				C6DA1C2C1DB4AA7D782ADBE5 /* NSBitmapImageRep-CreationExtensions.m in Sources */,
+				E74D9EE0845E3ED4C6AF5C2D /* ZoomInfo.m in Sources */,
+				469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */,
+				1DB953EBF4BCB2797CEFC524 /* FileSizeTransformer.swift in Sources */,
+				1C2EDD51A666C3536670482C /* VolumeNameTransformer.swift in Sources */,
+				DAEFEF161562551BD14B8E4F /* VolumeUsageTransformer.swift in Sources */,
+				C74AB5AA1EA81A337C0524FA /* AppsForItem.swift in Sources */,
+				E526153216CF337C89AD16B8 /* FileTypeColors.swift in Sources */,
+				99D6BD238CED231F67E5305E /* NSString+DIX.swift in Sources */,
+				A38A5DC9B22A95B97DC718C0 /* NSDictionary+DIX.swift in Sources */,
+				5F1CBF7747F6D9EE85CCB8B0 /* PreferenceKeys.m in Sources */,
+				101D79A986332ECE07A0B9B6 /* Preferences.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -881,28 +831,6 @@
 				FC2B2B7B277E43D10040ED6C /* en */,
 			);
 			name = DonationPanel.nib;
-			sourceTree = "<group>";
-		};
-		FCCFB351097FA4C1009EA2B6 /* FinderCMPreferencesPage.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FCEEFC0421FE5B6700E9785E /* de */,
-				FC42B8642202405A0080570A /* es */,
-				FCA1D0BC2205FF2D004E9468 /* fr */,
-				FC2B2B84277E43D10040ED6C /* en */,
-			);
-			name = FinderCMPreferencesPage.nib;
-			sourceTree = "<group>";
-		};
-		FCCFB353097FA4C1009EA2B6 /* GeneralPreferencesPage.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FC2D7D7321FE4ABB004D0614 /* de */,
-				FC42B8632202405A0080570A /* es */,
-				FCA1D0BB2205FF2D004E9468 /* fr */,
-				FC2B2B85277E43D10040ED6C /* en */,
-			);
-			name = GeneralPreferencesPage.nib;
 			sourceTree = "<group>";
 		};
 		FCCFB35E097FA4C1009EA2B6 /* InfoPanel.nib */ = {
@@ -982,17 +910,6 @@
 			name = TreeMap.nib;
 			sourceTree = "<group>";
 		};
-		FCCFB36C097FA4C1009EA2B6 /* TreeMapPreferencesPage.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FC2D7D7221FE4ABB004D0614 /* de */,
-				FC42B8622202405A0080570A /* es */,
-				FCA1D0BA2205FF2D004E9468 /* fr */,
-				FC2B2B87277E43D10040ED6C /* en */,
-			);
-			name = TreeMapPreferencesPage.nib;
-			sourceTree = "<group>";
-		};
 		FCCFB36E097FA4C1009EA2B6 /* VolumesPanel.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1019,11 +936,7 @@
 				CURRENT_PROJECT_VERSION = 1.2.1;
 				DEVELOPMENT_TEAM = 65J464P6J4;
 				ENABLE_HARDENED_RUNTIME = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(FRAMEWORK_SEARCH_PATHS_TREEMAP)",
-				);
-				FRAMEWORK_SEARCH_PATHS_TREEMAP = "\"$(SRCROOT)/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
@@ -1056,11 +969,7 @@
 				DEVELOPMENT_TEAM = 65J464P6J4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_NS_ASSERTIONS = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(FRAMEWORK_SEARCH_PATHS_TREEMAP)",
-				);
-				FRAMEWORK_SEARCH_PATHS_TREEMAP = "\"$(SRCROOT)/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_VERSION = "";

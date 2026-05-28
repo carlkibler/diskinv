@@ -14,9 +14,7 @@
 //
 
 #import "DrivesPanelController.h"
-#import "FileSizeFormatter.h"
-#import "VolumeNameTransformer.h"
-#import "VolumeUsageTransformer.h"
+#import "Disk_Inventory_Xs-Swift.h"
 #import "NSURL-Extensions.h"
 
 //NTStringShare is a private class in the CocoaFoundation framework; but as it is not fully thread safe,

@@ -24,7 +24,6 @@
 	NSArray *_donationPanelNibTopLevelObjects;
 }
 
-- (IBAction) showPreferencesPanel: (id) sender;
 - (IBAction) gotoHomepage: (id) sender;
 - (IBAction) closeDonationPanel: (id) sender;
 
