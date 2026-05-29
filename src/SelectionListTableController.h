@@ -21,9 +21,9 @@
 
 #import <Cocoa/Cocoa.h>
 @class FileSystemDoc;
-#import "GenericArrayController.h"
+@class GenericArrayController;
 @class MainWindowController;
-#import "FileKindsPopupController.h"
+@class FileKindsPopupController;
 
 @interface SelectionListTableController : NSObject
 {
