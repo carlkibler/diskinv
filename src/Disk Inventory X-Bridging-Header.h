@@ -41,12 +41,12 @@
 // FileSystemDoc port (extern C string constants cannot live in Swift).
 #import "FileSystemDocSupport.h"
 
-// LoadingPanelController.h is needed by the Swift FileSystemDoc (the scan
-// progress panel). Macro-clean (Cocoa only).
-#import "LoadingPanelController.h"
-
 // InfoPanelController.h is macro-clean (Cocoa + @class FSItem). The Swift
 // FileSystemDoc keeps the info panel in sync on selection changes.
 #import "InfoPanelController.h"
+
+// Timing.h is a pure-C stopwatch (stdint only). The Swift LoadingPanelController
+// uses getTime()/subtractTime() to throttle its event-loop pumping.
+#import "Timing.h"
 
 #endif /* DiskInventoryX_BridgingHeader_h */
