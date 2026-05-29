@@ -19,7 +19,6 @@
 #import "TMVCushionRenderer.h"
 #import "NSBitmapImageRep-CreationExtensions.h"
 #import "PreferenceKeys.h"
-#import "MainWindowController.h"
 
 
 //============ interface FileKindsTableController(Private) ==========================================================

@@ -16,7 +16,6 @@
 
 #import "TreeMapViewController.h"
 #import "TreeMapView.h"
-#import "MainWindowController.h"
 #import "FileSystemDocSupport.h"
 #import "Disk_Inventory_Xs-Swift.h"
 

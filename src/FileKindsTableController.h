@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 @class FileSystemDoc;
-#import "MainWindowController.h"
+@class MainWindowController;
 
 @interface FileKindsTableController : NSObject
 {
