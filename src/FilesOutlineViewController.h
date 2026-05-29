@@ -4,7 +4,7 @@
 @class FileSystemDoc;
 @class FSItem;
 #import "ImageAndTextCell.h"
-#import "DIXOutlineView.h"
+@class DIXOutlineView;
 
 @interface FilesOutlineViewController : NSObject
 {
