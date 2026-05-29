@@ -45,10 +45,6 @@
 // progress panel). Macro-clean (Cocoa only).
 #import "LoadingPanelController.h"
 
-// NSFileManager-Extensions.h is macro-clean (Foundation only). The Swift
-// FileSystemDoc uses privacyProtectedFoldersInURL: / triggerConsentDialog...
-#import "NSFileManager-Extensions.h"
-
 // InfoPanelController.h is macro-clean (Cocoa + @class FSItem). The Swift
 // FileSystemDoc keeps the info panel in sync on selection changes.
 #import "InfoPanelController.h"

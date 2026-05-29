@@ -10,6 +10,7 @@
 		101D79A986332ECE07A0B9B6 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681C249233967AABE8164D38 /* Preferences.swift */; };
 		1C2EDD51A666C3536670482C /* VolumeNameTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F85B4E2351AEEBDB018B0 /* VolumeNameTransformer.swift */; };
 		1DB953EBF4BCB2797CEFC524 /* FileSizeTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079776155C62C55A2ECBDE41 /* FileSizeTransformer.swift */; };
+		2F7248AEC391F0624AFFF0E2 /* NSFileManager-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0742A9C51D4948DC4C86237 /* NSFileManager-Extensions.swift */; };
 		35074B7B31895E36C7AF2663 /* TMVItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F97F95665DD8F2852C15F13C /* TMVItem.m */; };
 		44FE12ACF288FC0F2A8760EE /* NSView-BackingCoordsHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A3CD23C6064CBD6DA2D9151 /* NSView-BackingCoordsHelpers.m */; };
 		469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */; };
@@ -43,7 +44,6 @@
 		FC7F77641067BC310090E839 /* NTInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7F77631067BC310090E839 /* NTInfoView.m */; };
 		FC7F77D71067C9500090E839 /* NTTitledInfoPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7F77D41067C9500090E839 /* NTTitledInfoPair.m */; };
 		FC7F77D81067C9500090E839 /* NTTitledInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7F77D61067C9500090E839 /* NTTitledInfoView.m */; };
-		FCB2FDC42375F4E100DC4806 /* NSFileManager-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = FCB2FDC32375F4E100DC4806 /* NSFileManager-Extensions.m */; };
 		FCCFB2AA097FA3FD009EA2B6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2A9097FA3FD009EA2B6 /* main.m */; };
 		FCCFB303097FA42B009EA2B6 /* DIXTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2AD097FA42B009EA2B6 /* DIXTableView.m */; };
 		FCCFB304097FA42B009EA2B6 /* DIXOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2AF097FA42B009EA2B6 /* DIXOutlineView.m */; };
@@ -132,6 +132,7 @@
 		8D15AC370486D014006FF6A4 /* Disk Inventory X.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Disk Inventory X.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E0D10FE262F826BA887E721 /* FSItemSupport.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FSItemSupport.h; sourceTree = "<group>"; };
 		910371DEE0676DBED23D2C5D /* NSString+DIX.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSString+DIX.swift"; sourceTree = "<group>"; };
+		B0742A9C51D4948DC4C86237 /* NSFileManager-Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSFileManager-Extensions.swift"; sourceTree = "<group>"; };
 		B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileSizeFormatter.swift; sourceTree = "<group>"; };
 		B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSURL-Extensions.swift"; sourceTree = "<group>"; };
 		CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "FSItem-Utilities.swift"; sourceTree = "<group>"; };
@@ -202,8 +203,6 @@
 		FCA1D0C52205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = fr; path = fr.lproj/Credits.rtf; sourceTree = "<group>"; };
 		FCA1D0C62205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FCA1D0C72205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = folder; name = fr; path = fr.lproj/Help; sourceTree = "<group>"; };
-		FCB2FDC22375F4E100DC4806 /* NSFileManager-Extensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSFileManager-Extensions.h"; sourceTree = "<group>"; };
-		FCB2FDC32375F4E100DC4806 /* NSFileManager-Extensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager-Extensions.m"; sourceTree = "<group>"; };
 		FCB5709822CD2DE60014B794 /* BuildRelease.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = BuildRelease.sh; sourceTree = "<group>"; };
 		FCCFB2A9097FA3FD009EA2B6 /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FCCFB2AC097FA42B009EA2B6 /* DIXTableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DIXTableView.h; sourceTree = "<group>"; };
@@ -428,8 +427,7 @@
 		FC33B457230C842700133632 /* Foundation Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				FCB2FDC22375F4E100DC4806 /* NSFileManager-Extensions.h */,
-				FCB2FDC32375F4E100DC4806 /* NSFileManager-Extensions.m */,
+				B0742A9C51D4948DC4C86237 /* NSFileManager-Extensions.swift */,
 			);
 			path = "Foundation Extensions";
 			sourceTree = "<group>";
@@ -762,7 +760,6 @@
 				FCCFB316097FA42B009EA2B6 /* InfoPanelController.m in Sources */,
 				FCCFB317097FA42B009EA2B6 /* SelectionListController.m in Sources */,
 				FCCFB318097FA42B009EA2B6 /* FileKindsPopupController.m in Sources */,
-				FCB2FDC42375F4E100DC4806 /* NSFileManager-Extensions.m in Sources */,
 				FCCFB319097FA42B009EA2B6 /* SelectionListTableController.m in Sources */,
 				FCCFB31A097FA42B009EA2B6 /* DrivesPanelController.m in Sources */,
 				FC2A428A2219C89900A484D7 /* AppController.m in Sources */,
@@ -802,6 +799,7 @@
 				F02A9E6A24D528090ADE1B58 /* FileSystemDoc.swift in Sources */,
 				A92B2F03A092207CB9351322 /* FileSystemDocSupport.m in Sources */,
 				B7E23EBE548DD264DE60019A /* NSURL-Extensions.swift in Sources */,
+				2F7248AEC391F0624AFFF0E2 /* NSFileManager-Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
