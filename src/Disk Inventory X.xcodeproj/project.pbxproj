@@ -21,6 +21,7 @@
 		6EB8830E53A30980E6488C2F /* FileKindStatistic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A21FBEA89EA20EA7BA85FE /* FileKindStatistic.swift */; };
 		7D12C2BB1B60E917BDA649DD /* FSItem-Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */; };
 		7DFA0CE01491BE4C4ADC6CB4 /* FSItemIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08826F8E677C447E8E141C12 /* FSItemIndex.swift */; };
+		9573ED7A9DFE2380B34D2822 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3183A3D59C082978B3EAD150 /* MainWindow.swift */; };
 		99D6BD238CED231F67E5305E /* NSString+DIX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910371DEE0676DBED23D2C5D /* NSString+DIX.swift */; };
 		A38A5DC9B22A95B97DC718C0 /* NSDictionary+DIX.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE7DA50E548B4B914FF582F /* NSDictionary+DIX.swift */; };
 		A92B2F03A092207CB9351322 /* FileSystemDocSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 605CD6DC6803AEF39D3BCFD7 /* FileSystemDocSupport.m */; };
@@ -88,7 +89,6 @@
 		FCCFB37F097FA4C1009EA2B6 /* Preferences.strings in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB368097FA4C1009EA2B6 /* Preferences.strings */; };
 		FCCFB380097FA4C1009EA2B6 /* TreeMap.nib in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB36A097FA4C1009EA2B6 /* TreeMap.nib */; };
 		FCCFB382097FA4C1009EA2B6 /* VolumesPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB36E097FA4C1009EA2B6 /* VolumesPanel.nib */; };
-		FCD5DAFE09CDD4260051C1CF /* MainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FCD5DAFC09CDD4260051C1CF /* MainWindow.m */; };
 		FCDIX001000000000005 /* DIXToolbarWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDIX002000000000005 /* DIXToolbarWindowController.m */; };
 		FCFB17B621B876A400E3F8C4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FCFB17B521B876A400E3F8C4 /* Images.xcassets */; };
 		FCSWFT010000000000001 /* Shim.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCSWFT020000000000001 /* Shim.swift */; };
@@ -114,6 +114,7 @@
 		2A0F85B4E2351AEEBDB018B0 /* VolumeNameTransformer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VolumeNameTransformer.swift; sourceTree = "<group>"; };
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		3183A3D59C082978B3EAD150 /* MainWindow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
 		32DBCF750370BD2300C91783 /* Disk Inventory X_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Disk Inventory X_Prefix.pch"; sourceTree = "<group>"; };
 		3550509A91502C4086AB207E /* TMVCushionRenderer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = TMVCushionRenderer.h; sourceTree = "<group>"; };
 		455B95D5A6C09B1A5E97A959 /* FSItemIndexType.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FSItemIndexType.h; sourceTree = "<group>"; };
@@ -251,8 +252,6 @@
 		FCCFB338097FA44A009EA2B6 /* GeneralPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = GeneralPreferences.tiff; sourceTree = "<group>"; };
 		FCCFB339097FA44A009EA2B6 /* FinderCMPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FinderCMPreferences.tiff; sourceTree = "<group>"; };
 		FCCFB33A097FA44A009EA2B6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FCD5DAFB09CDD4260051C1CF /* MainWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainWindow.h; sourceTree = "<group>"; };
-		FCD5DAFC09CDD4260051C1CF /* MainWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainWindow.m; sourceTree = "<group>"; };
 		FCD71DB50984141E00590D16 /* feature suggestions.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = "feature suggestions.txt"; path = "documentation/feature suggestions.txt"; sourceTree = "<group>"; };
 		FCD71DB60984141E00590D16 /* known bugs.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = "known bugs.txt"; path = "documentation/known bugs.txt"; sourceTree = "<group>"; };
 		FCD71DB70984141E00590D16 /* release notes.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = "release notes.txt"; path = "documentation/release notes.txt"; sourceTree = "<group>"; };
@@ -551,12 +550,11 @@
 			children = (
 				FCCFB2F9097FA42B009EA2B6 /* MyDocumentController.m */,
 				FCCFB2FA097FA42B009EA2B6 /* MyDocumentController.h */,
-				FCD5DAFB09CDD4260051C1CF /* MainWindow.h */,
-				FCD5DAFC09CDD4260051C1CF /* MainWindow.m */,
 				FCCFB2FB097FA42B009EA2B6 /* MainWindowController.m */,
 				FCCFB2FC097FA42B009EA2B6 /* MainWindowController.h */,
 				B4D04A8E391BDE18CE106866 /* AppController.swift */,
 				060080DADA4A2E1545B0F157 /* LoadingPanelController.swift */,
+				3183A3D59C082978B3EAD150 /* MainWindow.swift */,
 			);
 			name = "Main Classes";
 			sourceTree = "<group>";
@@ -751,7 +749,6 @@
 				FCCFB31F097FA42B009EA2B6 /* FilesOutlineViewController.m in Sources */,
 				FCCFB324097FA42B009EA2B6 /* MyDocumentController.m in Sources */,
 				FCCFB325097FA42B009EA2B6 /* MainWindowController.m in Sources */,
-				FCD5DAFE09CDD4260051C1CF /* MainWindow.m in Sources */,
 				FC7F775D1067BAB10090E839 /* NTFilePasteboardSource.m in Sources */,
 				FC7F77641067BC310090E839 /* NTInfoView.m in Sources */,
 				FC7F77D71067C9500090E839 /* NTTitledInfoPair.m in Sources */,
@@ -788,6 +785,7 @@
 				1658101C80FB6359C8EC6C16 /* ImageAndTextCell.swift in Sources */,
 				ECCF632941A84FF02122D749 /* LoadingPanelController.swift in Sources */,
 				CB437D808F106E82C21A1231 /* DrivesPanelController.swift in Sources */,
+				9573ED7A9DFE2380B34D2822 /* MainWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
