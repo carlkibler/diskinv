@@ -15,7 +15,6 @@
 //
 
 #import "MyDocumentController.h"
-#import "DrivesPanelController.h"
 #import "PreferenceKeys.h"
 #import "FileSystemDocSupport.h"
 #import "Disk_Inventory_Xs-Swift.h"
