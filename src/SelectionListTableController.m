@@ -101,7 +101,7 @@
     }
 }
 
-- (NSDragOperation) draggingSourceOperationMaskForLocal:(BOOL)isLocal
+- (NSDragOperation) dixDraggingSourceMaskForLocal:(BOOL)isLocal
 {
 	//this selector is normally sent to the view itself, but DIXOutlineView forwards this decision to
 	//it's delagate (like it should be)

@@ -62,5 +62,5 @@ class DIXTableView: NSTableView {
 @objc protocol DIXTableViewDelegate: NSObjectProtocol {
     // delegate is asked which menu to show (else the view's own menu is used)
     @objc optional func tableView(_ tableView: NSTableView, menuForTableColumn column: NSTableColumn, row: Int) -> NSMenu?
-    @objc(draggingSourceOperationMaskForLocal:) optional func dixDraggingSourceMask(forLocal isLocal: Bool) -> NSDragOperation
+    @objc(dixDraggingSourceMaskForLocal:) optional func dixDraggingSourceMask(forLocal isLocal: Bool) -> NSDragOperation
 }

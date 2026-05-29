@@ -27,6 +27,7 @@
 		A92B2F03A092207CB9351322 /* FileSystemDocSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 605CD6DC6803AEF39D3BCFD7 /* FileSystemDocSupport.m */; };
 		AD4D0B603E415C0312E1FAE9 /* FSItemSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = DAE037FCB75107E5EBA047FC /* FSItemSupport.m */; };
 		B7E23EBE548DD264DE60019A /* NSURL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */; };
+		C2B750140A283155C9FF1C53 /* FilesOutlineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5D77E8A6FA9D6E3DF23363 /* FilesOutlineViewController.swift */; };
 		C6DA1C2C1DB4AA7D782ADBE5 /* NSBitmapImageRep-CreationExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DF5FB2D8359C92710D022588 /* NSBitmapImageRep-CreationExtensions.m */; };
 		C74AB5AA1EA81A337C0524FA /* AppsForItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7C89F055C7202EF5EF2FF0 /* AppsForItem.swift */; };
 		CB437D808F106E82C21A1231 /* DrivesPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6255670E06006ACD3C209B0 /* DrivesPanelController.swift */; };
@@ -61,7 +62,6 @@
 		FCCFB319097FA42B009EA2B6 /* SelectionListTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2DF097FA42B009EA2B6 /* SelectionListTableController.m */; };
 		FCCFB31D097FA42B009EA2B6 /* TreeMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2E8097FA42B009EA2B6 /* TreeMapViewController.m */; };
 		FCCFB31E097FA42B009EA2B6 /* FileKindsTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2EB097FA42B009EA2B6 /* FileKindsTableController.m */; };
-		FCCFB31F097FA42B009EA2B6 /* FilesOutlineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2EF097FA42B009EA2B6 /* FilesOutlineViewController.m */; };
 		FCCFB324097FA42B009EA2B6 /* MyDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2F9097FA42B009EA2B6 /* MyDocumentController.m */; };
 		FCCFB325097FA42B009EA2B6 /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2FB097FA42B009EA2B6 /* MainWindowController.m */; };
 		FCCFB33C097FA44A009EA2B6 /* MainWindowToolbar.toolbar in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB32A097FA44A009EA2B6 /* MainWindowToolbar.toolbar */; };
@@ -129,6 +129,7 @@
 		66033061DBFC94D68DF83791 /* TMVItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = TMVItem.h; sourceTree = "<group>"; };
 		681C249233967AABE8164D38 /* Preferences.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		7A3CD23C6064CBD6DA2D9151 /* NSView-BackingCoordsHelpers.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSView-BackingCoordsHelpers.m"; sourceTree = "<group>"; };
+		7D5D77E8A6FA9D6E3DF23363 /* FilesOutlineViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FilesOutlineViewController.swift; sourceTree = "<group>"; };
 		810DBD18401F6CB8CFDD4B8B /* PreferenceKeys.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = PreferenceKeys.h; sourceTree = "<group>"; };
 		8352AD9AF82D652ED4566153 /* TreeMapView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = TreeMapView.m; sourceTree = "<group>"; };
 		85C3BB9BCC1F32AEEE06510E /* FileTypeColors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileTypeColors.swift; sourceTree = "<group>"; };
@@ -230,8 +231,6 @@
 		FCCFB2E9097FA42B009EA2B6 /* TreeMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TreeMapViewController.h; sourceTree = "<group>"; };
 		FCCFB2EB097FA42B009EA2B6 /* FileKindsTableController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FileKindsTableController.m; sourceTree = "<group>"; };
 		FCCFB2EC097FA42B009EA2B6 /* FileKindsTableController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FileKindsTableController.h; sourceTree = "<group>"; };
-		FCCFB2EE097FA42B009EA2B6 /* FilesOutlineViewController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FilesOutlineViewController.h; sourceTree = "<group>"; };
-		FCCFB2EF097FA42B009EA2B6 /* FilesOutlineViewController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FilesOutlineViewController.m; sourceTree = "<group>"; };
 		FCCFB2F9097FA42B009EA2B6 /* MyDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyDocumentController.m; sourceTree = "<group>"; };
 		FCCFB2FA097FA42B009EA2B6 /* MyDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyDocumentController.h; sourceTree = "<group>"; };
 		FCCFB2FB097FA42B009EA2B6 /* MainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MainWindowController.m; sourceTree = "<group>"; };
@@ -539,8 +538,7 @@
 		FCCFB2ED097FA42B009EA2B6 /* FilesOutlineView Classes */ = {
 			isa = PBXGroup;
 			children = (
-				FCCFB2EE097FA42B009EA2B6 /* FilesOutlineViewController.h */,
-				FCCFB2EF097FA42B009EA2B6 /* FilesOutlineViewController.m */,
+				7D5D77E8A6FA9D6E3DF23363 /* FilesOutlineViewController.swift */,
 			);
 			name = "FilesOutlineView Classes";
 			sourceTree = "<group>";
@@ -746,7 +744,6 @@
 				FCCFB319097FA42B009EA2B6 /* SelectionListTableController.m in Sources */,
 				FCCFB31D097FA42B009EA2B6 /* TreeMapViewController.m in Sources */,
 				FCCFB31E097FA42B009EA2B6 /* FileKindsTableController.m in Sources */,
-				FCCFB31F097FA42B009EA2B6 /* FilesOutlineViewController.m in Sources */,
 				FCCFB324097FA42B009EA2B6 /* MyDocumentController.m in Sources */,
 				FCCFB325097FA42B009EA2B6 /* MainWindowController.m in Sources */,
 				FC7F775D1067BAB10090E839 /* NTFilePasteboardSource.m in Sources */,
@@ -786,6 +783,7 @@
 				ECCF632941A84FF02122D749 /* LoadingPanelController.swift in Sources */,
 				CB437D808F106E82C21A1231 /* DrivesPanelController.swift in Sources */,
 				9573ED7A9DFE2380B34D2822 /* MainWindow.swift in Sources */,
+				C2B750140A283155C9FF1C53 /* FilesOutlineViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

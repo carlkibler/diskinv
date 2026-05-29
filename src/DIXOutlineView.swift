@@ -63,5 +63,5 @@ class DIXOutlineView: NSOutlineView {
 @objc protocol DIXOutlineViewDelegate: NSObjectProtocol {
     // delegate is asked which menu to show (else the view's own menu is used)
     @objc optional func outlineView(_ outlineView: NSOutlineView, menuForTableColumn column: NSTableColumn, item: Any) -> NSMenu?
-    @objc(draggingSourceOperationMaskForLocal:) optional func dixDraggingSourceMask(forLocal isLocal: Bool) -> NSDragOperation
+    @objc(dixDraggingSourceMaskForLocal:) optional func dixDraggingSourceMask(forLocal isLocal: Bool) -> NSDragOperation
 }
