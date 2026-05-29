@@ -7,7 +7,7 @@
 //
 
 #import "NTFilePasteboardSource.h"
-#import "NSURL-Extensions.h"
+#import "Disk_Inventory_Xs-Swift.h"
 
 // SNG 666 add NSPICTPboardType
 

@@ -15,6 +15,7 @@
 
 #import "DIXFileInfoView.h"
 #import "NTTitledInfoPair.h"
+#import "Disk_Inventory_Xs-Swift.h"
 
 @interface NTInfoView (MakeVisible)
 - (NSArray*)infoPairs;

@@ -19,7 +19,6 @@
 #import "Timing.h"
 #import "TreeMapView.h"
 #import "Disk_Inventory_Xs-Swift.h"
-#import "NSURL-Extensions.h"
 
 @interface MainWindowController(Private)
 - (void) moveToTrashSheetDidDismiss: (NSWindow*) sheet returnCode: (int) returnCode contextInfo: (void*) contextInfo;

@@ -7,7 +7,6 @@
 //
 
 #import "NTTitledInfoView.h"
-#import "NSURL-Extensions.h"
 
 @interface NTInfoView : NSView 
 {

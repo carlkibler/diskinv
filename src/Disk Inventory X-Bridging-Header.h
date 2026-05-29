@@ -15,11 +15,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-// NSURL-Extensions.h has a clean dependency cone (Foundation only, no .pch
-// macros), so it is safe to expose to Swift here. Used by the volume
-// transformers.
-#import "NSURL-Extensions.h"
-
 // FSItem itself is now a Swift class (FSItem.swift). Its non-class support
 // symbols (FSItemType enum, g_fileCount/g_folderCount, exception names, the
 // NSString compareAsFilesystemName: category) live in FSItemSupport.h, which
