@@ -3,7 +3,6 @@
 #import <Cocoa/Cocoa.h>
 @class FileSystemDoc;
 @class FSItem;
-#import "ImageAndTextCell.h"
 @class DIXOutlineView;
 
 @interface FilesOutlineViewController : NSObject

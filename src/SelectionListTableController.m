@@ -17,7 +17,6 @@
 #import "FileSystemDocSupport.h"
 #import "Disk_Inventory_Xs-Swift.h"
 // NSTableView-OAExtensions removed - using standard NSTableView
-#import "ImageAndTextCell.h"
 
 @interface SelectionListTableController(Privat)
 
