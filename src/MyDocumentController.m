@@ -19,7 +19,6 @@
 #import "PreferenceKeys.h"
 #import "FileSystemDocSupport.h"
 #import "Disk_Inventory_Xs-Swift.h"
-#import "AppController.h"
 
 //global variable which enables/disables logging
 BOOL g_EnableLogging;

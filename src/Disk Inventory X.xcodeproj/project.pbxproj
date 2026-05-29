@@ -12,6 +12,7 @@
 		1DB953EBF4BCB2797CEFC524 /* FileSizeTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079776155C62C55A2ECBDE41 /* FileSizeTransformer.swift */; };
 		237881429E928C4A362DB427 /* DIXTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD77A59DDF11306C10F8E8 /* DIXTableView.swift */; };
 		2F7248AEC391F0624AFFF0E2 /* NSFileManager-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0742A9C51D4948DC4C86237 /* NSFileManager-Extensions.swift */; };
+		2F9542B010981D00ED77CFA3 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D04A8E391BDE18CE106866 /* AppController.swift */; };
 		35074B7B31895E36C7AF2663 /* TMVItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F97F95665DD8F2852C15F13C /* TMVItem.m */; };
 		44FE12ACF288FC0F2A8760EE /* NSView-BackingCoordsHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A3CD23C6064CBD6DA2D9151 /* NSView-BackingCoordsHelpers.m */; };
 		469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */; };
@@ -34,7 +35,6 @@
 		EBA3BE2276EC5BDFB787C989 /* TreeMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8352AD9AF82D652ED4566153 /* TreeMapView.m */; };
 		ECF1D67BB66D42F7AE669B1A /* TMVCushionRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = EF11155A43F422D388132998 /* TMVCushionRenderer.m */; };
 		F02A9E6A24D528090ADE1B58 /* FileSystemDoc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD937CB125819B69DA7AA11 /* FileSystemDoc.swift */; };
-		FC2A428A2219C89900A484D7 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC2A42892219C89900A484D7 /* AppController.m */; };
 		FC2B2BBB277E472C0040ED6C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		FC2B2BBC277E472F0040ED6C /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */; };
 		FC2B2BBD277E47320040ED6C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */; };
@@ -136,6 +136,7 @@
 		947C93EA4AB5667DCF7FA814 /* DIXOutlineView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DIXOutlineView.swift; sourceTree = "<group>"; };
 		B0742A9C51D4948DC4C86237 /* NSFileManager-Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSFileManager-Extensions.swift"; sourceTree = "<group>"; };
 		B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileSizeFormatter.swift; sourceTree = "<group>"; };
+		B4D04A8E391BDE18CE106866 /* AppController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
 		B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSURL-Extensions.swift"; sourceTree = "<group>"; };
 		CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "FSItem-Utilities.swift"; sourceTree = "<group>"; };
 		D4C711675ADD6DE1D119706F /* NSBitmapImageRep-CreationExtensions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSBitmapImageRep-CreationExtensions.h"; sourceTree = "<group>"; };
@@ -147,8 +148,6 @@
 		EDDC05C3ADA9FCDE2767C72D /* ZoomInfo.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ZoomInfo.m; sourceTree = "<group>"; };
 		EF11155A43F422D388132998 /* TMVCushionRenderer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = TMVCushionRenderer.m; sourceTree = "<group>"; };
 		F97F95665DD8F2852C15F13C /* TMVItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = TMVItem.m; sourceTree = "<group>"; };
-		FC2A42882219C89900A484D7 /* AppController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
-		FC2A42892219C89900A484D7 /* AppController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
 		FC2B2B7A277E43D00040ED6C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		FC2B2B7B277E43D10040ED6C /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/DonationPanel.nib; sourceTree = "<group>"; };
 		FC2B2B7C277E43D10040ED6C /* en */ = {isa = PBXFileReference; lastKnownFileType = folder; name = en; path = en.lproj/Help; sourceTree = "<group>"; };
@@ -557,14 +556,13 @@
 			children = (
 				FCCFB2F5097FA42B009EA2B6 /* LoadingPanelController.h */,
 				FCCFB2F6097FA42B009EA2B6 /* LoadingPanelController.m */,
-				FC2A42882219C89900A484D7 /* AppController.h */,
-				FC2A42892219C89900A484D7 /* AppController.m */,
 				FCCFB2F9097FA42B009EA2B6 /* MyDocumentController.m */,
 				FCCFB2FA097FA42B009EA2B6 /* MyDocumentController.h */,
 				FCD5DAFB09CDD4260051C1CF /* MainWindow.h */,
 				FCD5DAFC09CDD4260051C1CF /* MainWindow.m */,
 				FCCFB2FB097FA42B009EA2B6 /* MainWindowController.m */,
 				FCCFB2FC097FA42B009EA2B6 /* MainWindowController.h */,
+				B4D04A8E391BDE18CE106866 /* AppController.swift */,
 			);
 			name = "Main Classes";
 			sourceTree = "<group>";
@@ -756,7 +754,6 @@
 				FCCFB318097FA42B009EA2B6 /* FileKindsPopupController.m in Sources */,
 				FCCFB319097FA42B009EA2B6 /* SelectionListTableController.m in Sources */,
 				FCCFB31A097FA42B009EA2B6 /* DrivesPanelController.m in Sources */,
-				FC2A428A2219C89900A484D7 /* AppController.m in Sources */,
 				FCCFB31D097FA42B009EA2B6 /* TreeMapViewController.m in Sources */,
 				FCCFB31E097FA42B009EA2B6 /* FileKindsTableController.m in Sources */,
 				FCCFB31F097FA42B009EA2B6 /* FilesOutlineViewController.m in Sources */,
@@ -796,6 +793,7 @@
 				2F7248AEC391F0624AFFF0E2 /* NSFileManager-Extensions.swift in Sources */,
 				D31AF347303A246F0FA1A2E5 /* DIXOutlineView.swift in Sources */,
 				237881429E928C4A362DB427 /* DIXTableView.swift in Sources */,
+				2F9542B010981D00ED77CFA3 /* AppController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
