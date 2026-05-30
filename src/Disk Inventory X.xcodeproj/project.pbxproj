@@ -32,6 +32,7 @@
 		65CDE8B415CC459BE9E61E11 /* GenericArrayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8868E203BE74202C275005 /* GenericArrayController.swift */; };
 		66BF4C4F15063677EDCD1498 /* FileKindsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394BDD3823130DB4E66CB14 /* FileKindsTableController.swift */; };
 		6EB8830E53A30980E6488C2F /* FileKindStatistic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A21FBEA89EA20EA7BA85FE /* FileKindStatistic.swift */; };
+		78B37DB4F3B5F64264236053 /* FSItemIndexType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E32B771FDFC845773CA59141 /* FSItemIndexType.swift */; };
 		7D12C2BB1B60E917BDA649DD /* FSItem-Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */; };
 		7DFA0CE01491BE4C4ADC6CB4 /* FSItemIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08826F8E677C447E8E141C12 /* FSItemIndex.swift */; };
 		92894F0ED483F717F70271A9 /* DIXToolbarWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BE66267DB788AF6A238073 /* DIXToolbarWindowController.swift */; };
@@ -55,6 +56,7 @@
 		E526153216CF337C89AD16B8 /* FileTypeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C3BB9BCC1F32AEEE06510E /* FileTypeColors.swift */; };
 		E8878A0F4CF1F0C784428267 /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A24E71ADB344AE8026F730 /* PreferenceKeys.swift */; };
 		ECCF632941A84FF02122D749 /* LoadingPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060080DADA4A2E1545B0F157 /* LoadingPanelController.swift */; };
+		EF371729E6AEDEC437C3A979 /* Timing.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5319CC922429DBDD832688 /* Timing.swift */; };
 		F02A9E6A24D528090ADE1B58 /* FileSystemDoc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD937CB125819B69DA7AA11 /* FileSystemDoc.swift */; };
 		FC2B2BBB277E472C0040ED6C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		FC2B2BBC277E472F0040ED6C /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */; };
@@ -63,7 +65,6 @@
 		FC2C2CA3238C802600D04E20 /* macOS privacy protected folders.txt in Resources */ = {isa = PBXBuildFile; fileRef = FC2C2CA1238C802600D04E20 /* macOS privacy protected folders.txt */; };
 		FC2E58FF21D3BFDF00F6F03B /* Disk Inventory Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = FC2E58FE21D3BFDF00F6F03B /* Disk Inventory Icon.png */; };
 		FC4C4AC109802035004CCA22 /* Help in Resources */ = {isa = PBXBuildFile; fileRef = FC4C4ABF09802035004CCA22 /* Help */; };
-		FCCFB312097FA42B009EA2B6 /* Timing.c in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2CE097FA42B009EA2B6 /* Timing.c */; };
 		FCCFB33C097FA44A009EA2B6 /* MainWindowToolbar.toolbar in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB32A097FA44A009EA2B6 /* MainWindowToolbar.toolbar */; };
 		FCCFB33D097FA44A009EA2B6 /* ZoomOut.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB32B097FA44A009EA2B6 /* ZoomOut.tiff */; };
 		FCCFB33E097FA44A009EA2B6 /* ZoomIn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB32C097FA44A009EA2B6 /* ZoomIn.tiff */; };
@@ -122,7 +123,6 @@
 		35F4CB9BB1F131935161009F /* SelectionListController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SelectionListController.swift; sourceTree = "<group>"; };
 		3895E8870A4BD3CD7CD714C2 /* main.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3C2F328C2E070331442F7838 /* OAToolbarWindowControllerEx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OAToolbarWindowControllerEx.swift; sourceTree = "<group>"; };
-		455B95D5A6C09B1A5E97A959 /* FSItemIndexType.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FSItemIndexType.h; sourceTree = "<group>"; };
 		4C71DD92C50ECB738F91939C /* NTTitledInfoView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NTTitledInfoView.swift; sourceTree = "<group>"; };
 		4FD937CB125819B69DA7AA11 /* FileSystemDoc.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileSystemDoc.swift; sourceTree = "<group>"; };
 		53DD77A59DDF11306C10F8E8 /* DIXTableView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DIXTableView.swift; sourceTree = "<group>"; };
@@ -158,6 +158,7 @@
 		D9303FEF3F04D57E6A0398D9 /* NSBitmapImageRep-CreationExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSBitmapImageRep-CreationExtensions.swift"; sourceTree = "<group>"; };
 		DA1B4DF6ECB2A4849A7C5EFA /* VolumeUsageTransformer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VolumeUsageTransformer.swift; sourceTree = "<group>"; };
 		DC8868E203BE74202C275005 /* GenericArrayController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GenericArrayController.swift; sourceTree = "<group>"; };
+		E32B771FDFC845773CA59141 /* FSItemIndexType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FSItemIndexType.swift; sourceTree = "<group>"; };
 		E7919EA43720ED9B5F3E1FBD /* DIXFileInfoView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DIXFileInfoView.swift; sourceTree = "<group>"; };
 		E93D51EECA2D4EA8A876ED92 /* NSView-BackingCoordsHelpers.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSView-BackingCoordsHelpers.swift"; sourceTree = "<group>"; };
 		F0FCA6EA81A3E03ED5166592 /* NTInfoView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NTInfoView.swift; sourceTree = "<group>"; };
@@ -210,8 +211,6 @@
 		FCA1D0C62205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FCA1D0C72205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = folder; name = fr; path = fr.lproj/Help; sourceTree = "<group>"; };
 		FCB5709822CD2DE60014B794 /* BuildRelease.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = BuildRelease.sh; sourceTree = "<group>"; };
-		FCCFB2CE097FA42B009EA2B6 /* Timing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = Timing.c; sourceTree = "<group>"; };
-		FCCFB2CF097FA42B009EA2B6 /* Timing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Timing.h; sourceTree = "<group>"; };
 		FCCFB32A097FA44A009EA2B6 /* MainWindowToolbar.toolbar */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = MainWindowToolbar.toolbar; sourceTree = "<group>"; };
 		FCCFB32B097FA44A009EA2B6 /* ZoomOut.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ZoomOut.tiff; sourceTree = "<group>"; };
 		FCCFB32C097FA44A009EA2B6 /* ZoomIn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ZoomIn.tiff; sourceTree = "<group>"; };
@@ -233,7 +232,7 @@
 		FCD71DB70984141E00590D16 /* release notes.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = "release notes.txt"; path = "documentation/release notes.txt"; sourceTree = "<group>"; };
 		FCE7DA50E548B4B914FF582F /* NSDictionary+DIX.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSDictionary+DIX.swift"; sourceTree = "<group>"; };
 		FCFB17B521B876A400E3F8C4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Disk Inventory X/Images.xcassets"; sourceTree = "<group>"; };
-		FCSWFT020000000000002 /* Disk Inventory X-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Disk Inventory X-Bridging-Header.h"; sourceTree = "<group>"; };
+		FD5319CC922429DBDD832688 /* Timing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Timing.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -322,7 +321,6 @@
 			isa = PBXGroup;
 			children = (
 				32DBCF750370BD2300C91783 /* Disk Inventory X_Prefix.pch */,
-				FCSWFT020000000000002 /* Disk Inventory X-Bridging-Header.h */,
 				B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */,
 				079776155C62C55A2ECBDE41 /* FileSizeTransformer.swift */,
 				2A0F85B4E2351AEEBDB018B0 /* VolumeNameTransformer.swift */,
@@ -335,7 +333,6 @@
 				CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */,
 				65A21FBEA89EA20EA7BA85FE /* FileKindStatistic.swift */,
 				08826F8E677C447E8E141C12 /* FSItemIndex.swift */,
-				455B95D5A6C09B1A5E97A959 /* FSItemIndexType.h */,
 				5BB2E0E221D5C8CDB96D3383 /* FSItem.swift */,
 				4FD937CB125819B69DA7AA11 /* FileSystemDoc.swift */,
 				B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */,
@@ -344,6 +341,7 @@
 				89198A9697C1C62E945AD311 /* FileSystemDocSupport.swift */,
 				BB4E73D84F9A5A5072F5FCF9 /* FSItemSupport.swift */,
 				3895E8870A4BD3CD7CD714C2 /* main.swift */,
+				E32B771FDFC845773CA59141 /* FSItemIndexType.swift */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -436,8 +434,7 @@
 		FCCFB2CD097FA42B009EA2B6 /* Helper Classes */ = {
 			isa = PBXGroup;
 			children = (
-				FCCFB2CE097FA42B009EA2B6 /* Timing.c */,
-				FCCFB2CF097FA42B009EA2B6 /* Timing.h */,
+				FD5319CC922429DBDD832688 /* Timing.swift */,
 			);
 			name = "Helper Classes";
 			sourceTree = "<group>";
@@ -679,7 +676,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FCCFB312097FA42B009EA2B6 /* Timing.c in Sources */,
 				469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */,
 				1DB953EBF4BCB2797CEFC524 /* FileSizeTransformer.swift in Sources */,
 				1C2EDD51A666C3536670482C /* VolumeNameTransformer.swift in Sources */,
@@ -730,6 +726,8 @@
 				461D55039229D162A6166CAF /* FileSystemDocSupport.swift in Sources */,
 				998E1F9F62B8131F5150E737 /* FSItemSupport.swift in Sources */,
 				607C69BA0CBC5BEE56E87144 /* main.swift in Sources */,
+				EF371729E6AEDEC437C3A979 /* Timing.swift in Sources */,
+				78B37DB4F3B5F64264236053 /* FSItemIndexType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -887,7 +885,6 @@
 				PRODUCT_NAME = "Disk Inventory Xs";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "Disk Inventory X-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				WRAPPER_EXTENSION = app;
 			};
@@ -918,7 +915,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.derlien.DiskInventoryX;
 				PRODUCT_NAME = "Disk Inventory Xs";
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "Disk Inventory X-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				WRAPPER_EXTENSION = app;
 			};

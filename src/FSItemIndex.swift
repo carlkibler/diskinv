@@ -58,7 +58,8 @@ final class FSItemIndex: NSObject {
         }
     }
 
-    @objc(searchItems:inIndex:)
+    // not @objc: FSItemIndexType is a Swift OptionSet (not @objc-representable),
+    // and the only caller is the Swift SelectionListController.
     func searchItems(_ searchString: String?, inIndex indexesToSearch: FSItemIndexType) -> [FSItem] {
         let searchString = (searchString ?? "").lowercased()
 
