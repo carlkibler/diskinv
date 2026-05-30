@@ -22,3 +22,16 @@ NSString *ViewOptionChangedNotification = @"ViewOptionsChangedNotification";
 NSString *ChangedViewOption = @"ChangedViewOption";
 NSString *NewItem = @"NewItem";
 NSString *OldItem = @"OldItem";
+
+//app-wide logging flag, read by the LOG(...) macro defined in the project .pch.
+//Relocated here from MyDocumentController.m when that class was ported to Swift.
+BOOL g_EnableLogging = NO;
+
+@implementation DIXLogging
+
++ (void) updateGlobalLoggingFlag: (BOOL) enabled
+{
+    g_EnableLogging = enabled;
+}
+
+@end

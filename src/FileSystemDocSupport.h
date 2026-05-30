@@ -31,3 +31,16 @@ extern NSString *ViewOptionChangedNotification; //the name of the changed option
 extern NSString *ChangedViewOption;
 extern NSString *NewItem;
 extern NSString *OldItem;
+
+//
+// g_EnableLogging is the app-wide logging flag read by the LOG(...) macro in
+// the project .pch (which declares `extern BOOL g_EnableLogging;`). Its
+// definition lived in MyDocumentController.m; when that class was ported to
+// Swift the C global was relocated here (an existing ObjC "support" .m that
+// already holds extern globals) so the .pch's extern keeps resolving at link
+// time. Swift can't cleanly assign a C `extern BOOL`, so it sets the flag at
+// launch via this @objc class method instead.
+//
+@interface DIXLogging : NSObject
++ (void) updateGlobalLoggingFlag: (BOOL) enabled NS_SWIFT_NAME(updateGlobalLoggingFlag(_:));
+@end
