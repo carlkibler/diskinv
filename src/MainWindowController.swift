@@ -225,29 +225,31 @@ class MainWindowController: OAToolbarWindowControllerEx {
 
     // MARK: - UI element validation
 
-    override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+    // The single per-command decision, applied by the base class to either a
+    // menu item or a toolbar item (see OAToolbarWindowControllerEx).
+    override func commandValidation(forAction menuAction: Selector?) -> CommandValidation {
         let doc = fsDocument()
         let selectedItem = doc?.selectedItem()
-        let menuAction = menuItem.action
 
-        let isToolbarAdapter = menuItem.isKind(of: NSToolbarItemValidationAdapter.self)
-        func setTitle(_ cond: Bool, _ s1: String, _ s2: String) {
-            menuItem.title = NSLocalizedString(cond ? s1 : s2, comment: "")
+        // a toggle: title flips, and a toolbar button shows the inverse on/off icon
+        // (matching the original setState: cond ? .off : .on)
+        func toggle(_ cond: Bool, _ whenOn: String, _ whenOff: String) -> CommandValidation {
+            CommandValidation(title: cond ? whenOn : whenOff, toolbarState: cond ? .off : .on)
         }
-        func setTitleAndImage(_ cond: Bool, _ s1: String, _ s2: String) {
-            setTitle(cond, s1, s2)
-            if isToolbarAdapter { menuItem.state = cond ? .off : .on }
+        // a title-only toggle (no toolbar icon swap)
+        func titleToggle(_ cond: Bool, _ s1: String, _ s2: String) -> CommandValidation {
+            CommandValidation(title: cond ? s1 : s2)
         }
 
         if menuAction == #selector(openFile(_:)) || menuAction == NSSelectorFromString("openFileWith:") {
-            guard let url = selectedItem?.fileURL() else { return false }
-            return AppsForItem.appsForItem(url).defaultAppURL != nil
+            guard let url = selectedItem?.fileURL() else { return CommandValidation(isEnabled: false) }
+            return CommandValidation(isEnabled: AppsForItem.appsForItem(url).defaultAppURL != nil)
         } else if menuAction == #selector(zoomIn(_:)) {
-            return selectedItem != nil && selectedItem!.isFolder() && !_treeMapView.zoomingInProgress()
+            return CommandValidation(isEnabled: selectedItem != nil && selectedItem!.isFolder() && !_treeMapView.zoomingInProgress())
         } else if menuAction == #selector(zoomOut(_:)) {
-            return doc?.rootItem() !== doc?.zoomedItem() && !_treeMapView.zoomingInProgress()
+            return CommandValidation(isEnabled: doc?.rootItem() !== doc?.zoomedItem() && !_treeMapView.zoomingInProgress())
         } else if menuAction == #selector(showInFinder(_:)) || menuAction == #selector(refresh(_:)) {
-            return selectedItem != nil
+            return CommandValidation(isEnabled: selectedItem != nil)
         } else if menuAction == #selector(moveToTrash(_:)) {
             var residesInTrash = false
             if let selectedURL = selectedItem?.fileURL() {
@@ -256,31 +258,32 @@ class MainWindowController: OAToolbarWindowControllerEx {
                     residesInTrash = selectedURL.isEqual(to: trashURL as NSURL) || selectedURL.residesInDirectory(trashURL as NSURL)
                 }
             }
-            return !residesInTrash && selectedItem != nil && selectedItem !== doc?.zoomedItem() && !(selectedItem!.isSpecialItem())
+            return CommandValidation(isEnabled: !residesInTrash && selectedItem != nil && selectedItem !== doc?.zoomedItem() && !(selectedItem!.isSpecialItem()))
         } else if menuAction == #selector(showPackageContents(_:)) {
-            setTitleAndImage(doc?.showPackageContents() ?? false, "Hide Package Contents", "Show Package Contents")
+            return toggle(doc?.showPackageContents() ?? false, "Hide Package Contents", "Show Package Contents")
         } else if menuAction == #selector(showFreeSpace(_:)) {
-            setTitleAndImage(doc?.showFreeSpace() ?? false, "Hide Free Space", "Show Free Space")
+            return toggle(doc?.showFreeSpace() ?? false, "Hide Free Space", "Show Free Space")
         } else if menuAction == #selector(showOtherSpace(_:)) {
-            setTitleAndImage(doc?.showOtherSpace() ?? false, "Hide Other Space", "Show Other Space")
-            if doc?.zoomedItem()?.fileURL()?.isVolume() == true { return false }
+            var v = toggle(doc?.showOtherSpace() ?? false, "Hide Other Space", "Show Other Space")
+            if doc?.zoomedItem()?.fileURL()?.isVolume() == true { v.isEnabled = false }
+            return v
         } else if menuAction == #selector(showPhysicalSizes(_:)) {
-            setTitleAndImage(doc?.showPhysicalFileSize() ?? false, "Show Logical File Size", "Show Physical File Size")
+            return toggle(doc?.showPhysicalFileSize() ?? false, "Show Logical File Size", "Show Physical File Size")
         } else if menuAction == #selector(ignoreCreatorCode(_:)) {
-            setTitleAndImage(doc?.ignoreCreatorCode() ?? false, "Respect Creator Code", "Ignore Creator Code")
+            return toggle(doc?.ignoreCreatorCode() ?? false, "Respect Creator Code", "Ignore Creator Code")
         } else if menuAction == #selector(toggleFileKindsDrawer(_:)) {
-            setTitleAndImage(_kindsDrawer.state == 0, "Show File Kind Statistics", "Hide File Kind Statistics")  // 0 == NSDrawerClosedState
+            return toggle(_kindsDrawer.state == 0, "Show File Kind Statistics", "Hide File Kind Statistics")  // 0 == NSDrawerClosedState
         } else if menuAction == #selector(toggleSelectionListDrawer(_:)) {
-            setTitle(_selectionListDrawer.state == 0, "Show Selection List", "Hide Selection List")  // 0 == NSDrawerClosedState
+            return titleToggle(_selectionListDrawer.state == 0, "Show Selection List", "Hide Selection List")  // 0 == NSDrawerClosedState
         } else if menuAction == #selector(selectParentItem(_:)) {
-            return selectedItem != nil && selectedItem !== doc?.zoomedItem()
+            return CommandValidation(isEnabled: selectedItem != nil && selectedItem !== doc?.zoomedItem())
         } else if menuAction == #selector(showInformationPanel(_:)) {
-            setTitleAndImage(InfoPanelController.shared()?.panelIsVisible() ?? false, "Hide Information", "Show Information")
+            return toggle(InfoPanelController.shared()?.panelIsVisible() ?? false, "Hide Information", "Show Information")
         } else if menuAction == #selector(changeSplitting(_:)) {
-            setTitle(_splitter.isVertical, "Split Horizontally", "Split Vertically")
+            return titleToggle(_splitter.isVertical, "Split Horizontally", "Split Vertically")
         }
 
-        return true
+        return CommandValidation()
     }
 
     // MARK: - Toolbar support

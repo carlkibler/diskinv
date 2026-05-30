@@ -4,29 +4,47 @@
 //
 //  Swift port of OAToolbarWindowControllerEx.{h,m}. Adds to the base
 //  DIXToolbarWindowController: localized toolbar-item labels/tooltips pulled
-//  from the matching menu item, multi-state toolbar images, and toolbar-item
-//  validation routed through -validateMenuItem: via NSToolbarItemValidationAdapter
-//  (which stays ObjC because it relies on NSInvocation forwarding).
+//  from the matching menu item, multi-state toolbar images, and unified
+//  menu/toolbar command validation (see `CommandValidation`).
+//
+//  The original routed toolbar-item validation through -validateMenuItem: by
+//  wrapping the toolbar item in an NSInvocation-forwarding proxy
+//  (NSToolbarItemValidationAdapter) that impersonated an NSMenuItem and
+//  translated -setState: into a toolbar icon swap. That proxy is gone: the
+//  per-command decision is now a plain `CommandValidation` value that both
+//  validateMenuItem(_:) and validateToolbarItem(_:) compute and apply to their
+//  own item type.
 //
 //  GPL v3
 //
 
 import Cocoa
 
+/// The validation result for a command, independent of whether it is shown as a
+/// menu item or a toolbar item: whether it's enabled, an optional title that
+/// toggles (e.g. "Show…" ↔ "Hide…"), and an optional on/off state that a toolbar
+/// button renders as a different icon (where a menu item would show a checkmark).
+struct CommandValidation {
+    var isEnabled: Bool = true
+    var title: String? = nil                        // localization key, e.g. "Hide Free Space"
+    var toolbarState: NSControl.StateValue? = nil   // drives the toolbar icon swap; nil = no toggle
+}
+
 @objc(OAToolbarWindowControllerEx)
 class OAToolbarWindowControllerEx: DIXToolbarWindowController, NSMenuItemValidation {
 
-    private static let validationAdapter = NSToolbarItemValidationAdapter()
     private static let stateImages = NSMutableDictionary()  // configName -> (itemId -> (imageKey -> NSImage))
 
-    // returns an image for a toolbar item in a specific state (on/off/mixed, like a menu item)
-    @objc(toolbar:imageForToolbarItem:forState:)
-    func toolbar(_ theToolbar: NSToolbar, imageForToolbarItem item: NSToolbarItem, forState state: Int) -> NSImage? {
+    // image for a toolbar item in a given on/off/mixed state — a toolbar button's
+    // equivalent of a menu item's checkmark. Image names come from the .toolbar
+    // plist (imageName / imageNameOffState / imageNameMixedState); cached per
+    // toolbar config + item.
+    private func stateImage(for item: NSToolbarItem, state: NSControl.StateValue) -> NSImage? {
         let imageKey: String
         switch state {
-        case NSControl.StateValue.on.rawValue: imageKey = "imageName"
-        case NSControl.StateValue.off.rawValue: imageKey = "imageNameOffState"
-        case NSControl.StateValue.mixed.rawValue: imageKey = "imageNameMixedState"
+        case .on: imageKey = "imageName"
+        case .off: imageKey = "imageNameOffState"
+        case .mixed: imageKey = "imageNameMixedState"
         default: return nil
         }
 
@@ -129,16 +147,39 @@ class OAToolbarWindowControllerEx: DIXToolbarWindowController, NSMenuItemValidat
     @objc var documentController: NSDocumentController { NSDocumentController.shared }
     @objc var application: NSApplication { NSApp }
 
-    // base impl; MainWindowController overrides with the real validation logic
-    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool { true }
+    // The single source of truth for command validation. Subclasses override
+    // this; the menu and toolbar validators below both call it and apply the
+    // result to their own item type. (Replaces the old menu-item-impersonating
+    // NSToolbarItemValidationAdapter.)
+    func commandValidation(forAction action: Selector?) -> CommandValidation { CommandValidation() }
 
-    @objc func validateToolbarItem(_ theItem: NSToolbarItem) -> Bool {
+    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        let v = commandValidation(forAction: menuItem.action)
+        // a menu item conveys on/off via its title ("Show…"/"Hide…"), not a checkmark
+        if let title = v.title { menuItem.title = NSLocalizedString(title, comment: "") }
+        return v.isEnabled
+    }
+
+    @objc func validateToolbarItem(_ item: NSToolbarItem) -> Bool {
         guard window?.isKeyWindow == true else { return false }
+        let v = commandValidation(forAction: item.action)
 
-        Self.validationAdapter.setToolbarItem(theItem)
-        // the adapter masquerades as the menu item being validated (it forwards
-        // unknown selectors to the toolbar item)
-        return validateMenuItem(unsafeBitCast(Self.validationAdapter, to: NSMenuItem.self))
+        // NSToolbarItem.title is 10.15+ (deployment target is 10.13); the original
+        // proxy set it dynamically only if the item responded, so do the same.
+        if let title = v.title {
+            let localized = NSLocalizedString(title, comment: "")
+            if item.responds(to: NSSelectorFromString("setTitle:")) {
+                item.setValue(localized, forKey: "title")
+            }
+        }
+
+        // a toolbar button shows on/off as a different icon (what the proxy did by
+        // intercepting -setState:)
+        if let state = v.toolbarState, let image = stateImage(for: item, state: state), image != item.image {
+            item.image = image
+        }
+
+        return v.isEnabled
     }
 }
 

@@ -42,7 +42,6 @@
 		A38A5DC9B22A95B97DC718C0 /* NSDictionary+DIX.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE7DA50E548B4B914FF582F /* NSDictionary+DIX.swift */; };
 		A77E870E18BB52DE3FC1F297 /* OAToolbarWindowControllerEx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2F328C2E070331442F7838 /* OAToolbarWindowControllerEx.swift */; };
 		A92B2F03A092207CB9351322 /* FileSystemDocSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 605CD6DC6803AEF39D3BCFD7 /* FileSystemDocSupport.m */; };
-		A9622C8DF5633E6246836EC1 /* NSToolbarItemValidationAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D90ABFED165F8E8899C7CDA /* NSToolbarItemValidationAdapter.m */; };
 		AD4D0B603E415C0312E1FAE9 /* FSItemSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = DAE037FCB75107E5EBA047FC /* FSItemSupport.m */; };
 		B7DD639270776FCBB8E6F9A1 /* DIXFileInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7919EA43720ED9B5F3E1FBD /* DIXFileInfoView.swift */; };
 		B7E23EBE548DD264DE60019A /* NSURL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */; };
@@ -134,7 +133,6 @@
 		61F041B846D215F56FD71B86 /* NTTitledInfoPair.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NTTitledInfoPair.swift; sourceTree = "<group>"; };
 		65A21FBEA89EA20EA7BA85FE /* FileKindStatistic.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileKindStatistic.swift; sourceTree = "<group>"; };
 		681C249233967AABE8164D38 /* Preferences.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
-		6D90ABFED165F8E8899C7CDA /* NSToolbarItemValidationAdapter.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = NSToolbarItemValidationAdapter.m; sourceTree = "<group>"; };
 		75FD0D13F8068F8EB2360C71 /* MainWindowController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		7D5D77E8A6FA9D6E3DF23363 /* FilesOutlineViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FilesOutlineViewController.swift; sourceTree = "<group>"; };
 		810DBD18401F6CB8CFDD4B8B /* PreferenceKeys.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = PreferenceKeys.h; sourceTree = "<group>"; };
@@ -151,7 +149,6 @@
 		AE0BEFAB459530C837B06E47 /* ImageAndTextCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ImageAndTextCell.swift; sourceTree = "<group>"; };
 		B0742A9C51D4948DC4C86237 /* NSFileManager-Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSFileManager-Extensions.swift"; sourceTree = "<group>"; };
 		B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileSizeFormatter.swift; sourceTree = "<group>"; };
-		B4C969635BD92A92BC6E3C24 /* NSToolbarItemValidationAdapter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = NSToolbarItemValidationAdapter.h; sourceTree = "<group>"; };
 		B4D04A8E391BDE18CE106866 /* AppController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
 		B97F105B53A3491AE4483C08 /* FileKindsPopupController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileKindsPopupController.swift; sourceTree = "<group>"; };
 		B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSURL-Extensions.swift"; sourceTree = "<group>"; };
@@ -434,8 +431,6 @@
 			children = (
 				34BE66267DB788AF6A238073 /* DIXToolbarWindowController.swift */,
 				3C2F328C2E070331442F7838 /* OAToolbarWindowControllerEx.swift */,
-				6D90ABFED165F8E8899C7CDA /* NSToolbarItemValidationAdapter.m */,
-				B4C969635BD92A92BC6E3C24 /* NSToolbarItemValidationAdapter.h */,
 			);
 			name = OmniAppKitExtensions;
 			sourceTree = "<group>";
@@ -726,7 +721,6 @@
 				92894F0ED483F717F70271A9 /* DIXToolbarWindowController.swift in Sources */,
 				A77E870E18BB52DE3FC1F297 /* OAToolbarWindowControllerEx.swift in Sources */,
 				0F15D1EACF58E9553615CED0 /* MainWindowController.swift in Sources */,
-				A9622C8DF5633E6246836EC1 /* NSToolbarItemValidationAdapter.m in Sources */,
 				65CDE8B415CC459BE9E61E11 /* GenericArrayController.swift in Sources */,
 				9D2C5E2041F1C77F43961414 /* FileKindsPopupController.swift in Sources */,
 				30CC349CE2D7D87136EC0E40 /* SelectionListController.swift in Sources */,

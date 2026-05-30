@@ -38,9 +38,4 @@
 // uses getTime()/subtractTime() to throttle its event-loop pumping.
 #import "Timing.h"
 
-// NSToolbarItemValidationAdapter.h is macro-clean (Cocoa only). The Swift
-// OAToolbarWindowControllerEx uses this ObjC forwardInvocation: proxy to route
-// toolbar-item validation through -validateMenuItem:.
-#import "NSToolbarItemValidationAdapter.h"
-
 #endif /* DiskInventoryX_BridgingHeader_h */
