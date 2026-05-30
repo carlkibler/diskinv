@@ -73,7 +73,7 @@ class TreeMapViewController: NSObject {
 
     // MARK: - TreeMapView data source
 
-    override func treeMapView(_ view: TreeMapView!, child index: UInt, ofItem item: Any!) -> Any! {
+    @objc func treeMapView(_ view: TreeMapView!, child index: UInt, ofItem item: Any!) -> Any! {
         let fsItem = (item as? FSItem) ?? rootItem()
 
         if fsItem === rootItem(), let fsItem = fsItem, index >= fsItem.childCount() {
@@ -85,12 +85,12 @@ class TreeMapViewController: NSObject {
         return fsItem?.child(at: index)
     }
 
-    override func treeMapView(_ view: TreeMapView!, isNode item: Any!) -> Bool {
+    @objc func treeMapView(_ view: TreeMapView!, isNode item: Any!) -> Bool {
         guard let fsItem = (item as? FSItem) ?? rootItem() else { return false }
         return !fsItem.isSpecialItem() && (document()?.itemIsNode(fsItem) ?? false)
     }
 
-    override func treeMapView(_ view: TreeMapView!, numberOfChildrenOfItem item: Any!) -> UInt32 {
+    @objc func treeMapView(_ view: TreeMapView!, numberOfChildrenOfItem item: Any!) -> UInt32 {
         let fsItem = (item as? FSItem) ?? rootItem()
         var childCount = fsItem?.childCount() ?? 0
 
@@ -102,7 +102,7 @@ class TreeMapViewController: NSObject {
         return UInt32(childCount)
     }
 
-    override func treeMapView(_ view: TreeMapView!, weightByItem item: Any!) -> UInt64 {
+    @objc func treeMapView(_ view: TreeMapView!, weightByItem item: Any!) -> UInt64 {
         let fsItem = (item as? FSItem) ?? rootItem()
         var size = fsItem?.sizeValue() ?? 0
 
@@ -115,12 +115,12 @@ class TreeMapViewController: NSObject {
 
     // MARK: - TreeMapView delegate
 
-    override func treeMapView(_ view: TreeMapView!, getToolTipByItem item: Any!) -> String! {
+    @objc func treeMapView(_ view: TreeMapView!, getToolTipByItem item: Any!) -> String! {
         let fsItem = (item as? FSItem) ?? rootItem()
         return fsItem?.displayName()
     }
 
-    override func treeMapView(_ view: TreeMapView!, willDisplayItem item: Any!, withRenderer renderer: TMVItem!) {
+    @objc func treeMapView(_ view: TreeMapView!, willDisplayItem item: Any!, withRenderer renderer: TMVItem!) {
         let fsItem = (item as? FSItem) ?? rootItem()
 
         var color: NSColor?
@@ -136,7 +136,8 @@ class TreeMapViewController: NSObject {
         renderer.setCushionColor(color)
     }
 
-    override func treeMapView(_ view: TreeMapView!, willShowMenuFor event: NSEvent!) {
+    @objc(treeMapView:willShowMenuForEvent:)
+    func treeMapView(_ view: TreeMapView!, willShowMenuFor event: NSEvent!) {
         guard event.type == .rightMouseDown else { return }
 
         // select the item under the click so the user sees which item the menu is for
@@ -152,7 +153,7 @@ class TreeMapViewController: NSObject {
 
     // MARK: - TreeMapView notifications (auto-registered by the view via respondsToSelector)
 
-    override func treeMapViewItemTouched(_ notification: Notification!) {
+    @objc func treeMapViewItemTouched(_ notification: Notification!) {
         let fsItem = notification.userInfo?[TMVTouchedItem] as? FSItem
 
         guard let fsItem = fsItem else {
@@ -174,7 +175,7 @@ class TreeMapViewController: NSObject {
         _fileNameTextField.stringValue = displayName
     }
 
-    override func treeMapViewSelectionDidChange(_ notification: Notification!) {
+    @objc func treeMapViewSelectionDidChange(_ notification: Notification!) {
         let item = _treeMapView.selectedItem() as? FSItem
         let doc = document()
 

@@ -47,11 +47,6 @@
 // uses getTime()/subtractTime() to throttle its event-loop pumping.
 #import "Timing.h"
 
-// TreeMapView.h is macro-clean (its cone is Cocoa + the already-bridged
-// TMVCushionRenderer/TMVItem). The Swift MainWindowController types its
-// _treeMapView outlet as TreeMapView and calls its benchmark/zoom/hit-test API.
-#import "TreeMapView.h"
-
 // NSToolbarItemValidationAdapter.h is macro-clean (Cocoa only). The Swift
 // OAToolbarWindowControllerEx uses this ObjC forwardInvocation: proxy to route
 // toolbar-item validation through -validateMenuItem:.
