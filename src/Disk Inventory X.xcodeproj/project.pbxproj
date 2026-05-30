@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00E61A276D50F5713A1CE34F /* InfoPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 947976A510D913EF5220E372 /* InfoPanelController.swift */; };
 		0F15D1EACF58E9553615CED0 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FD0D13F8068F8EB2360C71 /* MainWindowController.swift */; };
 		101D79A986332ECE07A0B9B6 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681C249233967AABE8164D38 /* Preferences.swift */; };
 		1658101C80FB6359C8EC6C16 /* ImageAndTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0BEFAB459530C837B06E47 /* ImageAndTextCell.swift */; };
@@ -63,7 +64,6 @@
 		FCCFB2AA097FA3FD009EA2B6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2A9097FA3FD009EA2B6 /* main.m */; };
 		FCCFB312097FA42B009EA2B6 /* Timing.c in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2CE097FA42B009EA2B6 /* Timing.c */; };
 		FCCFB315097FA42B009EA2B6 /* DIXFileInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2D6097FA42B009EA2B6 /* DIXFileInfoView.m */; };
-		FCCFB316097FA42B009EA2B6 /* InfoPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2D8097FA42B009EA2B6 /* InfoPanelController.m */; };
 		FCCFB31D097FA42B009EA2B6 /* TreeMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2E8097FA42B009EA2B6 /* TreeMapViewController.m */; };
 		FCCFB324097FA42B009EA2B6 /* MyDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2F9097FA42B009EA2B6 /* MyDocumentController.m */; };
 		FCCFB33C097FA44A009EA2B6 /* MainWindowToolbar.toolbar in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB32A097FA44A009EA2B6 /* MainWindowToolbar.toolbar */; };
@@ -143,6 +143,7 @@
 		8D15AC370486D014006FF6A4 /* Disk Inventory X.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Disk Inventory X.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E0D10FE262F826BA887E721 /* FSItemSupport.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FSItemSupport.h; sourceTree = "<group>"; };
 		910371DEE0676DBED23D2C5D /* NSString+DIX.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSString+DIX.swift"; sourceTree = "<group>"; };
+		947976A510D913EF5220E372 /* InfoPanelController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = InfoPanelController.swift; sourceTree = "<group>"; };
 		947C93EA4AB5667DCF7FA814 /* DIXOutlineView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DIXOutlineView.swift; sourceTree = "<group>"; };
 		A394BDD3823130DB4E66CB14 /* FileKindsTableController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileKindsTableController.swift; sourceTree = "<group>"; };
 		AE0BEFAB459530C837B06E47 /* ImageAndTextCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ImageAndTextCell.swift; sourceTree = "<group>"; };
@@ -226,8 +227,6 @@
 		FCCFB2CF097FA42B009EA2B6 /* Timing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Timing.h; sourceTree = "<group>"; };
 		FCCFB2D5097FA42B009EA2B6 /* DIXFileInfoView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DIXFileInfoView.h; sourceTree = "<group>"; };
 		FCCFB2D6097FA42B009EA2B6 /* DIXFileInfoView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DIXFileInfoView.m; sourceTree = "<group>"; };
-		FCCFB2D7097FA42B009EA2B6 /* InfoPanelController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = InfoPanelController.h; sourceTree = "<group>"; };
-		FCCFB2D8097FA42B009EA2B6 /* InfoPanelController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = InfoPanelController.m; sourceTree = "<group>"; };
 		FCCFB2E8097FA42B009EA2B6 /* TreeMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TreeMapViewController.m; sourceTree = "<group>"; };
 		FCCFB2E9097FA42B009EA2B6 /* TreeMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TreeMapViewController.h; sourceTree = "<group>"; };
 		FCCFB2F9097FA42B009EA2B6 /* MyDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyDocumentController.m; sourceTree = "<group>"; };
@@ -484,8 +483,7 @@
 			children = (
 				FCCFB2D5097FA42B009EA2B6 /* DIXFileInfoView.h */,
 				FCCFB2D6097FA42B009EA2B6 /* DIXFileInfoView.m */,
-				FCCFB2D7097FA42B009EA2B6 /* InfoPanelController.h */,
-				FCCFB2D8097FA42B009EA2B6 /* InfoPanelController.m */,
+				947976A510D913EF5220E372 /* InfoPanelController.swift */,
 			);
 			name = InfoPanel;
 			sourceTree = "<group>";
@@ -725,7 +723,6 @@
 				FCSWFT010000000000001 /* Shim.swift in Sources */,
 				FCCFB312097FA42B009EA2B6 /* Timing.c in Sources */,
 				FCCFB315097FA42B009EA2B6 /* DIXFileInfoView.m in Sources */,
-				FCCFB316097FA42B009EA2B6 /* InfoPanelController.m in Sources */,
 				FCCFB31D097FA42B009EA2B6 /* TreeMapViewController.m in Sources */,
 				FCCFB324097FA42B009EA2B6 /* MyDocumentController.m in Sources */,
 				FC7F775D1067BAB10090E839 /* NTFilePasteboardSource.m in Sources */,
@@ -774,6 +771,7 @@
 				30CC349CE2D7D87136EC0E40 /* SelectionListController.swift in Sources */,
 				66BF4C4F15063677EDCD1498 /* FileKindsTableController.swift in Sources */,
 				3FF8250EC9522139005B8F32 /* SelectionListTableController.swift in Sources */,
+				00E61A276D50F5713A1CE34F /* InfoPanelController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

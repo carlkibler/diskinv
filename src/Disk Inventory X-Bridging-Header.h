@@ -41,9 +41,10 @@
 // FileSystemDoc port (extern C string constants cannot live in Swift).
 #import "FileSystemDocSupport.h"
 
-// InfoPanelController.h is macro-clean (Cocoa + @class FSItem). The Swift
-// FileSystemDoc keeps the info panel in sync on selection changes.
-#import "InfoPanelController.h"
+// DIXFileInfoView.h (and its NTInfoView/NTTitledInfoView cone) is macro-clean
+// (Cocoa only). The Swift InfoPanelController holds a DIXFileInfoView outlet and
+// sets its URL; the view itself stays Objective-C (Phase 4 CocoaTech widgets).
+#import "DIXFileInfoView.h"
 
 // Timing.h is a pure-C stopwatch (stdint only). The Swift LoadingPanelController
 // uses getTime()/subtractTime() to throttle its event-loop pumping.
