@@ -25,10 +25,6 @@
 // FSItemIndexType NS_OPTIONS bitmask to the Swift FSItemIndex port.
 #import "FSItemIndexType.h"
 
-// PreferenceKeys.h is macro-clean (Foundation only). Exposed so the Swift
-// Preferences port can reference the extern NSString* key constants.
-#import "PreferenceKeys.h"
-
 // FileSystemDocSupport.h is macro-clean (Foundation only). Holds the KVO
 // key and notification-name extern NSString* constants needed by the Swift
 // FileSystemDoc port (extern C string constants cannot live in Swift).

@@ -27,7 +27,6 @@
 		469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */; };
 		5987836165E24D534E9363F8 /* NTTitledInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C71DD92C50ECB738F91939C /* NTTitledInfoView.swift */; };
 		5D29A9BD29A3029B79A4EA87 /* NSView-BackingCoordsHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93D51EECA2D4EA8A876ED92 /* NSView-BackingCoordsHelpers.swift */; };
-		5F1CBF7747F6D9EE85CCB8B0 /* PreferenceKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B0B61085C56856795EC1CF /* PreferenceKeys.m */; };
 		65CDE8B415CC459BE9E61E11 /* GenericArrayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8868E203BE74202C275005 /* GenericArrayController.swift */; };
 		66BF4C4F15063677EDCD1498 /* FileKindsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394BDD3823130DB4E66CB14 /* FileKindsTableController.swift */; };
 		6EB8830E53A30980E6488C2F /* FileKindStatistic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A21FBEA89EA20EA7BA85FE /* FileKindStatistic.swift */; };
@@ -53,6 +52,7 @@
 		D9A976AF3D313332F785BB1F /* FSItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB2E0E221D5C8CDB96D3383 /* FSItem.swift */; };
 		DAEFEF161562551BD14B8E4F /* VolumeUsageTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1B4DF6ECB2A4849A7C5EFA /* VolumeUsageTransformer.swift */; };
 		E526153216CF337C89AD16B8 /* FileTypeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C3BB9BCC1F32AEEE06510E /* FileTypeColors.swift */; };
+		E8878A0F4CF1F0C784428267 /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A24E71ADB344AE8026F730 /* PreferenceKeys.swift */; };
 		ECCF632941A84FF02122D749 /* LoadingPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060080DADA4A2E1545B0F157 /* LoadingPanelController.swift */; };
 		F02A9E6A24D528090ADE1B58 /* FileSystemDoc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD937CB125819B69DA7AA11 /* FileSystemDoc.swift */; };
 		FC2B2BBB277E472C0040ED6C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
@@ -129,13 +129,12 @@
 		5B7C89F055C7202EF5EF2FF0 /* AppsForItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppsForItem.swift; sourceTree = "<group>"; };
 		5BB2E0E221D5C8CDB96D3383 /* FSItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FSItem.swift; sourceTree = "<group>"; };
 		605CD6DC6803AEF39D3BCFD7 /* FileSystemDocSupport.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = FileSystemDocSupport.m; sourceTree = "<group>"; };
-		61B0B61085C56856795EC1CF /* PreferenceKeys.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PreferenceKeys.m; sourceTree = "<group>"; };
 		61F041B846D215F56FD71B86 /* NTTitledInfoPair.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NTTitledInfoPair.swift; sourceTree = "<group>"; };
 		65A21FBEA89EA20EA7BA85FE /* FileKindStatistic.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileKindStatistic.swift; sourceTree = "<group>"; };
 		681C249233967AABE8164D38 /* Preferences.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		75FD0D13F8068F8EB2360C71 /* MainWindowController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
+		79A24E71ADB344AE8026F730 /* PreferenceKeys.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PreferenceKeys.swift; sourceTree = "<group>"; };
 		7D5D77E8A6FA9D6E3DF23363 /* FilesOutlineViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FilesOutlineViewController.swift; sourceTree = "<group>"; };
-		810DBD18401F6CB8CFDD4B8B /* PreferenceKeys.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = PreferenceKeys.h; sourceTree = "<group>"; };
 		858D2D141C67702695FB5E29 /* NTFilePasteboardSource.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NTFilePasteboardSource.swift; sourceTree = "<group>"; };
 		85C3BB9BCC1F32AEEE06510E /* FileTypeColors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileTypeColors.swift; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Disk Inventory X.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Disk Inventory X.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -338,8 +337,6 @@
 				85C3BB9BCC1F32AEEE06510E /* FileTypeColors.swift */,
 				910371DEE0676DBED23D2C5D /* NSString+DIX.swift */,
 				FCE7DA50E548B4B914FF582F /* NSDictionary+DIX.swift */,
-				810DBD18401F6CB8CFDD4B8B /* PreferenceKeys.h */,
-				61B0B61085C56856795EC1CF /* PreferenceKeys.m */,
 				681C249233967AABE8164D38 /* Preferences.swift */,
 				CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */,
 				65A21FBEA89EA20EA7BA85FE /* FileKindStatistic.swift */,
@@ -353,6 +350,7 @@
 				FD1DF409899B01123B272088 /* FileSystemDocSupport.h */,
 				B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */,
 				A1B48E81D17E20B8F0085945 /* MyDocumentController.swift */,
+				79A24E71ADB344AE8026F730 /* PreferenceKeys.swift */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -699,7 +697,6 @@
 				E526153216CF337C89AD16B8 /* FileTypeColors.swift in Sources */,
 				99D6BD238CED231F67E5305E /* NSString+DIX.swift in Sources */,
 				A38A5DC9B22A95B97DC718C0 /* NSDictionary+DIX.swift in Sources */,
-				5F1CBF7747F6D9EE85CCB8B0 /* PreferenceKeys.m in Sources */,
 				101D79A986332ECE07A0B9B6 /* Preferences.swift in Sources */,
 				7D12C2BB1B60E917BDA649DD /* FSItem-Utilities.swift in Sources */,
 				6EB8830E53A30980E6488C2F /* FileKindStatistic.swift in Sources */,
@@ -740,6 +737,7 @@
 				B7DD639270776FCBB8E6F9A1 /* DIXFileInfoView.swift in Sources */,
 				0383E2AA06B2692610D4B9C3 /* NTFilePasteboardSource.swift in Sources */,
 				C29D60B76742195A62A1BF4B /* MyDocumentController.swift in Sources */,
+				E8878A0F4CF1F0C784428267 /* PreferenceKeys.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
