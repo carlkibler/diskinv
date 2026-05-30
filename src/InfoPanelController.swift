@@ -67,7 +67,7 @@ class InfoPanelController: NSObject {
         if currentURL == nil || !fileURL.isEqual(to: currentURL! as NSURL) {
             _displayNameTextField.stringValue = fsItem.displayName()
             _iconImageView.image = fsItem.icon(withSize: 32)
-            _infoView.setURL(fileURL as URL)
+            _infoView.setURL(fileURL)
         }
     }
 }
