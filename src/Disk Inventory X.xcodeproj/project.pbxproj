@@ -32,6 +32,7 @@
 		65CDE8B415CC459BE9E61E11 /* GenericArrayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8868E203BE74202C275005 /* GenericArrayController.swift */; };
 		66BF4C4F15063677EDCD1498 /* FileKindsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394BDD3823130DB4E66CB14 /* FileKindsTableController.swift */; };
 		6EB8830E53A30980E6488C2F /* FileKindStatistic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A21FBEA89EA20EA7BA85FE /* FileKindStatistic.swift */; };
+		70F3A1D4CEFCD380BBE4BAB2 /* FSItemScanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFE2559DC8E30F4BE2D3B44 /* FSItemScanTests.swift */; };
 		78B37DB4F3B5F64264236053 /* FSItemIndexType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E32B771FDFC845773CA59141 /* FSItemIndexType.swift */; };
 		7D12C2BB1B60E917BDA649DD /* FSItem-Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */; };
 		7DFA0CE01491BE4C4ADC6CB4 /* FSItemIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08826F8E677C447E8E141C12 /* FSItemIndex.swift */; };
@@ -43,6 +44,7 @@
 		9D2C5E2041F1C77F43961414 /* FileKindsPopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97F105B53A3491AE4483C08 /* FileKindsPopupController.swift */; };
 		9DBAD17CB42ACC457E64701C /* NTTitledInfoPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F041B846D215F56FD71B86 /* NTTitledInfoPair.swift */; };
 		A38A5DC9B22A95B97DC718C0 /* NSDictionary+DIX.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE7DA50E548B4B914FF582F /* NSDictionary+DIX.swift */; };
+		A650C9FAA24EA7CA3844683D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C030D33FA084A8BCA00CAC91 /* Cocoa.framework */; };
 		A77E870E18BB52DE3FC1F297 /* OAToolbarWindowControllerEx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2F328C2E070331442F7838 /* OAToolbarWindowControllerEx.swift */; };
 		B7DD639270776FCBB8E6F9A1 /* DIXFileInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7919EA43720ED9B5F3E1FBD /* DIXFileInfoView.swift */; };
 		B7E23EBE548DD264DE60019A /* NSURL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */; };
@@ -53,6 +55,7 @@
 		D31AF347303A246F0FA1A2E5 /* DIXOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 947C93EA4AB5667DCF7FA814 /* DIXOutlineView.swift */; };
 		D9A976AF3D313332F785BB1F /* FSItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB2E0E221D5C8CDB96D3383 /* FSItem.swift */; };
 		DAEFEF161562551BD14B8E4F /* VolumeUsageTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1B4DF6ECB2A4849A7C5EFA /* VolumeUsageTransformer.swift */; };
+		DF7F1C4BDD1BF388305A7583 /* TestFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DDD98E114047F8AA68692C /* TestFixtures.swift */; };
 		E526153216CF337C89AD16B8 /* FileTypeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C3BB9BCC1F32AEEE06510E /* FileTypeColors.swift */; };
 		E8878A0F4CF1F0C784428267 /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A24E71ADB344AE8026F730 /* PreferenceKeys.swift */; };
 		ECCF632941A84FF02122D749 /* LoadingPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060080DADA4A2E1545B0F157 /* LoadingPanelController.swift */; };
@@ -94,6 +97,16 @@
 		FE6EAB992076F520D661A2F9 /* TreeMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CD1EED6AF7EDF24C846A81 /* TreeMapViewController.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		2F27B194B5FFE6DCE2A91E3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D15AC270486D014006FF6A4;
+			remoteInfo = "Disk Inventory X";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		FCED9ED9106ABB4D00667E44 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -112,6 +125,7 @@
 		08826F8E677C447E8E141C12 /* FSItemIndex.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FSItemIndex.swift; sourceTree = "<group>"; };
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		1067D9C4D44C037B976B72AA /* TMVCushionRenderer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TMVCushionRenderer.swift; sourceTree = "<group>"; };
+		10DDD98E114047F8AA68692C /* TestFixtures.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TestFixtures.swift; sourceTree = "<group>"; };
 		13C5CB71246ACE0950024690 /* SelectionListTableController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SelectionListTableController.swift; sourceTree = "<group>"; };
 		1517F835F8E6531CD62C1AB9 /* ZoomInfo.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ZoomInfo.swift; sourceTree = "<group>"; };
 		2A0F85B4E2351AEEBDB018B0 /* VolumeNameTransformer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VolumeNameTransformer.swift; sourceTree = "<group>"; };
@@ -120,6 +134,7 @@
 		3183A3D59C082978B3EAD150 /* MainWindow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
 		34BE66267DB788AF6A238073 /* DIXToolbarWindowController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DIXToolbarWindowController.swift; sourceTree = "<group>"; };
 		35F4CB9BB1F131935161009F /* SelectionListController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SelectionListController.swift; sourceTree = "<group>"; };
+		376FBA2DA3A08FCA1A9C203B /* Disk Inventory XTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Disk Inventory XTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3895E8870A4BD3CD7CD714C2 /* main.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3C2F328C2E070331442F7838 /* OAToolbarWindowControllerEx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OAToolbarWindowControllerEx.swift; sourceTree = "<group>"; };
 		4C71DD92C50ECB738F91939C /* NTTitledInfoView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NTTitledInfoView.swift; sourceTree = "<group>"; };
@@ -151,7 +166,9 @@
 		B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSURL-Extensions.swift"; sourceTree = "<group>"; };
 		BB4E73D84F9A5A5072F5FCF9 /* FSItemSupport.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FSItemSupport.swift; sourceTree = "<group>"; };
 		BD83A6BBF628EAFD893F691B /* TMVItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TMVItem.swift; sourceTree = "<group>"; };
+		C030D33FA084A8BCA00CAC91 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		C6255670E06006ACD3C209B0 /* DrivesPanelController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DrivesPanelController.swift; sourceTree = "<group>"; };
+		CBFE2559DC8E30F4BE2D3B44 /* FSItemScanTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FSItemScanTests.swift; sourceTree = "<group>"; };
 		CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "FSItem-Utilities.swift"; sourceTree = "<group>"; };
 		D2B23920DF00C35746695256 /* TreeMapView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TreeMapView.swift; sourceTree = "<group>"; };
 		D9303FEF3F04D57E6A0398D9 /* NSBitmapImageRep-CreationExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSBitmapImageRep-CreationExtensions.swift"; sourceTree = "<group>"; };
@@ -235,6 +252,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3908CC45A61AFED7453356C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A650C9FAA24EA7CA3844683D /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D15AC330486D014006FF6A4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -283,6 +308,7 @@
 			isa = PBXGroup;
 			children = (
 				8D15AC370486D014006FF6A4 /* Disk Inventory X.app */,
+				376FBA2DA3A08FCA1A9C203B /* Disk Inventory XTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -312,6 +338,7 @@
 				FCEE299D106266CB00B16DBB /* Project References */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
 				050491EFA0C121A96FFE1552 /* TreeMap */,
+				6C090CF1B083CB2F0E798B34 /* Tests */,
 			);
 			name = "Disk Inventory X";
 			sourceTree = "<group>";
@@ -372,8 +399,27 @@
 				FC66DCF5107A28A500F46D76 /* OmniGroup */,
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
+				68CE623D8C9CD538212AFB65 /* OS X */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		68CE623D8C9CD538212AFB65 /* OS X */ = {
+			isa = PBXGroup;
+			children = (
+				C030D33FA084A8BCA00CAC91 /* Cocoa.framework */,
+			);
+			name = "OS X";
+			sourceTree = "<group>";
+		};
+		6C090CF1B083CB2F0E798B34 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				10DDD98E114047F8AA68692C /* TestFixtures.swift */,
+				CBFE2559DC8E30F4BE2D3B44 /* FSItemScanTests.swift */,
+			);
+			name = Tests;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		FC33B457230C842700133632 /* Foundation Extensions */ = {
@@ -551,6 +597,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		6ECCAD360DC2EDE174206D8A /* Disk Inventory XTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A7893B24A3EACE87BB85BED /* Build configuration list for PBXNativeTarget "Disk Inventory XTests" */;
+			buildPhases = (
+				CC43418604EAEFC0E480298F /* Sources */,
+				3908CC45A61AFED7453356C9 /* Frameworks */,
+				0075AEDE878E41EFE9AB24A5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C601379C88296B3F5D093684 /* PBXTargetDependency */,
+			);
+			name = "Disk Inventory XTests";
+			productName = "Disk Inventory XTests";
+			productReference = 376FBA2DA3A08FCA1A9C203B /* Disk Inventory XTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		8D15AC270486D014006FF6A4 /* Disk Inventory X */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C05733C708A9546B00998B17 /* Build configuration list for PBXNativeTarget "Disk Inventory X" */;
@@ -608,11 +672,19 @@
 			projectRoot = "";
 			targets = (
 				8D15AC270486D014006FF6A4 /* Disk Inventory X */,
+				6ECCAD360DC2EDE174206D8A /* Disk Inventory XTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0075AEDE878E41EFE9AB24A5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D15AC2B0486D014006FF6A4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -729,7 +801,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CC43418604EAEFC0E480298F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF7F1C4BDD1BF388305A7583 /* TestFixtures.swift in Sources */,
+				70F3A1D4CEFCD380BBE4BAB2 /* FSItemScanTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C601379C88296B3F5D093684 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Disk Inventory X";
+			target = 8D15AC270486D014006FF6A4 /* Disk Inventory X */;
+			targetProxy = 2F27B194B5FFE6DCE2A91E3C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		FC4C4ABF09802035004CCA22 /* Help */ = {
@@ -856,6 +946,44 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		A42F6B2B5C5EE5F784B19FC1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_BUNDLE_IDENTIFIER = com.derlien.DiskInventoryXTests;
+				PRODUCT_MODULE_NAME = DiskInventoryXTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_INCLUDE_PATHS = "$(inherited) \"$(BUILT_PRODUCTS_DIR)\"";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Disk Inventory Xs.app/Contents/MacOS/Disk Inventory Xs";
+			};
+			name = Debug;
+		};
+		A778598B4062A76807429C0B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_BUNDLE_IDENTIFIER = com.derlien.DiskInventoryXTests;
+				PRODUCT_MODULE_NAME = DiskInventoryXTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_INCLUDE_PATHS = "$(inherited) \"$(BUILT_PRODUCTS_DIR)\"";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Disk Inventory Xs.app/Contents/MacOS/Disk Inventory Xs";
+			};
+			name = Release;
+		};
 		C05733C808A9546B00998B17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -869,6 +997,7 @@
 				CURRENT_PROJECT_VERSION = 1.2.1;
 				DEVELOPMENT_TEAM = 65J464P6J4;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -902,6 +1031,7 @@
 				DEVELOPMENT_TEAM = 65J464P6J4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
@@ -952,6 +1082,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7A7893B24A3EACE87BB85BED /* Build configuration list for PBXNativeTarget "Disk Inventory XTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A778598B4062A76807429C0B /* Release */,
+				A42F6B2B5C5EE5F784B19FC1 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C05733C708A9546B00998B17 /* Build configuration list for PBXNativeTarget "Disk Inventory X" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
