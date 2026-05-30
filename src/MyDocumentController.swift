@@ -16,10 +16,6 @@
 //      ofType:) below, which already detects directories and re-dispatches to super with
 //      ofType: "Folder" — so document opening of folders still works without it.
 //
-//   2. The C global `BOOL g_EnableLogging` (read by the .pch LOG(...) macro) was
-//      relocated to FileSystemDocSupport.m; this class sets it at launch via the
-//      @objc DIXLogging setter (Swift can't assign a C `extern BOOL` directly).
-//
 //  GPL v3
 //
 
@@ -165,8 +161,6 @@ class MyDocumentController: NSDocumentController {
         //verify that our custom DocumentController is in use
         assert(NSDocumentController.shared is MyDocumentController,
                "the shared DocumentController is not our custom class!")
-
-        DIXLogging.updateGlobalLoggingFlag(UserDefaults.standard.bool(forKey: EnableLogging))
 
         //show the drives panel before "applicationDidFinishLaunching" so the panel is visible before the first document is loaded
         //(e.g. through drag&drop)

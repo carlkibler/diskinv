@@ -15,20 +15,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-// FSItem itself is now a Swift class (FSItem.swift). Its non-class support
-// symbols (FSItemType enum, g_fileCount/g_folderCount, exception names, the
-// NSString compareAsFilesystemName: category) live in FSItemSupport.h, which
-// is macro-clean (Cocoa only) and needed by the Swift FSItem port.
-#import "FSItemSupport.h"
-
 // FSItemIndexType.h is macro-clean (Foundation only). Exposes the
 // FSItemIndexType NS_OPTIONS bitmask to the Swift FSItemIndex port.
 #import "FSItemIndexType.h"
-
-// FileSystemDocSupport.h is macro-clean (Foundation only). Holds the KVO
-// key and notification-name extern NSString* constants needed by the Swift
-// FileSystemDoc port (extern C string constants cannot live in Swift).
-#import "FileSystemDocSupport.h"
 
 // Timing.h is a pure-C stopwatch (stdint only). The Swift LoadingPanelController
 // uses getTime()/subtractTime() to throttle its event-loop pumping.

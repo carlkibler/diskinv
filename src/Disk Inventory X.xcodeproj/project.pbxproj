@@ -24,6 +24,7 @@
 		3398EFE8AE32EA1210AD3520 /* ZoomInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1517F835F8E6531CD62C1AB9 /* ZoomInfo.swift */; };
 		3EC17004A27AD6C8935A519E /* NTInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FCA6EA81A3E03ED5166592 /* NTInfoView.swift */; };
 		3FF8250EC9522139005B8F32 /* SelectionListTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C5CB71246ACE0950024690 /* SelectionListTableController.swift */; };
+		461D55039229D162A6166CAF /* FileSystemDocSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89198A9697C1C62E945AD311 /* FileSystemDocSupport.swift */; };
 		469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */; };
 		5987836165E24D534E9363F8 /* NTTitledInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C71DD92C50ECB738F91939C /* NTTitledInfoView.swift */; };
 		5D29A9BD29A3029B79A4EA87 /* NSView-BackingCoordsHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93D51EECA2D4EA8A876ED92 /* NSView-BackingCoordsHelpers.swift */; };
@@ -34,14 +35,13 @@
 		7DFA0CE01491BE4C4ADC6CB4 /* FSItemIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08826F8E677C447E8E141C12 /* FSItemIndex.swift */; };
 		92894F0ED483F717F70271A9 /* DIXToolbarWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BE66267DB788AF6A238073 /* DIXToolbarWindowController.swift */; };
 		9573ED7A9DFE2380B34D2822 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3183A3D59C082978B3EAD150 /* MainWindow.swift */; };
+		998E1F9F62B8131F5150E737 /* FSItemSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4E73D84F9A5A5072F5FCF9 /* FSItemSupport.swift */; };
 		99D6BD238CED231F67E5305E /* NSString+DIX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910371DEE0676DBED23D2C5D /* NSString+DIX.swift */; };
 		99F17B7029B81682DFD9543A /* TMVItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD83A6BBF628EAFD893F691B /* TMVItem.swift */; };
 		9D2C5E2041F1C77F43961414 /* FileKindsPopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97F105B53A3491AE4483C08 /* FileKindsPopupController.swift */; };
 		9DBAD17CB42ACC457E64701C /* NTTitledInfoPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F041B846D215F56FD71B86 /* NTTitledInfoPair.swift */; };
 		A38A5DC9B22A95B97DC718C0 /* NSDictionary+DIX.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE7DA50E548B4B914FF582F /* NSDictionary+DIX.swift */; };
 		A77E870E18BB52DE3FC1F297 /* OAToolbarWindowControllerEx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2F328C2E070331442F7838 /* OAToolbarWindowControllerEx.swift */; };
-		A92B2F03A092207CB9351322 /* FileSystemDocSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 605CD6DC6803AEF39D3BCFD7 /* FileSystemDocSupport.m */; };
-		AD4D0B603E415C0312E1FAE9 /* FSItemSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = DAE037FCB75107E5EBA047FC /* FSItemSupport.m */; };
 		B7DD639270776FCBB8E6F9A1 /* DIXFileInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7919EA43720ED9B5F3E1FBD /* DIXFileInfoView.swift */; };
 		B7E23EBE548DD264DE60019A /* NSURL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */; };
 		C29D60B76742195A62A1BF4B /* MyDocumentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B48E81D17E20B8F0085945 /* MyDocumentController.swift */; };
@@ -128,7 +128,6 @@
 		53DD77A59DDF11306C10F8E8 /* DIXTableView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DIXTableView.swift; sourceTree = "<group>"; };
 		5B7C89F055C7202EF5EF2FF0 /* AppsForItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppsForItem.swift; sourceTree = "<group>"; };
 		5BB2E0E221D5C8CDB96D3383 /* FSItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FSItem.swift; sourceTree = "<group>"; };
-		605CD6DC6803AEF39D3BCFD7 /* FileSystemDocSupport.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = FileSystemDocSupport.m; sourceTree = "<group>"; };
 		61F041B846D215F56FD71B86 /* NTTitledInfoPair.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NTTitledInfoPair.swift; sourceTree = "<group>"; };
 		65A21FBEA89EA20EA7BA85FE /* FileKindStatistic.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileKindStatistic.swift; sourceTree = "<group>"; };
 		681C249233967AABE8164D38 /* Preferences.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
@@ -137,8 +136,8 @@
 		7D5D77E8A6FA9D6E3DF23363 /* FilesOutlineViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FilesOutlineViewController.swift; sourceTree = "<group>"; };
 		858D2D141C67702695FB5E29 /* NTFilePasteboardSource.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NTFilePasteboardSource.swift; sourceTree = "<group>"; };
 		85C3BB9BCC1F32AEEE06510E /* FileTypeColors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileTypeColors.swift; sourceTree = "<group>"; };
+		89198A9697C1C62E945AD311 /* FileSystemDocSupport.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileSystemDocSupport.swift; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Disk Inventory X.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Disk Inventory X.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		8E0D10FE262F826BA887E721 /* FSItemSupport.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FSItemSupport.h; sourceTree = "<group>"; };
 		910371DEE0676DBED23D2C5D /* NSString+DIX.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSString+DIX.swift"; sourceTree = "<group>"; };
 		947976A510D913EF5220E372 /* InfoPanelController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = InfoPanelController.swift; sourceTree = "<group>"; };
 		947C93EA4AB5667DCF7FA814 /* DIXOutlineView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DIXOutlineView.swift; sourceTree = "<group>"; };
@@ -151,13 +150,13 @@
 		B4D04A8E391BDE18CE106866 /* AppController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
 		B97F105B53A3491AE4483C08 /* FileKindsPopupController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileKindsPopupController.swift; sourceTree = "<group>"; };
 		B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSURL-Extensions.swift"; sourceTree = "<group>"; };
+		BB4E73D84F9A5A5072F5FCF9 /* FSItemSupport.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FSItemSupport.swift; sourceTree = "<group>"; };
 		BD83A6BBF628EAFD893F691B /* TMVItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TMVItem.swift; sourceTree = "<group>"; };
 		C6255670E06006ACD3C209B0 /* DrivesPanelController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DrivesPanelController.swift; sourceTree = "<group>"; };
 		CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "FSItem-Utilities.swift"; sourceTree = "<group>"; };
 		D2B23920DF00C35746695256 /* TreeMapView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TreeMapView.swift; sourceTree = "<group>"; };
 		D9303FEF3F04D57E6A0398D9 /* NSBitmapImageRep-CreationExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSBitmapImageRep-CreationExtensions.swift"; sourceTree = "<group>"; };
 		DA1B4DF6ECB2A4849A7C5EFA /* VolumeUsageTransformer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VolumeUsageTransformer.swift; sourceTree = "<group>"; };
-		DAE037FCB75107E5EBA047FC /* FSItemSupport.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = FSItemSupport.m; sourceTree = "<group>"; };
 		DC8868E203BE74202C275005 /* GenericArrayController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GenericArrayController.swift; sourceTree = "<group>"; };
 		E7919EA43720ED9B5F3E1FBD /* DIXFileInfoView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DIXFileInfoView.swift; sourceTree = "<group>"; };
 		E93D51EECA2D4EA8A876ED92 /* NSView-BackingCoordsHelpers.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSView-BackingCoordsHelpers.swift"; sourceTree = "<group>"; };
@@ -237,7 +236,6 @@
 		FCFB17B521B876A400E3F8C4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Disk Inventory X/Images.xcassets"; sourceTree = "<group>"; };
 		FCSWFT020000000000001 /* Shim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shim.swift; sourceTree = "<group>"; };
 		FCSWFT020000000000002 /* Disk Inventory X-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Disk Inventory X-Bridging-Header.h"; sourceTree = "<group>"; };
-		FD1DF409899B01123B272088 /* FileSystemDocSupport.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FileSystemDocSupport.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -343,14 +341,12 @@
 				08826F8E677C447E8E141C12 /* FSItemIndex.swift */,
 				455B95D5A6C09B1A5E97A959 /* FSItemIndexType.h */,
 				5BB2E0E221D5C8CDB96D3383 /* FSItem.swift */,
-				DAE037FCB75107E5EBA047FC /* FSItemSupport.m */,
-				8E0D10FE262F826BA887E721 /* FSItemSupport.h */,
 				4FD937CB125819B69DA7AA11 /* FileSystemDoc.swift */,
-				605CD6DC6803AEF39D3BCFD7 /* FileSystemDocSupport.m */,
-				FD1DF409899B01123B272088 /* FileSystemDocSupport.h */,
 				B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */,
 				A1B48E81D17E20B8F0085945 /* MyDocumentController.swift */,
 				79A24E71ADB344AE8026F730 /* PreferenceKeys.swift */,
+				89198A9697C1C62E945AD311 /* FileSystemDocSupport.swift */,
+				BB4E73D84F9A5A5072F5FCF9 /* FSItemSupport.swift */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -702,9 +698,7 @@
 				6EB8830E53A30980E6488C2F /* FileKindStatistic.swift in Sources */,
 				7DFA0CE01491BE4C4ADC6CB4 /* FSItemIndex.swift in Sources */,
 				D9A976AF3D313332F785BB1F /* FSItem.swift in Sources */,
-				AD4D0B603E415C0312E1FAE9 /* FSItemSupport.m in Sources */,
 				F02A9E6A24D528090ADE1B58 /* FileSystemDoc.swift in Sources */,
-				A92B2F03A092207CB9351322 /* FileSystemDocSupport.m in Sources */,
 				B7E23EBE548DD264DE60019A /* NSURL-Extensions.swift in Sources */,
 				2F7248AEC391F0624AFFF0E2 /* NSFileManager-Extensions.swift in Sources */,
 				D31AF347303A246F0FA1A2E5 /* DIXOutlineView.swift in Sources */,
@@ -738,6 +732,8 @@
 				0383E2AA06B2692610D4B9C3 /* NTFilePasteboardSource.swift in Sources */,
 				C29D60B76742195A62A1BF4B /* MyDocumentController.swift in Sources */,
 				E8878A0F4CF1F0C784428267 /* PreferenceKeys.swift in Sources */,
+				461D55039229D162A6166CAF /* FileSystemDocSupport.swift in Sources */,
+				998E1F9F62B8131F5150E737 /* FSItemSupport.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
