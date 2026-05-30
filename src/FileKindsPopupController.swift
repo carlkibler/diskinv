@@ -110,7 +110,7 @@ class FileKindsPopupController: GenericArrayController {
         let imageHeight = Int((popup.cell?.font?.pointSize ?? 0))
         let imageWidth = Int(Float(imageHeight) * 1.5)
 
-        guard let cushionRenderer = TMVCushionRenderer(rect: NSRect(x: 0, y: 0, width: imageWidth, height: imageHeight)) else { return }
+        let cushionRenderer = TMVCushionRenderer(rect: NSRect(x: 0, y: 0, width: imageWidth, height: imageHeight))
         cushionRenderer.addRidge(byHeightFactor: 0.6)
 
         guard let kindColors = document()?.fileTypeColors() else { return }

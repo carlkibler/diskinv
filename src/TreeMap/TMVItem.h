@@ -7,7 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TMVCushionRenderer.h"
+
+// TMVCushionRenderer is now a Swift class; forward-declare it here (the ivar is
+// just a pointer) so this header stays macro-clean and free of an import cycle
+// with the generated Swift header. TMVItem.m imports the generated header.
+@class TMVCushionRenderer;
 
 //holds display information about one cell in the treemap
 @interface TMVItem : NSObject
@@ -16,7 +20,7 @@
     id _delegate;   // tree map view's delegate (implements TreeMapViewDelegate)
     id _item;       // the data item in the data source which is represented by this tree map item
     id _view;       // the tree map view to which this item belongs
-    
+
     NSRect _rect;   // tree map item's rectangle (in backing coordinates of the tree map view)
     NSMutableArray *_childRenderers;
     TMVCushionRenderer *_cushionRenderer;

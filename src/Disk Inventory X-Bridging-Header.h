@@ -25,9 +25,6 @@
 // the Swift FSItem.writeToPasteboard:withTypes: needs the +file:toPasteboard:types: API.
 #import "NTFilePasteboardSource.h"
 
-// TMVCushionRenderer.h is macro-clean. Exposed for the Swift FileTypeColors port.
-#import "TMVCushionRenderer.h"
-
 // FSItemIndexType.h is macro-clean (Foundation only). Exposes the
 // FSItemIndexType NS_OPTIONS bitmask to the Swift FSItemIndex port.
 #import "FSItemIndexType.h"

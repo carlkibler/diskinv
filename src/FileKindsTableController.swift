@@ -110,9 +110,9 @@ class FileKindsTableController: NSObject {
 
         var image = _cushionImages[kindStatistic.kindName]
         if image == nil || image!.size != cellSize {
-            guard let bitmap = NSBitmapImageRep(rgbBitmapWithWidth: Int(cellSize.width), height: Int(cellSize.height)),
-                  let cushionRenderer = TMVCushionRenderer(rect: NSRect(origin: .zero, size: cellSize))
+            guard let bitmap = NSBitmapImageRep(rgbBitmapWithWidth: Int(cellSize.width), height: Int(cellSize.height))
             else { return image }
+            let cushionRenderer = TMVCushionRenderer(rect: NSRect(origin: .zero, size: cellSize))
 
             cushionRenderer.setColor(document()?.fileTypeColors().color(forKind: kindStatistic.kindName) ?? .black)
             cushionRenderer.addRidge(byHeightFactor: 0.5)
