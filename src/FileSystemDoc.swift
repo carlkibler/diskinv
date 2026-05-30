@@ -588,7 +588,14 @@ class FileSystemDoc: NSDocument, FSItemDelegate {
 
         let oldSelectedItem = _selectedItem
 
+        //The outline / treemap / selection-list controllers observe KVO under the
+        //key "selectedItem" (DocKeySelectedItem), but the backing property is
+        //_selectedItem — automatic KVO notifies for "_selectedItem", not
+        //"selectedItem", so those observers would never fire. Notify the observed
+        //key explicitly. (The getter selectedItem() is its KVC accessor.)
+        willChangeValue(forKey: DocKeySelectedItem)
         _selectedItem = item
+        didChangeValue(forKey: DocKeySelectedItem)
 
         //post notification
         postNotification(name: NSNotification.Name.GlobalSelectionChanged, oldItem: oldSelectedItem, newItem: _selectedItem)
