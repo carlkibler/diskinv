@@ -19,6 +19,7 @@
 		2F7248AEC391F0624AFFF0E2 /* NSFileManager-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0742A9C51D4948DC4C86237 /* NSFileManager-Extensions.swift */; };
 		2F9542B010981D00ED77CFA3 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D04A8E391BDE18CE106866 /* AppController.swift */; };
 		30CC349CE2D7D87136EC0E40 /* SelectionListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F4CB9BB1F131935161009F /* SelectionListController.swift */; };
+		3398EFE8AE32EA1210AD3520 /* ZoomInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1517F835F8E6531CD62C1AB9 /* ZoomInfo.swift */; };
 		35074B7B31895E36C7AF2663 /* TMVItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F97F95665DD8F2852C15F13C /* TMVItem.m */; };
 		3FF8250EC9522139005B8F32 /* SelectionListTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C5CB71246ACE0950024690 /* SelectionListTableController.swift */; };
 		469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */; };
@@ -46,7 +47,6 @@
 		D9A976AF3D313332F785BB1F /* FSItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB2E0E221D5C8CDB96D3383 /* FSItem.swift */; };
 		DAEFEF161562551BD14B8E4F /* VolumeUsageTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1B4DF6ECB2A4849A7C5EFA /* VolumeUsageTransformer.swift */; };
 		E526153216CF337C89AD16B8 /* FileTypeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C3BB9BCC1F32AEEE06510E /* FileTypeColors.swift */; };
-		E74D9EE0845E3ED4C6AF5C2D /* ZoomInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EDDC05C3ADA9FCDE2767C72D /* ZoomInfo.m */; };
 		EBA3BE2276EC5BDFB787C989 /* TreeMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8352AD9AF82D652ED4566153 /* TreeMapView.m */; };
 		ECCF632941A84FF02122D749 /* LoadingPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060080DADA4A2E1545B0F157 /* LoadingPanelController.swift */; };
 		F02A9E6A24D528090ADE1B58 /* FileSystemDoc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD937CB125819B69DA7AA11 /* FileSystemDoc.swift */; };
@@ -114,6 +114,7 @@
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		1067D9C4D44C037B976B72AA /* TMVCushionRenderer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TMVCushionRenderer.swift; sourceTree = "<group>"; };
 		13C5CB71246ACE0950024690 /* SelectionListTableController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SelectionListTableController.swift; sourceTree = "<group>"; };
+		1517F835F8E6531CD62C1AB9 /* ZoomInfo.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ZoomInfo.swift; sourceTree = "<group>"; };
 		2A0F85B4E2351AEEBDB018B0 /* VolumeNameTransformer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VolumeNameTransformer.swift; sourceTree = "<group>"; };
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -160,8 +161,6 @@
 		DAE037FCB75107E5EBA047FC /* FSItemSupport.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = FSItemSupport.m; sourceTree = "<group>"; };
 		DC8868E203BE74202C275005 /* GenericArrayController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GenericArrayController.swift; sourceTree = "<group>"; };
 		E93D51EECA2D4EA8A876ED92 /* NSView-BackingCoordsHelpers.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSView-BackingCoordsHelpers.swift"; sourceTree = "<group>"; };
-		EC91DB81DF2474FB08912405 /* ZoomInfo.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ZoomInfo.h; sourceTree = "<group>"; };
-		EDDC05C3ADA9FCDE2767C72D /* ZoomInfo.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ZoomInfo.m; sourceTree = "<group>"; };
 		F97F95665DD8F2852C15F13C /* TMVItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = TMVItem.m; sourceTree = "<group>"; };
 		FC2B2B7A277E43D00040ED6C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		FC2B2B7B277E43D10040ED6C /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/DonationPanel.nib; sourceTree = "<group>"; };
@@ -274,11 +273,10 @@
 				F97F95665DD8F2852C15F13C /* TMVItem.m */,
 				D740DFAEA75BD4E158EE6A69 /* TreeMapView.h */,
 				8352AD9AF82D652ED4566153 /* TreeMapView.m */,
-				EC91DB81DF2474FB08912405 /* ZoomInfo.h */,
-				EDDC05C3ADA9FCDE2767C72D /* ZoomInfo.m */,
 				E93D51EECA2D4EA8A876ED92 /* NSView-BackingCoordsHelpers.swift */,
 				D9303FEF3F04D57E6A0398D9 /* NSBitmapImageRep-CreationExtensions.swift */,
 				1067D9C4D44C037B976B72AA /* TMVCushionRenderer.swift */,
+				1517F835F8E6531CD62C1AB9 /* ZoomInfo.swift */,
 			);
 			name = TreeMap;
 			path = TreeMap;
@@ -722,7 +720,6 @@
 				FC7F77D81067C9500090E839 /* NTTitledInfoView.m in Sources */,
 				35074B7B31895E36C7AF2663 /* TMVItem.m in Sources */,
 				EBA3BE2276EC5BDFB787C989 /* TreeMapView.m in Sources */,
-				E74D9EE0845E3ED4C6AF5C2D /* ZoomInfo.m in Sources */,
 				469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */,
 				1DB953EBF4BCB2797CEFC524 /* FileSizeTransformer.swift in Sources */,
 				1C2EDD51A666C3536670482C /* VolumeNameTransformer.swift in Sources */,
@@ -764,6 +761,7 @@
 				5D29A9BD29A3029B79A4EA87 /* NSView-BackingCoordsHelpers.swift in Sources */,
 				0A5107CEF5C4C811F45DFE6F /* NSBitmapImageRep-CreationExtensions.swift in Sources */,
 				22C6ECEC41D5FB2669424A51 /* TMVCushionRenderer.swift in Sources */,
+				3398EFE8AE32EA1210AD3520 /* ZoomInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
