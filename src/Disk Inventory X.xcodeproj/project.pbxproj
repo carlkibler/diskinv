@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00E61A276D50F5713A1CE34F /* InfoPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 947976A510D913EF5220E372 /* InfoPanelController.swift */; };
+		0383E2AA06B2692610D4B9C3 /* NTFilePasteboardSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D2D141C67702695FB5E29 /* NTFilePasteboardSource.swift */; };
 		050CA122EBD66D4156084AC7 /* TreeMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B23920DF00C35746695256 /* TreeMapView.swift */; };
 		0A5107CEF5C4C811F45DFE6F /* NSBitmapImageRep-CreationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9303FEF3F04D57E6A0398D9 /* NSBitmapImageRep-CreationExtensions.swift */; };
 		0F15D1EACF58E9553615CED0 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FD0D13F8068F8EB2360C71 /* MainWindowController.swift */; };
@@ -61,7 +62,6 @@
 		FC2C2CA3238C802600D04E20 /* macOS privacy protected folders.txt in Resources */ = {isa = PBXBuildFile; fileRef = FC2C2CA1238C802600D04E20 /* macOS privacy protected folders.txt */; };
 		FC2E58FF21D3BFDF00F6F03B /* Disk Inventory Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = FC2E58FE21D3BFDF00F6F03B /* Disk Inventory Icon.png */; };
 		FC4C4AC109802035004CCA22 /* Help in Resources */ = {isa = PBXBuildFile; fileRef = FC4C4ABF09802035004CCA22 /* Help */; };
-		FC7F775D1067BAB10090E839 /* NTFilePasteboardSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7F775C1067BAB10090E839 /* NTFilePasteboardSource.m */; };
 		FCCFB2AA097FA3FD009EA2B6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2A9097FA3FD009EA2B6 /* main.m */; };
 		FCCFB312097FA42B009EA2B6 /* Timing.c in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2CE097FA42B009EA2B6 /* Timing.c */; };
 		FCCFB324097FA42B009EA2B6 /* MyDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2F9097FA42B009EA2B6 /* MyDocumentController.m */; };
@@ -138,6 +138,7 @@
 		75FD0D13F8068F8EB2360C71 /* MainWindowController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		7D5D77E8A6FA9D6E3DF23363 /* FilesOutlineViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FilesOutlineViewController.swift; sourceTree = "<group>"; };
 		810DBD18401F6CB8CFDD4B8B /* PreferenceKeys.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = PreferenceKeys.h; sourceTree = "<group>"; };
+		858D2D141C67702695FB5E29 /* NTFilePasteboardSource.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NTFilePasteboardSource.swift; sourceTree = "<group>"; };
 		85C3BB9BCC1F32AEEE06510E /* FileTypeColors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileTypeColors.swift; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Disk Inventory X.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Disk Inventory X.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E0D10FE262F826BA887E721 /* FSItemSupport.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FSItemSupport.h; sourceTree = "<group>"; };
@@ -201,8 +202,6 @@
 		FC42B86D2202405A0080570A /* es */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = es; path = es.lproj/Credits.rtf; sourceTree = "<group>"; };
 		FC42B86E2202405A0080570A /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FC42B86F2202405A0080570A /* es */ = {isa = PBXFileReference; lastKnownFileType = folder; name = es; path = es.lproj/Help; sourceTree = "<group>"; };
-		FC7F775B1067BAB10090E839 /* NTFilePasteboardSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTFilePasteboardSource.h; sourceTree = "<group>"; };
-		FC7F775C1067BAB10090E839 /* NTFilePasteboardSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTFilePasteboardSource.m; sourceTree = "<group>"; };
 		FCA1D0BD2205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Preferences.strings; sourceTree = "<group>"; };
 		FCA1D0BE2205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = fr; path = fr.lproj/DonationPanel.nib; sourceTree = "<group>"; };
 		FCA1D0BF2205FF2D004E9468 /* fr */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = fr; path = fr.lproj/InfoPanel.nib; sourceTree = "<group>"; };
@@ -411,11 +410,10 @@
 		FC7F775A1067BAB10090E839 /* CocoaTech-Depreciated */ = {
 			isa = PBXGroup;
 			children = (
-				FC7F775B1067BAB10090E839 /* NTFilePasteboardSource.h */,
-				FC7F775C1067BAB10090E839 /* NTFilePasteboardSource.m */,
 				61F041B846D215F56FD71B86 /* NTTitledInfoPair.swift */,
 				4C71DD92C50ECB738F91939C /* NTTitledInfoView.swift */,
 				F0FCA6EA81A3E03ED5166592 /* NTInfoView.swift */,
+				858D2D141C67702695FB5E29 /* NTFilePasteboardSource.swift */,
 			);
 			path = "CocoaTech-Depreciated";
 			sourceTree = "<group>";
@@ -701,7 +699,6 @@
 				FCSWFT010000000000001 /* Shim.swift in Sources */,
 				FCCFB312097FA42B009EA2B6 /* Timing.c in Sources */,
 				FCCFB324097FA42B009EA2B6 /* MyDocumentController.m in Sources */,
-				FC7F775D1067BAB10090E839 /* NTFilePasteboardSource.m in Sources */,
 				469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */,
 				1DB953EBF4BCB2797CEFC524 /* FileSizeTransformer.swift in Sources */,
 				1C2EDD51A666C3536670482C /* VolumeNameTransformer.swift in Sources */,
@@ -750,6 +747,7 @@
 				5987836165E24D534E9363F8 /* NTTitledInfoView.swift in Sources */,
 				3EC17004A27AD6C8935A519E /* NTInfoView.swift in Sources */,
 				B7DD639270776FCBB8E6F9A1 /* DIXFileInfoView.swift in Sources */,
+				0383E2AA06B2692610D4B9C3 /* NTFilePasteboardSource.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

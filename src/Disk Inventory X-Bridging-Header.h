@@ -21,10 +21,6 @@
 // is macro-clean (Cocoa only) and needed by the Swift FSItem port.
 #import "FSItemSupport.h"
 
-// NTFilePasteboardSource.h is macro-clean (no .pch macros, no own imports);
-// the Swift FSItem.writeToPasteboard:withTypes: needs the +file:toPasteboard:types: API.
-#import "NTFilePasteboardSource.h"
-
 // FSItemIndexType.h is macro-clean (Foundation only). Exposes the
 // FSItemIndexType NS_OPTIONS bitmask to the Swift FSItemIndex port.
 #import "FSItemIndexType.h"
