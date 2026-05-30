@@ -21,6 +21,7 @@
 		469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */; };
 		5F1CBF7747F6D9EE85CCB8B0 /* PreferenceKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B0B61085C56856795EC1CF /* PreferenceKeys.m */; };
 		65CDE8B415CC459BE9E61E11 /* GenericArrayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8868E203BE74202C275005 /* GenericArrayController.swift */; };
+		66BF4C4F15063677EDCD1498 /* FileKindsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394BDD3823130DB4E66CB14 /* FileKindsTableController.swift */; };
 		6EB8830E53A30980E6488C2F /* FileKindStatistic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A21FBEA89EA20EA7BA85FE /* FileKindStatistic.swift */; };
 		7D12C2BB1B60E917BDA649DD /* FSItem-Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */; };
 		7DFA0CE01491BE4C4ADC6CB4 /* FSItemIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08826F8E677C447E8E141C12 /* FSItemIndex.swift */; };
@@ -64,7 +65,6 @@
 		FCCFB316097FA42B009EA2B6 /* InfoPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2D8097FA42B009EA2B6 /* InfoPanelController.m */; };
 		FCCFB319097FA42B009EA2B6 /* SelectionListTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2DF097FA42B009EA2B6 /* SelectionListTableController.m */; };
 		FCCFB31D097FA42B009EA2B6 /* TreeMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2E8097FA42B009EA2B6 /* TreeMapViewController.m */; };
-		FCCFB31E097FA42B009EA2B6 /* FileKindsTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2EB097FA42B009EA2B6 /* FileKindsTableController.m */; };
 		FCCFB324097FA42B009EA2B6 /* MyDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCFB2F9097FA42B009EA2B6 /* MyDocumentController.m */; };
 		FCCFB33C097FA44A009EA2B6 /* MainWindowToolbar.toolbar in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB32A097FA44A009EA2B6 /* MainWindowToolbar.toolbar */; };
 		FCCFB33D097FA44A009EA2B6 /* ZoomOut.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FCCFB32B097FA44A009EA2B6 /* ZoomOut.tiff */; };
@@ -143,6 +143,7 @@
 		8E0D10FE262F826BA887E721 /* FSItemSupport.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FSItemSupport.h; sourceTree = "<group>"; };
 		910371DEE0676DBED23D2C5D /* NSString+DIX.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSString+DIX.swift"; sourceTree = "<group>"; };
 		947C93EA4AB5667DCF7FA814 /* DIXOutlineView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DIXOutlineView.swift; sourceTree = "<group>"; };
+		A394BDD3823130DB4E66CB14 /* FileKindsTableController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileKindsTableController.swift; sourceTree = "<group>"; };
 		AE0BEFAB459530C837B06E47 /* ImageAndTextCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ImageAndTextCell.swift; sourceTree = "<group>"; };
 		B0742A9C51D4948DC4C86237 /* NSFileManager-Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSFileManager-Extensions.swift"; sourceTree = "<group>"; };
 		B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileSizeFormatter.swift; sourceTree = "<group>"; };
@@ -230,8 +231,6 @@
 		FCCFB2DF097FA42B009EA2B6 /* SelectionListTableController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SelectionListTableController.m; sourceTree = "<group>"; };
 		FCCFB2E8097FA42B009EA2B6 /* TreeMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TreeMapViewController.m; sourceTree = "<group>"; };
 		FCCFB2E9097FA42B009EA2B6 /* TreeMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TreeMapViewController.h; sourceTree = "<group>"; };
-		FCCFB2EB097FA42B009EA2B6 /* FileKindsTableController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FileKindsTableController.m; sourceTree = "<group>"; };
-		FCCFB2EC097FA42B009EA2B6 /* FileKindsTableController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FileKindsTableController.h; sourceTree = "<group>"; };
 		FCCFB2F9097FA42B009EA2B6 /* MyDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyDocumentController.m; sourceTree = "<group>"; };
 		FCCFB2FA097FA42B009EA2B6 /* MyDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyDocumentController.h; sourceTree = "<group>"; };
 		FCCFB32A097FA44A009EA2B6 /* MainWindowToolbar.toolbar */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = MainWindowToolbar.toolbar; sourceTree = "<group>"; };
@@ -523,8 +522,7 @@
 		FCCFB2EA097FA42B009EA2B6 /* FileKindsTableView Classes */ = {
 			isa = PBXGroup;
 			children = (
-				FCCFB2EB097FA42B009EA2B6 /* FileKindsTableController.m */,
-				FCCFB2EC097FA42B009EA2B6 /* FileKindsTableController.h */,
+				A394BDD3823130DB4E66CB14 /* FileKindsTableController.swift */,
 			);
 			name = "FileKindsTableView Classes";
 			sourceTree = "<group>";
@@ -732,7 +730,6 @@
 				FCCFB316097FA42B009EA2B6 /* InfoPanelController.m in Sources */,
 				FCCFB319097FA42B009EA2B6 /* SelectionListTableController.m in Sources */,
 				FCCFB31D097FA42B009EA2B6 /* TreeMapViewController.m in Sources */,
-				FCCFB31E097FA42B009EA2B6 /* FileKindsTableController.m in Sources */,
 				FCCFB324097FA42B009EA2B6 /* MyDocumentController.m in Sources */,
 				FC7F775D1067BAB10090E839 /* NTFilePasteboardSource.m in Sources */,
 				FC7F77641067BC310090E839 /* NTInfoView.m in Sources */,
@@ -778,6 +775,7 @@
 				65CDE8B415CC459BE9E61E11 /* GenericArrayController.swift in Sources */,
 				9D2C5E2041F1C77F43961414 /* FileKindsPopupController.swift in Sources */,
 				30CC349CE2D7D87136EC0E40 /* SelectionListController.swift in Sources */,
+				66BF4C4F15063677EDCD1498 /* FileKindsTableController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
