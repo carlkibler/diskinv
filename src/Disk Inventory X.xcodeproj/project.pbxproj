@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00E61A276D50F5713A1CE34F /* InfoPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 947976A510D913EF5220E372 /* InfoPanelController.swift */; };
+		0A5107CEF5C4C811F45DFE6F /* NSBitmapImageRep-CreationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9303FEF3F04D57E6A0398D9 /* NSBitmapImageRep-CreationExtensions.swift */; };
 		0F15D1EACF58E9553615CED0 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FD0D13F8068F8EB2360C71 /* MainWindowController.swift */; };
 		101D79A986332ECE07A0B9B6 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681C249233967AABE8164D38 /* Preferences.swift */; };
 		1658101C80FB6359C8EC6C16 /* ImageAndTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0BEFAB459530C837B06E47 /* ImageAndTextCell.swift */; };
@@ -19,8 +20,8 @@
 		30CC349CE2D7D87136EC0E40 /* SelectionListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F4CB9BB1F131935161009F /* SelectionListController.swift */; };
 		35074B7B31895E36C7AF2663 /* TMVItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F97F95665DD8F2852C15F13C /* TMVItem.m */; };
 		3FF8250EC9522139005B8F32 /* SelectionListTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C5CB71246ACE0950024690 /* SelectionListTableController.swift */; };
-		44FE12ACF288FC0F2A8760EE /* NSView-BackingCoordsHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A3CD23C6064CBD6DA2D9151 /* NSView-BackingCoordsHelpers.m */; };
 		469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D131B49A37B5309A5771C /* FileSizeFormatter.swift */; };
+		5D29A9BD29A3029B79A4EA87 /* NSView-BackingCoordsHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93D51EECA2D4EA8A876ED92 /* NSView-BackingCoordsHelpers.swift */; };
 		5F1CBF7747F6D9EE85CCB8B0 /* PreferenceKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B0B61085C56856795EC1CF /* PreferenceKeys.m */; };
 		65CDE8B415CC459BE9E61E11 /* GenericArrayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8868E203BE74202C275005 /* GenericArrayController.swift */; };
 		66BF4C4F15063677EDCD1498 /* FileKindsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394BDD3823130DB4E66CB14 /* FileKindsTableController.swift */; };
@@ -38,7 +39,6 @@
 		AD4D0B603E415C0312E1FAE9 /* FSItemSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = DAE037FCB75107E5EBA047FC /* FSItemSupport.m */; };
 		B7E23EBE548DD264DE60019A /* NSURL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */; };
 		C2B750140A283155C9FF1C53 /* FilesOutlineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5D77E8A6FA9D6E3DF23363 /* FilesOutlineViewController.swift */; };
-		C6DA1C2C1DB4AA7D782ADBE5 /* NSBitmapImageRep-CreationExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DF5FB2D8359C92710D022588 /* NSBitmapImageRep-CreationExtensions.m */; };
 		C74AB5AA1EA81A337C0524FA /* AppsForItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7C89F055C7202EF5EF2FF0 /* AppsForItem.swift */; };
 		CB437D808F106E82C21A1231 /* DrivesPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6255670E06006ACD3C209B0 /* DrivesPanelController.swift */; };
 		D31AF347303A246F0FA1A2E5 /* DIXOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 947C93EA4AB5667DCF7FA814 /* DIXOutlineView.swift */; };
@@ -124,7 +124,6 @@
 		3C2F328C2E070331442F7838 /* OAToolbarWindowControllerEx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OAToolbarWindowControllerEx.swift; sourceTree = "<group>"; };
 		455B95D5A6C09B1A5E97A959 /* FSItemIndexType.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FSItemIndexType.h; sourceTree = "<group>"; };
 		4FD937CB125819B69DA7AA11 /* FileSystemDoc.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileSystemDoc.swift; sourceTree = "<group>"; };
-		528C509176676C148C6EBBEF /* NSView-BackingCoordsHelpers.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSView-BackingCoordsHelpers.h"; sourceTree = "<group>"; };
 		53DD77A59DDF11306C10F8E8 /* DIXTableView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DIXTableView.swift; sourceTree = "<group>"; };
 		5B7C89F055C7202EF5EF2FF0 /* AppsForItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppsForItem.swift; sourceTree = "<group>"; };
 		5BB2E0E221D5C8CDB96D3383 /* FSItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FSItem.swift; sourceTree = "<group>"; };
@@ -135,7 +134,6 @@
 		681C249233967AABE8164D38 /* Preferences.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		6D90ABFED165F8E8899C7CDA /* NSToolbarItemValidationAdapter.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = NSToolbarItemValidationAdapter.m; sourceTree = "<group>"; };
 		75FD0D13F8068F8EB2360C71 /* MainWindowController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
-		7A3CD23C6064CBD6DA2D9151 /* NSView-BackingCoordsHelpers.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSView-BackingCoordsHelpers.m"; sourceTree = "<group>"; };
 		7D5D77E8A6FA9D6E3DF23363 /* FilesOutlineViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FilesOutlineViewController.swift; sourceTree = "<group>"; };
 		810DBD18401F6CB8CFDD4B8B /* PreferenceKeys.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = PreferenceKeys.h; sourceTree = "<group>"; };
 		8352AD9AF82D652ED4566153 /* TreeMapView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = TreeMapView.m; sourceTree = "<group>"; };
@@ -156,12 +154,12 @@
 		B98211A1FD8A62BADAEA05E2 /* NSURL-Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSURL-Extensions.swift"; sourceTree = "<group>"; };
 		C6255670E06006ACD3C209B0 /* DrivesPanelController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DrivesPanelController.swift; sourceTree = "<group>"; };
 		CED9066B2687FE020DF4B67F /* FSItem-Utilities.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "FSItem-Utilities.swift"; sourceTree = "<group>"; };
-		D4C711675ADD6DE1D119706F /* NSBitmapImageRep-CreationExtensions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSBitmapImageRep-CreationExtensions.h"; sourceTree = "<group>"; };
 		D740DFAEA75BD4E158EE6A69 /* TreeMapView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = TreeMapView.h; sourceTree = "<group>"; };
+		D9303FEF3F04D57E6A0398D9 /* NSBitmapImageRep-CreationExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSBitmapImageRep-CreationExtensions.swift"; sourceTree = "<group>"; };
 		DA1B4DF6ECB2A4849A7C5EFA /* VolumeUsageTransformer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VolumeUsageTransformer.swift; sourceTree = "<group>"; };
 		DAE037FCB75107E5EBA047FC /* FSItemSupport.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = FSItemSupport.m; sourceTree = "<group>"; };
 		DC8868E203BE74202C275005 /* GenericArrayController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GenericArrayController.swift; sourceTree = "<group>"; };
-		DF5FB2D8359C92710D022588 /* NSBitmapImageRep-CreationExtensions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSBitmapImageRep-CreationExtensions.m"; sourceTree = "<group>"; };
+		E93D51EECA2D4EA8A876ED92 /* NSView-BackingCoordsHelpers.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "NSView-BackingCoordsHelpers.swift"; sourceTree = "<group>"; };
 		EC91DB81DF2474FB08912405 /* ZoomInfo.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ZoomInfo.h; sourceTree = "<group>"; };
 		EDDC05C3ADA9FCDE2767C72D /* ZoomInfo.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ZoomInfo.m; sourceTree = "<group>"; };
 		EF11155A43F422D388132998 /* TMVCushionRenderer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = TMVCushionRenderer.m; sourceTree = "<group>"; };
@@ -275,16 +273,14 @@
 			children = (
 				3550509A91502C4086AB207E /* TMVCushionRenderer.h */,
 				EF11155A43F422D388132998 /* TMVCushionRenderer.m */,
-				528C509176676C148C6EBBEF /* NSView-BackingCoordsHelpers.h */,
-				7A3CD23C6064CBD6DA2D9151 /* NSView-BackingCoordsHelpers.m */,
 				66033061DBFC94D68DF83791 /* TMVItem.h */,
 				F97F95665DD8F2852C15F13C /* TMVItem.m */,
 				D740DFAEA75BD4E158EE6A69 /* TreeMapView.h */,
 				8352AD9AF82D652ED4566153 /* TreeMapView.m */,
-				D4C711675ADD6DE1D119706F /* NSBitmapImageRep-CreationExtensions.h */,
-				DF5FB2D8359C92710D022588 /* NSBitmapImageRep-CreationExtensions.m */,
 				EC91DB81DF2474FB08912405 /* ZoomInfo.h */,
 				EDDC05C3ADA9FCDE2767C72D /* ZoomInfo.m */,
+				E93D51EECA2D4EA8A876ED92 /* NSView-BackingCoordsHelpers.swift */,
+				D9303FEF3F04D57E6A0398D9 /* NSBitmapImageRep-CreationExtensions.swift */,
 			);
 			name = TreeMap;
 			path = TreeMap;
@@ -727,10 +723,8 @@
 				FC7F77D71067C9500090E839 /* NTTitledInfoPair.m in Sources */,
 				FC7F77D81067C9500090E839 /* NTTitledInfoView.m in Sources */,
 				ECF1D67BB66D42F7AE669B1A /* TMVCushionRenderer.m in Sources */,
-				44FE12ACF288FC0F2A8760EE /* NSView-BackingCoordsHelpers.m in Sources */,
 				35074B7B31895E36C7AF2663 /* TMVItem.m in Sources */,
 				EBA3BE2276EC5BDFB787C989 /* TreeMapView.m in Sources */,
-				C6DA1C2C1DB4AA7D782ADBE5 /* NSBitmapImageRep-CreationExtensions.m in Sources */,
 				E74D9EE0845E3ED4C6AF5C2D /* ZoomInfo.m in Sources */,
 				469C74170EF1FB80276B6696 /* FileSizeFormatter.swift in Sources */,
 				1DB953EBF4BCB2797CEFC524 /* FileSizeTransformer.swift in Sources */,
@@ -770,6 +764,8 @@
 				3FF8250EC9522139005B8F32 /* SelectionListTableController.swift in Sources */,
 				00E61A276D50F5713A1CE34F /* InfoPanelController.swift in Sources */,
 				FE6EAB992076F520D661A2F9 /* TreeMapViewController.swift in Sources */,
+				5D29A9BD29A3029B79A4EA87 /* NSView-BackingCoordsHelpers.swift in Sources */,
+				0A5107CEF5C4C811F45DFE6F /* NSBitmapImageRep-CreationExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

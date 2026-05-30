@@ -60,9 +60,4 @@
 // toolbar-item validation through -validateMenuItem:.
 #import "NSToolbarItemValidationAdapter.h"
 
-// NSBitmapImageRep-CreationExtensions.h is macro-clean (Cocoa only). The Swift
-// FileKindsPopupController draws cushion swatches via initRGBBitmapWithWidth:
-// and suitableImageForView:.
-#import "NSBitmapImageRep-CreationExtensions.h"
-
 #endif /* DiskInventoryX_BridgingHeader_h */

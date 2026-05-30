@@ -7,8 +7,7 @@
 //
 
 #import "TreeMapView.h"
-#import "NSBitmapImageRep-CreationExtensions.h"
-#import "NSView-BackingCoordsHelpers.h"
+#import "Disk_Inventory_Xs-Swift.h"
 #import "ZoomInfo.h"
 
 NSString *TreeMapViewItemTouchedNotification = @"TreeMapViewItemTouched";
