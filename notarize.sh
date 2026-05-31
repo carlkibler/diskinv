@@ -1,29 +1,36 @@
 #!/bin/bash
 #
-# Builds a Developer ID-signed Release, notarizes it with Apple, staples the
+# Builds a Developer ID distribution app, notarizes it with Apple, staples the
 # ticket, and produces a distributable zip — so the downloaded app launches
 # without the "unidentified developer / open in Security settings" prompt.
 #
-# ONE-TIME SETUP (stores your notarization credentials in the keychain):
+# It uses `xcodebuild archive` + `-exportArchive` with ExportOptions.plist
+# (method developer-id). That is what produces a *distribution* signature:
+# Developer ID cert, hardened runtime, a secure timestamp, and NO
+# get-task-allow entitlement. A plain `xcodebuild build` does NOT — its
+# signature lacks the timestamp and carries get-task-allow, both of which make
+# notarization fail.
 #
-#   xcrun notarytool store-credentials "DIX-notary" \
+# Uses notarization credentials stored in the keychain under "dix-notarize".
+# To (re)create them:
+#
+#   xcrun notarytool store-credentials "dix-notarize" \
 #       --apple-id "you@example.com" \
 #       --team-id V29E8BPY35 \
-#       --password "abcd-efgh-ijkl-mnop"
-#
-#   The password is an *app-specific password*, NOT your Apple ID password —
-#   create one at https://appleid.apple.com -> Sign-In and Security ->
-#   App-Specific Passwords. (Alternatively use an App Store Connect API key:
-#   --key / --key-id / --issuer instead of --apple-id/--password.)
+#       --password "abcd-efgh-ijkl-mnop"   # app-specific password from appleid.apple.com
 #
 # Then just run:  ./notarize.sh
 #
 set -euo pipefail
-cd "$(dirname "$0")/src"
+cd "$(dirname "$0")"
 
-PROFILE="DIX-notary"
-APP="build/Release/Disk Inventory Xs.app"
-ZIP="build/Release/Disk-Inventory-X.zip"
+PROFILE="dix-notarize"
+PROJECT="src/Disk Inventory X.xcodeproj"
+SCHEME="Disk Inventory X"
+ARCHIVE="build/DiskInventoryX.xcarchive"
+EXPORT_DIR="build/export"
+APP="$EXPORT_DIR/Disk Inventory Xs.app"
+ZIP="build/Disk-Inventory-X.zip"
 
 if ! xcrun notarytool history --keychain-profile "$PROFILE" >/dev/null 2>&1; then
   echo "error: no stored notarization profile '$PROFILE'." >&2
@@ -31,10 +38,17 @@ if ! xcrun notarytool history --keychain-profile "$PROFILE" >/dev/null 2>&1; the
   exit 1
 fi
 
-echo "==> Building Developer ID-signed Release…"
 pkill -9 -f "Disk Inventory Xs" 2>/dev/null || true
-xcodebuild -project "Disk Inventory X.xcodeproj" -target "Disk Inventory X" \
-  -configuration Release clean build >/dev/null
+
+echo "==> Archiving (Release)…"
+rm -rf "$ARCHIVE"
+xcodebuild archive -project "$PROJECT" -scheme "$SCHEME" -configuration Release \
+  -archivePath "$ARCHIVE" >/dev/null
+
+echo "==> Exporting a Developer ID distribution build…"
+rm -rf "$EXPORT_DIR"
+xcodebuild -exportArchive -archivePath "$ARCHIVE" -exportPath "$EXPORT_DIR" \
+  -exportOptionsPlist ExportOptions.plist >/dev/null
 
 echo "==> Verifying the signature…"
 codesign --verify --deep --strict "$APP"
@@ -57,5 +71,5 @@ echo "==> Gatekeeper assessment:"
 spctl -a -vvv "$APP" || true
 
 echo
-echo "Done. Distribute: $(cd "$(dirname "$ZIP")" && pwd)/$(basename "$ZIP")"
+echo "Done. Distribute: $(pwd)/$ZIP"
 echo "A downloaded copy should now open without the Security-settings prompt."
