@@ -17,6 +17,10 @@
 import Cocoa
 import CoreServices
 
+#if canImport(UniformTypeIdentifiers)
+import UniformTypeIdentifiers
+#endif
+
 //MARK: - delegate informal protocol -> @objc protocol
 
 @objc protocol FSItemDelegate: NSObjectProtocol {
@@ -520,7 +524,7 @@ enum FSItemError: Error {
             _kindName = g_kindNameDictionary.object(forKey: uti) as? String
 
             if _kindName == nil {
-                _kindName = UTTypeCopyDescription(uti as CFString)?.takeRetainedValue() as String?
+                _kindName = FSItem.localizedDescription(forUTI: uti)
 
                 //remember kind name for similar files
                 if let kn = _kindName {
@@ -543,6 +547,63 @@ enum FSItemError: Error {
                 child(at: i)?.setKindStringIncludingChildren(true)
             }
         }
+    }
+
+    //MARK: ----------------- UTI helpers -----------------------
+    //
+    //These wrap the modern UniformTypeIdentifiers framework (macOS 11+) with a
+    //fallback to the deprecated CoreServices UTType* C APIs for the project's
+    //10.13 deployment target. The cached UTI is a plain identifier string (as
+    //returned by NSURL.cachedUTI / typeIdentifierKey), so these helpers operate
+    //on identifier strings to preserve the exact pre-existing behavior.
+
+    //localized "kind" description for a UTI identifier (e.g. "Rich Text Document")
+    private static func localizedDescription(forUTI uti: String) -> String? {
+        if #available(macOS 11.0, *) {
+            return UTType(uti)?.localizedDescription
+        } else {
+            return UTTypeCopyDescription(uti as CFString)?.takeRetainedValue() as String?
+        }
+    }
+
+    //does the file's UTI identifier conform to the image type?
+    private static func utiConformsToImage(_ uti: String) -> Bool {
+        if #available(macOS 11.0, *) {
+            return UTType(uti)?.conforms(to: .image) ?? false
+        } else {
+            return UTTypeConformsTo(uti as CFString, kUTTypeImage)
+        }
+    }
+
+    //identifier strings for the small set of well-known types this class
+    //compares against by identity. Using the framework constant's identifier
+    //yields the exact same string the legacy kUTType* constants produced
+    //(e.g. "public.rtf"), so behavior is unchanged.
+    private enum UTIIdentifier {
+        static let rtf: String = {
+            if #available(macOS 11.0, *) { return UTType.rtf.identifier }
+            return kUTTypeRTF as String
+        }()
+        static let rtfd: String = {
+            if #available(macOS 11.0, *) { return UTType.rtfd.identifier }
+            return kUTTypeRTFD as String
+        }()
+        static let flatRTFD: String = {
+            if #available(macOS 11.0, *) { return UTType.flatRTFD.identifier }
+            return kUTTypeFlatRTFD as String
+        }()
+        static let tiff: String = {
+            if #available(macOS 11.0, *) { return UTType.tiff.identifier }
+            return kUTTypeTIFF as String
+        }()
+        static let html: String = {
+            if #available(macOS 11.0, *) { return UTType.html.identifier }
+            return kUTTypeHTML as String
+        }()
+        static let pdf: String = {
+            if #available(macOS 11.0, *) { return UTType.pdf.identifier }
+            return kUTTypePDF as String
+        }()
     }
 
     //MARK: names / paths
@@ -843,19 +904,19 @@ enum FSItemError: Error {
 
         let uti = fileURL()?.cachedUTI()
 
-        func testType(_ test: CFString, _ type: NSPasteboard.PasteboardType) {
-            if let uti = uti, uti == (test as String) {
+        func testType(_ testIdentifier: String, _ type: NSPasteboard.PasteboardType) {
+            if let uti = uti, uti == testIdentifier {
                 types.append(type)
             }
         }
 
-        testType(kUTTypeRTF, NSPasteboard.PasteboardType.rtf)
-        testType(kUTTypeRTFD, NSPasteboard.PasteboardType.rtfd)
-        testType(kUTTypeHTML, NSPasteboard.PasteboardType.html)
-        testType(kUTTypePDF, NSPasteboard.PasteboardType.pdf)
+        testType(UTIIdentifier.rtf, NSPasteboard.PasteboardType.rtf)
+        testType(UTIIdentifier.rtfd, NSPasteboard.PasteboardType.rtfd)
+        testType(UTIIdentifier.html, NSPasteboard.PasteboardType.html)
+        testType(UTIIdentifier.pdf, NSPasteboard.PasteboardType.pdf)
 
         // add TIFF if this is an image
-        if let uti = uti, UTTypeConformsTo(uti as CFString, kUTTypeImage) {
+        if let uti = uti, FSItem.utiConformsToImage(uti) {
             types.append(NSPasteboard.PasteboardType.tiff)
         }
 
@@ -870,9 +931,9 @@ enum FSItemError: Error {
         return type == "NSFilenamesPboardType"
             || type == NSPasteboard.PasteboardType.string.rawValue
             || type == "NSFileContentsPboardType"
-            || (type == NSPasteboard.PasteboardType.tiff.rawValue && uti != nil && UTTypeConformsTo(uti! as CFString, kUTTypeImage))
-            || (type == NSPasteboard.PasteboardType.rtf.rawValue && uti == (kUTTypeRTF as String))
-            || (type == NSPasteboard.PasteboardType.rtfd.rawValue && uti == (kUTTypeFlatRTFD as String))
+            || (type == NSPasteboard.PasteboardType.tiff.rawValue && uti != nil && FSItem.utiConformsToImage(uti!))
+            || (type == NSPasteboard.PasteboardType.rtf.rawValue && uti == UTIIdentifier.rtf)
+            || (type == NSPasteboard.PasteboardType.rtfd.rawValue && uti == UTIIdentifier.flatRTFD)
             || (type == NSPasteboard.PasteboardType.html.rawValue && uti == NSPasteboard.PasteboardType.html.rawValue)
             || (type == NSPasteboard.PasteboardType.pdf.rawValue && uti == NSPasteboard.PasteboardType.pdf.rawValue)
     }
@@ -903,11 +964,11 @@ enum FSItemError: Error {
             // write the contents
             pboard.writeFileContents(path)
         } else if type == NSPasteboard.PasteboardType.tiff.rawValue {
-            if uti == (kUTTypeTIFF as String) {
+            if uti == UTIIdentifier.tiff {
                 if let data = NSData(contentsOfFile: path) as Data? {
                     pboard.setData(data, forType: .tiff)
                 }
-            } else if let uti = uti, UTTypeConformsTo(uti as CFString, kUTTypeImage) {
+            } else if let uti = uti, FSItem.utiConformsToImage(uti) {
                 // open the image and return TIFFRepresentation
                 if let image = NSImage(contentsOfFile: url.path ?? ""),
                    let data = image.tiffRepresentation {
@@ -915,21 +976,21 @@ enum FSItemError: Error {
                 }
             }
         } else if type == NSPasteboard.PasteboardType.rtf.rawValue {
-            if uti == (kUTTypeRTF as String), let data = NSData(contentsOfFile: path) as Data? {
+            if uti == UTIIdentifier.rtf, let data = NSData(contentsOfFile: path) as Data? {
                 pboard.setData(data, forType: .rtf)
             }
         } else if type == NSPasteboard.PasteboardType.rtfd.rawValue {
-            if uti == (kUTTypeFlatRTFD as String) {
+            if uti == UTIIdentifier.flatRTFD {
                 if let tempRTFDData = try? FileWrapper(url: URL(fileURLWithPath: path), options: []) {
                     pboard.setData(tempRTFDData.serializedRepresentation ?? Data(), forType: .rtfd)
                 }
             }
         } else if type == NSPasteboard.PasteboardType.html.rawValue {
-            if uti == (kUTTypeHTML as String), let data = NSData(contentsOfFile: path) as Data? {
+            if uti == UTIIdentifier.html, let data = NSData(contentsOfFile: path) as Data? {
                 pboard.setData(data, forType: .html)
             }
         } else if type == NSPasteboard.PasteboardType.pdf.rawValue {
-            if uti == (kUTTypePDF as String), let data = NSData(contentsOfFile: path) as Data? {
+            if uti == UTIIdentifier.pdf, let data = NSData(contentsOfFile: path) as Data? {
                 pboard.setData(data, forType: .pdf)
             }
         }
