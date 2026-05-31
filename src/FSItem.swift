@@ -56,7 +56,10 @@ enum FSItemError: Error {
     private var _size: NSNumber?
     private var _sizeValue: UInt64 = 0
     private var _kindName: String?
-    private var _childs: NSMutableArray?
+    //Private backing storage: native Swift array of child items. The public
+    //accessors (childEnumerator/childAtIndex:/childCount) keep their original
+    //return types and bridge to NS* at the boundary.
+    private var _childs: [FSItem]?
     //non-owning, like the original __unsafe_unretained id
     private unowned(unsafe) var _delegate: AnyObject?
 
@@ -79,7 +82,7 @@ enum FSItemError: Error {
         _type = FileFolderItem
         _fileURL = url
         if url.isDirectory() {
-            _childs = NSMutableArray()
+            _childs = []
         }
         _parent = nil   //we are the root item
     }
@@ -108,7 +111,7 @@ enum FSItemError: Error {
         _parent = parent   //no retain
 
         if let parent = parent {
-            parent._childs?.add(self)
+            parent._childs?.append(self)
         }
 
         _fileURL = url
@@ -122,7 +125,7 @@ enum FSItemError: Error {
                 setSizeValue(url.logicalSize().uint64Value)
             }
         } else {
-            _childs = NSMutableArray()
+            _childs = []
         }
 
         if setKindString {
@@ -139,7 +142,7 @@ enum FSItemError: Error {
     deinit {
         //nil out children's non-owning back-reference before ARC releases _childs
         if let childs = _childs {
-            for case let child as FSItem in childs {
+            for child in childs {
                 child.onParentDealloc()
             }
         }
@@ -309,7 +312,8 @@ enum FSItemError: Error {
     @objc(childEnumerator)
     func childEnumerator() -> NSEnumerator? {
         if !isSpecialItem() {
-            return _childs?.objectEnumerator()
+            //bridge to NSArray to preserve the original NSEnumerator return type
+            return (_childs as NSArray?)?.objectEnumerator()
         } else {
             return nil
         }
@@ -318,7 +322,7 @@ enum FSItemError: Error {
     @objc(childAtIndex:)
     func child(at index: UInt) -> FSItem? {
         if !isSpecialItem() {
-            return _childs?.object(at: Int(index)) as? FSItem
+            return _childs?[Int(index)]
         } else {
             return nil
         }
@@ -337,15 +341,16 @@ enum FSItemError: Error {
     func removeChild(_ child: FSItem, updateParent: Bool) {
         assert(!isSpecialItem(), "removeChild is illegal call for special item")
 
-        guard let childs = _childs else { return }
-        let index = childs.indexOfObjectIdentical(to: child)
-        if index != NSNotFound {
+        guard var childs = _childs else { return }
+        //identity match, mirroring NSMutableArray.indexOfObjectIdenticalTo:
+        if let index = childs.firstIndex(where: { $0 === child }) {
             let myOldSize = sizeValue()
             let myNewSize = myOldSize - child.sizeValue()
 
             setSizeValue(myNewSize)
 
-            childs.removeObject(at: index)
+            childs.remove(at: index)
+            _childs = childs
 
             if updateParent && !isRoot() {
                 parent()!.childChanged(self, oldSize: myOldSize, newSize: myNewSize)
@@ -359,15 +364,15 @@ enum FSItemError: Error {
 
         newChild.setParent(self)
 
-        //insert child sorted by size
-        guard let childs = _childs else { return }
-        let insertIndex = childs.index(of: newChild,
-                                       inSortedRange: NSMakeRange(0, childs.count),
-                                       options: .insertionIndex,
-                                       usingComparator: { (a, b) -> ComparisonResult in
-                                           return (a as! FSItem).compareSizeDescendingly(b as! FSItem)
-                                       })
+        //insert child sorted by size (descending), mirroring the former
+        //-indexOfObject:inSortedRange:options:NSBinarySearchingInsertionIndex
+        //usingComparator: with compareSizeDescendingly.
+        guard var childs = _childs else { return }
+        let insertIndex = FSItem.sortedInsertionIndex(of: newChild, in: childs) {
+            $0.compareSizeDescendingly($1)
+        }
         childs.insert(newChild, at: insertIndex)
+        _childs = childs
 
         setSizeValue(sizeValue() + newChild.sizeValue())
 
@@ -442,15 +447,18 @@ enum FSItemError: Error {
         switch _type {
         case FileFolderItem:
             if isFolder() {
-                if let childs = _childs {
+                if var childs = _childs {
                     var i = childs.count
                     while i > 0 {
                         i -= 1
-                        let child = childs.object(at: i) as! FSItem
+                        let child = childs[i]
                         child.recalculateSize(usePhysicalSize, updateParent: false)
                         size += child.sizeValue()
                     }
-                    childs.sort(using: #selector(FSItem.compareSizeDescendingly(_:)))
+                    //sort descending by size, mirroring the former
+                    //NSMutableArray.sortUsingSelector(compareSizeDescendingly:)
+                    childs.sort { $0.compareSizeDescendingly($1) == .orderedAscending }
+                    _childs = childs
                 }
             } else {
                 //File
@@ -740,6 +748,29 @@ enum FSItemError: Error {
         }
     }
 
+    //Binary-search insertion index into a comparator-sorted array, replicating
+    //-[NSArray indexOfObject:inSortedRange:options:NSBinarySearchingInsertionIndex
+    //usingComparator:]. Returns the index at which `element` can be inserted to
+    //keep the array ordered. For runs of comparator-equal elements this returns
+    //the upper bound of that run (a valid insertion point), matching the
+    //sorted-order result the original produced.
+    private static func sortedInsertionIndex(of element: FSItem,
+                                             in array: [FSItem],
+                                             comparator: (FSItem, FSItem) -> ComparisonResult) -> Int {
+        var lo = 0
+        var hi = array.count
+        while lo < hi {
+            let mid = (lo + hi) / 2
+            //element < array[mid]  => insert in lower half
+            if comparator(element, array[mid]) == .orderedAscending {
+                hi = mid
+            } else {
+                lo = mid + 1
+            }
+        }
+        return lo
+    }
+
     //MARK: ----------------- child change propagation -----------------------
 
     @objc(childChanged:oldSize:newSize:)
@@ -777,7 +808,7 @@ enum FSItemError: Error {
             throw FSItemError.loadingCanceled
         }
 
-        _childs = NSMutableArray()
+        _childs = []
 
         //should the kind strings of our childs be set initially? (optimization)
         if setKindStrings && !isRoot() {
