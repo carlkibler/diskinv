@@ -128,9 +128,30 @@ class FileSystemDoc: NSDocument, FSItemDelegate {
 
             rootItem.setDelegate(self)
 
-            try rootItem.loadChildren()
+            if FSItem.parallelScanEnabled {
+                //Parallel path: dispatch the whole scan onto a background queue
+                //and keep the main thread pumping the progress panel (so Cancel
+                //stays live and the UI never freezes).
+                try runParallelScan(rootItem: rootItem)
+            } else {
+                //Serial path (DIX_PARALLEL_SCAN=0): unchanged inline walk, whose
+                //fsItemEnteringFolder: callbacks pump the runloop themselves.
+                try rootItem.loadChildren()
+            }
 
             //ok, now we've got an FSItem for every file and directory in the given folder
+
+            //Phase 2 (main thread, unchanged): finalize sizes (incl. OtherSpace
+            //via the now-final root size) then collect per-kind statistics.
+            //
+            //The serial scanner ends loadChildrenSerial with
+            //recalculateSize(true, ...) (physical), which both sorts every
+            //folder's children by size and re-derives file sizes physically. We
+            //reproduce exactly that call here so the parallel result is
+            //byte-identical (matching size value AND child ordering).
+            if FSItem.parallelScanEnabled {
+                rootItem.recalculateSize(true, updateParent: false)
+            }
 
             //collect sizes and file count of all file kinds
             try refreshFileKindStatisticsThrowing()
@@ -167,6 +188,55 @@ class FileSystemDoc: NSDocument, FSItemDelegate {
     @objc(cancelScanningFolder:)
     @IBAction func cancelScanningFolder(_ sender: Any?) {
         NSApplication.shared.stopModal()
+    }
+
+    //Drive the parallel phase-1 scan: snapshot the behavior flags on the main
+    //thread, dispatch the coordinator+workers onto a background queue, and pump
+    //the progress panel here on the main thread at ~5 Hz until the scan finishes
+    //(or the user cancels / it errors). Rethrows the scan's error so the
+    //existing do/catch in readFromFolder performs the identical tear-down.
+    private func runParallelScan(rootItem: FSItem) throws {
+        //snapshot delegate-derived flags ONCE on the main thread (workers must
+        //not call the delegate). setKindStrings == true mirrors loadChildren().
+        let params = rootItem.makeScanParams(setKindStrings: true)
+        let progress = ScanProgress()
+
+        //capture the scan's outcome to rethrow on the main thread after join.
+        var scanError: Error?
+
+        let scanQueue = DispatchQueue(label: "com.derlien.diskinventoryx.scan.coordinator")
+        scanQueue.async {
+            do {
+                try rootItem.loadChildrenParallel(params: params, progress: progress)
+            } catch {
+                scanError = error
+            }
+            //mark finished LAST so the pump loop only exits once scanError is set
+            progress.finished = true
+        }
+
+        //main-thread pump loop: refresh the panel and watch for Cancel.
+        //LoadingPanelController.runEventLoop() self-throttles to ~5 Hz.
+        while !progress.finished {
+            if let progressController = _progressController {
+                progressController.setMessageText(progress.currentPath)
+                progressController.runEventLoop()
+                if progressController.cancelPressed() {
+                    progress.cancelled = true
+                }
+            }
+            //small sleep so we don't spin the CPU between event-loop pumps
+            Thread.sleep(forTimeInterval: 0.02)
+        }
+
+        //ensure the background block's `progress.finished = true` write (and the
+        //scanError write that precedes it) are observed here before we read
+        //scanError. group-less join: spin until the queue is drained.
+        scanQueue.sync { }
+
+        if let scanError = scanError {
+            throw scanError
+        }
     }
 
     //MARK: view options
@@ -420,7 +490,17 @@ class FileSystemDoc: NSDocument, FSItemDelegate {
             refreshedItem = newItem
             newItem.setDelegate(self)
             if newItem.isFolder() {
-                try newItem.loadChildren()
+                if FSItem.parallelScanEnabled {
+                    //Parallel refresh: same background-scan + main-thread pump as
+                    //the initial scan. The progress panel here is optional (only
+                    //shown for "many"-child items); runParallelScan tolerates a
+                    //nil _progressController. Phase 2 recalc mirrors what the
+                    //serial loadChildren did internally.
+                    try runParallelScan(rootItem: newItem)
+                    newItem.recalculateSize(true, updateParent: false)
+                } else {
+                    try newItem.loadChildren()
+                }
             }
 
             _progressController = nil
