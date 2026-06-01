@@ -1167,11 +1167,13 @@ final class ScanProgress {
         }
 
         //dispatch one worker per immediate subdirectory; each fills its own
-        //disjoint subtree. Bounded by a semaphore = activeProcessorCount.
+        //disjoint subtree. Bounded by a semaphore = activeProcessorCount - 1,
+        //leaving one core for the main thread (modal-session pump + coordinator).
         let group = DispatchGroup()
         let queue = DispatchQueue(label: "com.derlien.diskinventoryx.scan",
                                   attributes: .concurrent)
-        let semaphore = DispatchSemaphore(value: ProcessInfo.processInfo.activeProcessorCount)
+        let workerLimit = max(1, ProcessInfo.processInfo.activeProcessorCount - 1)
+        let semaphore = DispatchSemaphore(value: workerLimit)
 
         //Each worker scans its disjoint subtree with a worker-LOCAL ScanCounts,
         //then merges that local tally into the shared `merged` accumulator under
