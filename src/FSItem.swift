@@ -408,13 +408,23 @@ final class ScanProgress {
         let key = NSNumber(value: iconSize)
         var icon = _icons?.object(forKey: key) as AnyObject?
         if icon == nil {
-            let img = NSWorkspace.shared.icon(forFile: fileURL()?.path ?? "")
-            img.size = NSMakeSize(CGFloat(iconSize), CGFloat(iconSize))
-            icon = img
-            if icon == nil {
-                icon = NSNull()
-            }
-            _icons?.setObject(icon!, forKey: key)
+            //NSWorkspace.icon(forFile:) hands back an NSImage backed by a SHARED,
+            //lazily-evaluated icon-rep provider (NSImageISIconRepProvider). That
+            //provider can be released out from under us elsewhere, leaving our
+            //cached image with a dangling provider that crashes on the next draw
+            //(use-after-free in the table/outline cell). Rasterize into a small,
+            //self-contained bitmap so the cached icon owns its pixels outright and
+            //holds no reference to NSWorkspace's shared provider.
+            let size = NSMakeSize(CGFloat(iconSize), CGFloat(iconSize))
+            let source = NSWorkspace.shared.icon(forFile: fileURL()?.path ?? "")
+            let baked = NSImage(size: size)
+            baked.lockFocus()
+            NSGraphicsContext.current?.imageInterpolation = .high
+            source.draw(in: NSRect(origin: .zero, size: size),
+                        from: .zero, operation: .sourceOver, fraction: 1.0)
+            baked.unlockFocus()
+            icon = baked
+            _icons?.setObject(baked, forKey: key)
         }
 
         if icon is NSNull {
