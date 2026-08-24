@@ -131,6 +131,31 @@ final class FileScannerTests: XCTestCase {
             // The first callback blocks until cancel() has reached the actor.
         }
     }
+
+    func testMainDiskScanSkipsCloudAndMountedVolumes() {
+        let home = FileManager.default.homeDirectoryForCurrentUser
+
+        XCTAssertTrue(FileScanner.shouldSkipDuringMainDiskScan(
+            url: home.appendingPathComponent("Library/CloudStorage/OneDrive-Corporate"),
+            volumeURL: URL(fileURLWithPath: "/")
+        ))
+        XCTAssertTrue(FileScanner.shouldSkipDuringMainDiskScan(
+            url: URL(fileURLWithPath: "/System/Volumes/Data"),
+            volumeURL: URL(fileURLWithPath: "/System/Volumes/Data")
+        ))
+        XCTAssertTrue(FileScanner.shouldSkipDuringMainDiskScan(
+            url: home.appendingPathComponent("MountedS3"),
+            volumeURL: URL(fileURLWithPath: "/Users/carl/MountedS3")
+        ))
+        XCTAssertTrue(FileScanner.shouldSkipDuringMainDiskScan(
+            url: home.appendingPathComponent("UnknownMount"),
+            volumeURL: nil
+        ))
+        XCTAssertFalse(FileScanner.shouldSkipDuringMainDiskScan(
+            url: home.appendingPathComponent("Documents"),
+            volumeURL: URL(fileURLWithPath: "/")
+        ))
+    }
 }
 
 final class TreeMapLayoutTests: XCTestCase {

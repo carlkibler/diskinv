@@ -111,7 +111,7 @@ struct ContentView: View {
         } else if let root = appState.rootNode {
             return root.name
         } else {
-            return "Disk Inventory X"
+            return "Disk Inventory X-Ray"
         }
     }
 }
@@ -197,7 +197,12 @@ struct WelcomeView: View {
         ContentUnavailableView {
             Text("Choose What to Scan")
         } description: {
-            Text("Scan your main disk, your user folder, or another directory.")
+            VStack(spacing: 6) {
+                Text("Scan your main disk, your user folder, or another directory.")
+                Text("Main-disk scans skip cloud storage and mounted volumes to avoid downloading remote files.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
                 .frame(width: 380)
         } actions: {
             VStack(spacing: 10) {

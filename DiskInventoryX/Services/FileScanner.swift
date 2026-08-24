@@ -25,6 +25,7 @@ actor FileScanner {
         url: URL,
         showPackageContents: Bool,
         usePhysicalSize: Bool,
+        mainDiskOnly: Bool = false,
         progress: @escaping (String, Int, Int) -> Void
     ) async throws -> FileNode {
         let cancellation = CancellationState()
@@ -45,9 +46,11 @@ actor FileScanner {
                 cancellation: cancellation,
                 progress: progressState,
                 ioLimiter: ioLimiter,
+                mainDiskOnly: mainDiskOnly,
                 parallelizeChildren: true,
                 depth: 0
             )
+            guard let root else { throw CocoaError(.fileReadNoSuchFile) }
             root.sortChildrenBySize()
             return root
         }
@@ -74,11 +77,16 @@ actor FileScanner {
         cancellation: CancellationState,
         progress: ProgressState,
         ioLimiter: IOLimiter,
+        mainDiskOnly: Bool,
         parallelizeChildren: Bool,
         depth: Int
-    ) async throws -> FileNode {
+    ) async throws -> FileNode? {
         try cancellation.throwIfCancelled()
         try Task.checkCancellation()
+
+        if mainDiskOnly && depth > 0 && isExcludedMainDiskPath(url) {
+            return nil
+        }
 
         let values = try await withIOPermit(ioLimiter) {
             try cancellation.throwIfCancelled()
@@ -95,6 +103,10 @@ actor FileScanner {
         let isPackage = values.isPackage ?? false
         let isSymlink = values.isSymbolicLink ?? false
         let isAlias = values.isAliasFile ?? false
+
+        if mainDiskOnly && depth > 0 && shouldSkipDuringMainDiskScan(url: url, volumeURL: values.volume) {
+            return nil
+        }
 
         let size: UInt64
         if usePhysicalSize {
@@ -135,7 +147,7 @@ actor FileScanner {
                 return try autoreleasepool {
                     try FileManager.default.contentsOfDirectory(
                         at: url,
-                        includingPropertiesForKeys: resourceKeyArray,
+                        includingPropertiesForKeys: mainDiskOnly ? [] : resourceKeyArray,
                         options: []
                     )
                 }
@@ -171,6 +183,7 @@ actor FileScanner {
                                 cancellation: cancellation,
                                 progress: progress,
                                 ioLimiter: ioLimiter,
+                                mainDiskOnly: mainDiskOnly,
                                 parallelizeChildren: false,
                                 depth: depth + 1
                             )
@@ -210,9 +223,11 @@ actor FileScanner {
                         cancellation: cancellation,
                         progress: progress,
                         ioLimiter: ioLimiter,
+                        mainDiskOnly: mainDiskOnly,
                         parallelizeChildren: false,
                         depth: depth + 1
                     )
+                    guard let child else { continue }
                     child.parent = node
                     children.append(child)
                     node.size += child.size
@@ -235,12 +250,36 @@ actor FileScanner {
             .isPackageKey,
             .fileSizeKey,
             .isSymbolicLinkKey,
-            .isAliasFileKey
+            .isAliasFileKey,
+            .volumeURLKey
         ]
         if usePhysicalSize {
             keys.insert(.totalFileAllocatedSizeKey)
         }
         return keys
+    }
+
+    nonisolated static func shouldSkipDuringMainDiskScan(url: URL, volumeURL: URL?) -> Bool {
+        if isExcludedMainDiskPath(url) {
+            return true
+        }
+
+        guard let volumeURL else { return true }
+        return volumeURL.standardizedFileURL.path != "/"
+    }
+
+    private nonisolated static func isExcludedMainDiskPath(_ url: URL) -> Bool {
+        let path = url.standardizedFileURL.path
+        let home = FileManager.default.homeDirectoryForCurrentUser.standardizedFileURL.path
+        let excludedTrees = [
+            "/Network",
+            "/Volumes",
+            "/System/Volumes",
+            home + "/Library/CloudStorage",
+            home + "/Library/Mobile Documents"
+        ]
+
+        return excludedTrees.contains(where: { path == $0 || path.hasPrefix($0 + "/") })
     }
 
     private nonisolated static func withIOPermit<T>(

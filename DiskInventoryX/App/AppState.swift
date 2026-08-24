@@ -87,7 +87,8 @@ class AppState: ObservableObject {
             let root = try await newScanner.scan(
                 url: url,
                 showPackageContents: showPackageContents,
-                usePhysicalSize: showPhysicalSize
+                usePhysicalSize: showPhysicalSize,
+                mainDiskOnly: url.standardizedFileURL.path == "/"
             ) { [weak self] folder, files, folders in
                 Task { @MainActor in
                     self?.scanProgress = ScanProgress(
@@ -199,7 +200,7 @@ class AppState: ObservableObject {
             return
         }
 
-        trashProtectionMessage = "\(protectedNode.name) is a top-level or system folder. Removing it here is too dangerous, so Disk Inventory X will not enable that action."
+        trashProtectionMessage = "\(protectedNode.name) is a top-level or system folder. Removing it here is too dangerous, so Disk Inventory X-Ray will not enable that action."
     }
 
     func confirmMoveToTrash() {
