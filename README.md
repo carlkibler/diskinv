@@ -1,48 +1,39 @@
-# Disk Inventory Xs
+# Disk Inventory X
 
-A macOS app that visualizes disk space usage with treemaps. This is Tjark Derlien's original Objective-C **Disk Inventory X** (1.4b2, 2022) brought forward to run natively on Apple Silicon and clean on modern Xcode / macOS.
+A macOS app that visualizes disk space usage with treemaps. This fork contains a modern SwiftUI rewrite of Tjark Derlien's original Disk Inventory X, with background scanning, safer deletion, and a layout focused on folder navigation.
 
-The "s" is for Silicon.
+The original Objective-C application remains under `src/` for reference.
 
 ## Install
 
-Grab the latest [release](https://github.com/diskinv/diskinv/releases/latest) — `DiskInventoryXs-<version>-arm64.zip`. Unzip, drag `Disk Inventory Xs.app` to `/Applications`, double-click. Releases are notarized and stapled, so no `xattr` workaround or right-click → Open.
+Grab the latest release from [this fork](https://github.com/carlkibler/diskinv/releases). Unzip it and drag Disk Inventory X to `/Applications`.
 
-Requirements: Apple Silicon Mac, macOS 10.13+.
+Requirements: macOS 14 or later.
 
 ## Build from source
 
 ```sh
-src/BuildRelease.sh
+cd DiskInventoryX
+./BuildRelease.sh
 ```
 
-That builds `TreeMapView.framework` from `treemap/`, builds the app, and produces a self-consistent ad-hoc-signed `.app` at `src/build/Release/Disk Inventory Xs.app` that launches locally without further setup.
-
-To produce a signed/notarizable build, point it at a Developer ID identity in your keychain:
-
-```sh
-SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" src/BuildRelease.sh
-```
-
-See [`NOTARIZATION.md`](NOTARIZATION.md) for the notarytool + stapler recipe used to cut official releases.
+The release app is written to `DiskInventoryX/build/Build/Products/Release/DiskInventoryX.app`.
 
 ## Layout
 
+- `DiskInventoryX/` — the SwiftUI application and release build script
 - `src/` — the Objective-C app (NSDocument-based, AppKit)
 - `treemap/` — the embedded `TreeMapView.framework`
-- `src/BuildRelease.sh` — single canonical build entry point (re-signs deeply, arm64-only)
+- `NOTARIZATION.md` — the legacy Objective-C release recipe
 
 Architectural notes live in [`CLAUDE.md`](CLAUDE.md).
-
-## Disk Inventory Y (Swift rewrite)
-
-A from-scratch SwiftUI rewrite lives in a sibling repository as **Disk Inventory Y**. Same idea, modern stack: `@Observable`, actor-isolated parallel scanning, Canvas-rendered treemap, structured concurrency. Targets macOS 14+. If you want the modern codebase, look there; this repo exists to keep the original Objective-C app alive and shipping.
 
 ## Credits
 
 - **Tjark Derlien** — original author of Disk Inventory X (2003–2022)
 - **Mahmoud Lababidi** — Apple Silicon port, Xcode 26 warning cleanup, Hardened Runtime fix, notarized release pipeline (2026)
+- **Carl Kibler** — Swift rewrite improvements, resource-bounded scanning, and safer file management (2026)
 
 ## License
 
-GPL v3 — see source headers. Same license as the original.
+GNU GPL v3. See [`LICENSE`](LICENSE) and [`NOTICE.md`](NOTICE.md).

@@ -127,7 +127,19 @@ struct AboutTab: View {
                 .font(.caption)
                 .foregroundStyle(.tertiary)
 
+            Text("Improvements © 2026 Carl Kibler")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+
+            Text("Provided without warranty. You may share and modify it under GPL v3.")
+                .font(.caption)
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.tertiary)
+
             Link("GPL v3 License", destination: URL(string: "https://www.gnu.org/licenses/gpl-3.0.html")!)
+                .font(.caption)
+
+            Link("Source Code", destination: URL(string: "https://github.com/carlkibler/diskinv")!)
                 .font(.caption)
         }
         .padding()

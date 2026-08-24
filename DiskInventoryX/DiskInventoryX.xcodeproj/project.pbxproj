@@ -454,7 +454,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Disk Inventory X";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2003-2024 Tjark Derlien. GPL v3 License.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2003-2024 Tjark Derlien; modifications 2026 Carl Kibler. GPL v3.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -482,7 +482,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Disk Inventory X";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2003-2024 Tjark Derlien. GPL v3 License.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2003-2024 Tjark Derlien; modifications 2026 Carl Kibler. GPL v3.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
