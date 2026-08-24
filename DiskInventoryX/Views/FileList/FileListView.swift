@@ -12,20 +12,25 @@ struct FileListView: View {
 
     var body: some View {
         Group {
-            if let root = appState.displayRoot {
-                List(selection: $appState.selectedNode) {
+            if let root = appState.displayRoot, !root.children.isEmpty {
+                List(selection: $appState.selectedNodes) {
                     OutlineGroup(root.children, children: \.optionalChildren) { node in
                         FileRow(node: node)
                             .tag(node)
                     }
                 }
                 .listStyle(.inset(alternatesRowBackgrounds: true))
-            } else {
+                .onChange(of: appState.selectedNodes) { selections in
+                    appState.selectedNode = selections.first
+                }
+            } else if appState.displayRoot != nil {
                 ContentUnavailableView(
-                    "No Data",
+                    "Folder Is Empty",
                     systemImage: "folder",
-                    description: Text("Open a folder to see its contents")
+                    description: Text("This folder contains no visible files")
                 )
+            } else {
+                Color.clear
             }
         }
         .navigationTitle("Files")
@@ -96,12 +101,7 @@ struct FileRow: View {
     }
 
     private func moveToTrash(_ node: FileNode) {
-        do {
-            try FileManager.default.trashItem(at: node.url, resultingItemURL: nil)
-            // Could notify appState to refresh
-        } catch {
-            // Handle error
-        }
+        appState.moveToTrash(node)
     }
 }
 

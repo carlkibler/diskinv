@@ -23,6 +23,7 @@ struct DiskInventoryXApp: App {
                     appState.showOpenPanel()
                 }
                 .keyboardShortcut("o")
+                .disabled(appState.isScanning)
             }
 
             CommandGroup(after: .toolbar) {
@@ -46,7 +47,17 @@ struct DiskInventoryXApp: App {
                     }
                 }
                 .keyboardShortcut("r")
-                .disabled(appState.rootNode == nil)
+                .disabled(appState.rootNode == nil || appState.isScanning)
+            }
+
+            CommandGroup(after: .pasteboard) {
+                Divider()
+
+                Button("Move to Trash") {
+                    appState.requestMoveSelectedToTrash()
+                }
+                .keyboardShortcut(.delete, modifiers: .command)
+                .disabled(appState.selectedNodes.isEmpty && appState.selectedNode == nil)
             }
         }
 
