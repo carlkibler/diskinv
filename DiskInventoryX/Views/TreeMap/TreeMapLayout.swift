@@ -26,7 +26,7 @@ enum TreeMapLayout {
         rect: CGRect,
         colorProvider: (String) -> Color,
         depth: Int = 0,
-        maxDepth: Int = 8
+        maxDepth: Int = 5
     ) -> [TreeMapRect] {
         var results: [TreeMapRect] = []
 
@@ -45,8 +45,6 @@ enum TreeMapLayout {
             return results
         }
 
-        // Sort children by size (largest first) - critical for the algorithm
-        let sorted = children.sorted { $0.size > $1.size }
         let totalWeight = Double(node.size)
 
         guard totalWeight > 0 else { return results }
@@ -66,9 +64,9 @@ enum TreeMapLayout {
         var rows: [(height: Double, children: [(node: FileNode, width: Double)])] = []
         var childIndex = 0
 
-        while childIndex < sorted.count {
+        while childIndex < children.count {
             let (rowHeight, childWidths, childsUsed) = calculateRow(
-                children: sorted,
+                children: children,
                 startIndex: childIndex,
                 rowWidth: width,
                 totalWeight: totalWeight
@@ -78,7 +76,7 @@ enum TreeMapLayout {
 
             var rowChildren: [(node: FileNode, width: Double)] = []
             for i in 0..<childsUsed {
-                rowChildren.append((sorted[childIndex + i], childWidths[i]))
+                rowChildren.append((children[childIndex + i], childWidths[i]))
             }
 
             rows.append((rowHeight, rowChildren))

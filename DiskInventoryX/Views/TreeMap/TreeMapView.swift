@@ -14,30 +14,24 @@ struct TreeMapView: View {
     let colorProvider: (String) -> Color
 
     @State private var hoveredNode: FileNode?
+    @State private var layoutRootID: ObjectIdentifier?
+    @State private var layoutSize: CGSize = .zero
+    @State private var layoutChildCount = 0
+    @State private var layoutRootSize: UInt64 = 0
+    @State private var layoutRects: [TreeMapRect] = []
     @State private var layoutCache: [ObjectIdentifier: TreeMapRect] = [:]
 
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Canvas { context, size in
-                    let rects = TreeMapLayout.layout(
-                        node: root,
-                        rect: CGRect(origin: .zero, size: size),
-                        colorProvider: colorProvider
-                    )
-
-                    // Store layout for hit testing
-                    DispatchQueue.main.async {
-                        self.layoutCache = Dictionary(uniqueKeysWithValues: rects.map { (ObjectIdentifier($0.node), $0) })
-                    }
-
+                Canvas { context, _ in
                     // Draw all rectangles with cushion shading
-                    for rect in rects {
+                    for rect in layoutRects {
                         drawCushion(rect, context: context)
                     }
 
                     // Draw selection/hover highlights on top
-                    for rect in rects {
+                    for rect in layoutRects {
                         drawHighlight(rect, context: context)
                     }
                 }
@@ -68,6 +62,21 @@ struct TreeMapView: View {
                             hoveredNode = nil
                         }
                     }
+            }
+            .onAppear {
+                updateLayoutIfNeeded(for: geometry.size)
+            }
+            .onChange(of: root.id) { _ in
+                updateLayoutIfNeeded(for: geometry.size)
+            }
+            .onChange(of: root.children.count) { _ in
+                updateLayoutIfNeeded(for: geometry.size)
+            }
+            .onChange(of: root.size) { _ in
+                updateLayoutIfNeeded(for: geometry.size)
+            }
+            .onChange(of: geometry.size) { newSize in
+                updateLayoutIfNeeded(for: newSize)
             }
         }
         .background(Color(nsColor: .controlBackgroundColor))
@@ -180,6 +189,29 @@ struct TreeMapView: View {
     }
 
     // MARK: - Hit Testing
+
+    private func updateLayoutIfNeeded(for size: CGSize) {
+        let rootID = ObjectIdentifier(root)
+        let childCount = root.children.count
+        let rootSize = root.size
+        guard rootID != layoutRootID || size != layoutSize ||
+                childCount != layoutChildCount || rootSize != layoutRootSize else { return }
+
+        let rects = TreeMapLayout.layout(
+            node: root,
+            rect: CGRect(origin: .zero, size: size),
+            colorProvider: colorProvider
+        )
+
+        layoutRootID = rootID
+        layoutSize = size
+        layoutChildCount = childCount
+        layoutRootSize = rootSize
+        layoutRects = rects
+        layoutCache = Dictionary(uniqueKeysWithValues: rects.map {
+            (ObjectIdentifier($0.node), $0)
+        })
+    }
 
     private func nodeAt(point: CGPoint) -> FileNode? {
         // Find the smallest (deepest) rect containing the point

@@ -12,17 +12,50 @@ struct ContentView: View {
     @State private var columnVisibility = NavigationSplitViewVisibility.all
 
     var body: some View {
+        Group {
+            if appState.rootNode == nil && !appState.isScanning {
+                WelcomeView()
+            } else {
+                browserView
+            }
+        }
+        .background {
+            WindowSizer()
+                .frame(width: 0, height: 0)
+        }
+        .alert("Error", isPresented: .constant(appState.errorMessage != nil)) {
+            Button("OK") {
+                appState.errorMessage = nil
+            }
+        } message: {
+            Text(appState.errorMessage ?? "")
+        }
+        .alert("Can't Move to Trash", isPresented: .constant(appState.trashProtectionMessage != nil)) {
+            Button("OK") {
+                appState.trashProtectionMessage = nil
+            }
+        } message: {
+            Text(appState.trashProtectionMessage ?? "")
+        }
+        .sheet(isPresented: .constant(!appState.pendingTrashNodes.isEmpty)) {
+            TrashConfirmationView(nodes: appState.pendingTrashNodes) {
+                appState.cancelMoveToTrash()
+            } confirm: {
+                appState.confirmMoveToTrash()
+            }
+        }
+    }
+
+    private var browserView: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
-            // Sidebar: File kind statistics
             SidebarView()
-                .navigationSplitViewColumnWidth(min: 200, ideal: 250, max: 350)
+                .navigationSplitViewColumnWidth(min: 170, ideal: 190, max: 220)
         } content: {
-            // File list
             FileListView()
-                .navigationSplitViewColumnWidth(min: 250, ideal: 300, max: 500)
+                .navigationSplitViewColumnWidth(min: 400, ideal: 700, max: .infinity)
         } detail: {
-            // TreeMap
             TreeMapContainerView()
+                .navigationSplitViewColumnWidth(min: 180, ideal: 240, max: 320)
         }
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
@@ -30,6 +63,7 @@ struct ContentView: View {
                     Label("Open Folder", systemImage: "folder")
                 }
                 .help("Open a folder to analyze")
+                .disabled(appState.isScanning)
 
                 Divider()
 
@@ -66,16 +100,8 @@ struct ContentView: View {
         .overlay {
             if appState.isScanning {
                 ScanningOverlay()
-            } else if appState.rootNode == nil {
-                WelcomeView()
+                    .allowsHitTesting(false)
             }
-        }
-        .alert("Error", isPresented: .constant(appState.errorMessage != nil)) {
-            Button("OK") {
-                appState.errorMessage = nil
-            }
-        } message: {
-            Text(appState.errorMessage ?? "")
         }
     }
 
@@ -90,6 +116,78 @@ struct ContentView: View {
     }
 }
 
+private struct TrashConfirmationView: View {
+    let nodes: [FileNode]
+    let cancel: () -> Void
+    let confirm: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Move \(nodes.count == 1 ? "This Item" : "\(nodes.count) Items") to Trash?")
+                .font(.title2.weight(.semibold))
+
+            Text("The selected items will be moved to the Trash.")
+                .foregroundStyle(.secondary)
+
+            Table(nodes) {
+                TableColumn("Item") { node in
+                    Text(node.displayPath)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
+                TableColumn("Size") { node in
+                    Text(FileSizeFormatter.string(from: node.size))
+                        .monospacedDigit()
+                }
+                .width(90)
+            }
+            .frame(minHeight: 220)
+
+            HStack {
+                Spacer()
+                Button("Cancel", action: cancel)
+                    .keyboardShortcut(.cancelAction)
+                Button("Move to Trash", role: .destructive, action: confirm)
+                    .keyboardShortcut(.defaultAction)
+            }
+        }
+        .padding(24)
+        .frame(width: 600, height: 360)
+        .interactiveDismissDisabled()
+    }
+}
+
+private struct WindowSizer: NSViewRepresentable {
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView()
+        DispatchQueue.main.async {
+            resize(view.window, context: context)
+        }
+        return view
+    }
+
+    func updateNSView(_ view: NSView, context: Context) {
+        DispatchQueue.main.async {
+            resize(view.window, context: context)
+        }
+    }
+
+    private func resize(_ window: NSWindow?, context: Context) {
+        guard let window, !context.coordinator.hasSizedWindow else { return }
+        context.coordinator.hasSizedWindow = true
+        window.setContentSize(NSSize(width: 1000, height: 650))
+        window.center()
+    }
+
+    final class Coordinator {
+        var hasSizedWindow = false
+    }
+}
+
 // MARK: - Welcome View
 
 struct WelcomeView: View {
@@ -97,14 +195,39 @@ struct WelcomeView: View {
 
     var body: some View {
         ContentUnavailableView {
-            Label("No Folder Selected", systemImage: "folder.badge.questionmark")
+            Text("Choose What to Scan")
         } description: {
-            Text("Open a folder to analyze disk usage and visualize it as a treemap.")
+            Text("Scan your main disk, your user folder, or another directory.")
+                .frame(width: 380)
         } actions: {
-            Button("Open Folder...") {
-                appState.showOpenPanel()
+            VStack(spacing: 10) {
+                Button {
+                    Task {
+                        await appState.scanPreset(url: URL(fileURLWithPath: "/", isDirectory: true))
+                    }
+                } label: {
+                    Text("Entire Main Disk")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button {
+                    Task {
+                        await appState.scanPreset(url: FileManager.default.homeDirectoryForCurrentUser)
+                    }
+                } label: {
+                    Text("User Folder (\(FileManager.default.homeDirectoryForCurrentUser.path))")
+                        .frame(maxWidth: .infinity)
+                }
+
+                Button {
+                    appState.showOpenPanel()
+                } label: {
+                    Text("Choose Directory…")
+                        .frame(maxWidth: .infinity)
+                }
             }
-            .buttonStyle(.borderedProminent)
+            .frame(width: 280)
         }
     }
 }
@@ -139,6 +262,7 @@ struct ScanningOverlay: View {
                     }
                 }
             }
+            .frame(width: 360, height: 150)
             .padding(32)
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
         }

@@ -9,10 +9,11 @@ import SwiftUI
 
 struct SidebarView: View {
     @EnvironmentObject private var appState: AppState
+    @State private var fileTypesExpanded = false
 
     var body: some View {
         List(selection: $appState.selectedKind) {
-            Section("File Types") {
+            Section(isExpanded: $fileTypesExpanded) {
                 if appState.kindStatistics.isEmpty {
                     Text("No data")
                         .foregroundStyle(.secondary)
@@ -22,6 +23,8 @@ struct SidebarView: View {
                             .tag(stat.kindName)
                     }
                 }
+            } header: {
+                Text("File Types")
             }
 
             if let root = appState.rootNode {
