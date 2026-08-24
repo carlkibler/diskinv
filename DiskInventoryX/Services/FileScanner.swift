@@ -9,12 +9,16 @@ import Foundation
 import UniformTypeIdentifiers
 
 actor FileScanner {
-    private var isCancelled = false
+    private static let maxConcurrentOperations = max(
+        1,
+        min(4, ProcessInfo.processInfo.activeProcessorCount / 2)
+    )
+    private var cancellationState: CancellationState?
 
     // MARK: - Public API
 
     func cancel() {
-        isCancelled = true
+        cancellationState?.cancel()
     }
 
     func scan(
@@ -23,52 +27,69 @@ actor FileScanner {
         usePhysicalSize: Bool,
         progress: @escaping (String, Int, Int) -> Void
     ) async throws -> FileNode {
-        isCancelled = false
+        let cancellation = CancellationState()
+        cancellationState = cancellation
+        defer { cancellationState = nil }
 
-        var fileCount = 0
-        var folderCount = 0
+        let progressState = ProgressState(callback: progress)
+        let ioLimiter = IOLimiter(maxConcurrentOperations: Self.maxConcurrentOperations)
+        let resourceKeys = Self.resourceKeys(usePhysicalSize: usePhysicalSize)
+        let resourceKeyArray = Array(resourceKeys)
+        let scanTask = Task.detached(priority: .utility) {
+            let root = try await Self.scanNode(
+                url: url,
+                showPackageContents: showPackageContents,
+                usePhysicalSize: usePhysicalSize,
+                resourceKeys: resourceKeys,
+                resourceKeyArray: resourceKeyArray,
+                cancellation: cancellation,
+                progress: progressState,
+                ioLimiter: ioLimiter,
+                parallelizeChildren: true,
+                depth: 0
+            )
+            root.sortChildrenBySize()
+            return root
+        }
+        let root = try await withTaskCancellationHandler {
+            try await scanTask.value
+        } onCancel: {
+            cancellation.cancel()
+            scanTask.cancel()
+        }
 
-        let root = try await scanDirectory(
-            url: url,
-            parent: nil,
-            showPackageContents: showPackageContents,
-            usePhysicalSize: usePhysicalSize,
-            fileCount: &fileCount,
-            folderCount: &folderCount,
-            progress: progress
-        )
-
-        root.sortChildrenBySize()
+        try cancellation.throwIfCancelled()
+        try Task.checkCancellation()
         return root
     }
 
     // MARK: - Private Implementation
 
-    private func scanDirectory(
+    private nonisolated static func scanNode(
         url: URL,
-        parent: FileNode?,
         showPackageContents: Bool,
         usePhysicalSize: Bool,
-        fileCount: inout Int,
-        folderCount: inout Int,
-        progress: @escaping (String, Int, Int) -> Void
+        resourceKeys: Set<URLResourceKey>,
+        resourceKeyArray: [URLResourceKey],
+        cancellation: CancellationState,
+        progress: ProgressState,
+        ioLimiter: IOLimiter,
+        parallelizeChildren: Bool,
+        depth: Int
     ) async throws -> FileNode {
-        guard !isCancelled else {
-            throw CancellationError()
+        try cancellation.throwIfCancelled()
+        try Task.checkCancellation()
+
+        let values = try await withIOPermit(ioLimiter) {
+            try cancellation.throwIfCancelled()
+            try Task.checkCancellation()
+            return try autoreleasepool {
+                try url.resourceValues(forKeys: resourceKeys)
+            }
         }
 
-        let resourceKeys: Set<URLResourceKey> = [
-            .nameKey,
-            .isDirectoryKey,
-            .isPackageKey,
-            .fileSizeKey,
-            .totalFileAllocatedSizeKey,
-            .contentTypeKey,
-            .isSymbolicLinkKey,
-            .isAliasFileKey
-        ]
-
-        let values = try url.resourceValues(forKeys: resourceKeys)
+        try cancellation.throwIfCancelled()
+        try Task.checkCancellation()
 
         let isDirectory = values.isDirectory ?? false
         let isPackage = values.isPackage ?? false
@@ -89,57 +110,252 @@ actor FileScanner {
             isPackage: isPackage,
             size: isDirectory ? 0 : size
         )
-        node.parent = parent
 
-        // Report progress
         if isDirectory {
-            folderCount += 1
-            progress(url.lastPathComponent, fileCount, folderCount)
+            progress.recordDirectory(url.lastPathComponent, displayName: depth <= 2)
         } else {
-            fileCount += 1
+            progress.recordFile()
         }
 
-        // Don't follow symlinks or aliases to avoid infinite loops
+        // Don't follow symlinks or aliases to avoid infinite loops.
         if isSymlink || isAlias {
             return node
         }
 
-        // Scan children if this is a directory (and not a package, unless configured to show package contents)
-        if isDirectory && (showPackageContents || !isPackage) {
-            do {
-                let contents = try FileManager.default.contentsOfDirectory(
-                    at: url,
-                    includingPropertiesForKeys: Array(resourceKeys),
-                    options: [.skipsHiddenFiles]
-                )
+        // Scan children if this is a directory (and not a package, unless configured to show package contents).
+        guard isDirectory && (showPackageContents || !isPackage) else {
+            return node
+        }
 
-                for childURL in contents {
-                    guard !isCancelled else {
-                        throw CancellationError()
-                    }
+        let contents: [URL]
+        do {
+            contents = try await withIOPermit(ioLimiter) {
+                try cancellation.throwIfCancelled()
+                try Task.checkCancellation()
+                return try autoreleasepool {
+                    try FileManager.default.contentsOfDirectory(
+                        at: url,
+                        includingPropertiesForKeys: resourceKeyArray,
+                        options: []
+                    )
+                }
+            }
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch {
+            // Can't enumerate directory, return node with no children.
+            return node
+        }
 
-                    do {
-                        let child = try await scanDirectory(
-                            url: childURL,
-                            parent: node,
-                            showPackageContents: showPackageContents,
-                            usePhysicalSize: usePhysicalSize,
-                            fileCount: &fileCount,
-                            folderCount: &folderCount,
-                            progress: progress
-                        )
-                        node.children.append(child)
-                        node.size += child.size
-                    } catch {
-                        // Skip files we can't access (permission denied, etc.)
-                        continue
+        try cancellation.throwIfCancelled()
+        try Task.checkCancellation()
+
+        var children: [FileNode] = []
+        if parallelizeChildren {
+            // Only the root's immediate children run as tasks. Nested branches recurse
+            // serially, so a million-file directory cannot create a million suspended tasks.
+            try await withThrowingTaskGroup(of: FileNode?.self) { group in
+                var nextChildIndex = 0
+                func addNextChildTask() {
+                    guard nextChildIndex < contents.count else { return }
+                    let childURL = contents[nextChildIndex]
+                    nextChildIndex += 1
+                    group.addTask {
+                        do {
+                            return try await scanNode(
+                                url: childURL,
+                                showPackageContents: showPackageContents,
+                                usePhysicalSize: usePhysicalSize,
+                                resourceKeys: resourceKeys,
+                                resourceKeyArray: resourceKeyArray,
+                                cancellation: cancellation,
+                                progress: progress,
+                                ioLimiter: ioLimiter,
+                                parallelizeChildren: false,
+                                depth: depth + 1
+                            )
+                        } catch is CancellationError {
+                            throw CancellationError()
+                        } catch {
+                            // Skip files we can't access (permission denied, etc.).
+                            return nil
+                        }
                     }
                 }
-            } catch {
-                // Can't enumerate directory, return node with no children
+
+                for _ in 0..<min(Self.maxConcurrentOperations, contents.count) {
+                    addNextChildTask()
+                }
+
+                while let child = try await group.next() {
+                    if let child {
+                        child.parent = node
+                        children.append(child)
+                        node.size += child.size
+                    }
+                    addNextChildTask()
+                }
+            }
+        } else {
+            for childURL in contents {
+                try cancellation.throwIfCancelled()
+                try Task.checkCancellation()
+                do {
+                    let child = try await scanNode(
+                        url: childURL,
+                        showPackageContents: showPackageContents,
+                        usePhysicalSize: usePhysicalSize,
+                        resourceKeys: resourceKeys,
+                        resourceKeyArray: resourceKeyArray,
+                        cancellation: cancellation,
+                        progress: progress,
+                        ioLimiter: ioLimiter,
+                        parallelizeChildren: false,
+                        depth: depth + 1
+                    )
+                    child.parent = node
+                    children.append(child)
+                    node.size += child.size
+                } catch is CancellationError {
+                    throw CancellationError()
+                } catch {
+                    // Skip files we can't access (permission denied, etc.).
+                }
             }
         }
 
+        node.children = children
         return node
+    }
+
+    private nonisolated static func resourceKeys(usePhysicalSize: Bool) -> Set<URLResourceKey> {
+        var keys: Set<URLResourceKey> = [
+            .nameKey,
+            .isDirectoryKey,
+            .isPackageKey,
+            .fileSizeKey,
+            .isSymbolicLinkKey,
+            .isAliasFileKey
+        ]
+        if usePhysicalSize {
+            keys.insert(.totalFileAllocatedSizeKey)
+        }
+        return keys
+    }
+
+    private nonisolated static func withIOPermit<T>(
+        _ ioLimiter: IOLimiter,
+        operation: () throws -> T
+    ) async throws -> T {
+        await ioLimiter.acquire()
+        do {
+            let result = try operation()
+            await ioLimiter.release()
+            return result
+        } catch {
+            await ioLimiter.release()
+            throw error
+        }
+    }
+}
+
+private final class CancellationState: @unchecked Sendable {
+    private let lock = NSLock()
+    private var cancelled = false
+
+    func cancel() {
+        lock.lock()
+        cancelled = true
+        lock.unlock()
+    }
+
+    func throwIfCancelled() throws {
+        lock.lock()
+        let isCancelled = cancelled
+        lock.unlock()
+        if isCancelled {
+            throw CancellationError()
+        }
+    }
+}
+
+private final class ProgressState: @unchecked Sendable {
+    private let lock = NSLock()
+    private let callbackLock = NSLock()
+    private let callback: (String, Int, Int) -> Void
+    private var fileCount = 0
+    private var folderCount = 0
+    private var currentDirectory = ""
+    private var lastReportTime = -Double.infinity
+
+    init(callback: @escaping (String, Int, Int) -> Void) {
+        self.callback = callback
+    }
+
+    func recordFile() {
+        lock.lock()
+        fileCount += 1
+        let report = nextReportIfNeeded()
+        if report != nil {
+            callbackLock.lock()
+        }
+        lock.unlock()
+        send(report)
+    }
+
+    func recordDirectory(_ name: String, displayName: Bool) {
+        lock.lock()
+        folderCount += 1
+        if displayName {
+            currentDirectory = name
+        }
+        let report = nextReportIfNeeded()
+        if report != nil {
+            callbackLock.lock()
+        }
+        lock.unlock()
+        send(report)
+    }
+
+    private func nextReportIfNeeded() -> (String, Int, Int)? {
+        let now = ProcessInfo.processInfo.systemUptime
+        guard now - lastReportTime >= 0.1 else { return nil }
+        lastReportTime = now
+        return (currentDirectory, fileCount, folderCount)
+    }
+
+    private func send(_ report: (String, Int, Int)?) {
+        guard let report else { return }
+        callback(report.0, report.1, report.2)
+        callbackLock.unlock()
+    }
+}
+
+private actor IOLimiter {
+    private var availablePermits: Int
+    private var waiters: [CheckedContinuation<Void, Never>] = []
+
+    init(maxConcurrentOperations: Int) {
+        availablePermits = max(1, maxConcurrentOperations)
+    }
+
+    func acquire() async {
+        if availablePermits > 0 {
+            availablePermits -= 1
+            return
+        }
+
+        await withCheckedContinuation { continuation in
+            waiters.append(continuation)
+        }
+    }
+
+    func release() {
+        if let waiter = waiters.first {
+            waiters.removeFirst()
+            waiter.resume()
+        } else {
+            availablePermits += 1
+        }
     }
 }

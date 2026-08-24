@@ -15,8 +15,10 @@ enum FileNodeType: Equatable {
     case freeSpace
 }
 
-class FileNode: Identifiable, ObservableObject {
-    let id = UUID()
+class FileNode: Identifiable {
+    /// Object identity is unique for the lifetime of a node and avoids allocating
+    /// and storing a UUID for every item in a scan.
+    var id: ObjectIdentifier { ObjectIdentifier(self) }
     let url: URL
     let name: String
     let isDirectory: Bool
@@ -29,7 +31,6 @@ class FileNode: Identifiable, ObservableObject {
 
     // Lazily computed properties
     private var _kindName: String?
-    private var _utType: UTType?
     private var _icon: NSImage?
 
     // MARK: - Initialization
@@ -70,14 +71,11 @@ class FileNode: Identifiable, ObservableObject {
     }
 
     var utType: UTType? {
-        if _utType == nil && type == .regular {
-            if isDirectory && !isPackage {
-                _utType = .folder
-            } else {
-                _utType = UTType(filenameExtension: url.pathExtension) ?? .data
-            }
+        guard type == .regular else { return nil }
+        if isDirectory && !isPackage {
+            return .folder
         }
-        return _utType
+        return UTType(filenameExtension: url.pathExtension) ?? .data
     }
 
     var icon: NSImage {
@@ -163,11 +161,11 @@ class FileNode: Identifiable, ObservableObject {
 
 extension FileNode: Hashable {
     static func == (lhs: FileNode, rhs: FileNode) -> Bool {
-        lhs.id == rhs.id
+        lhs === rhs
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+        hasher.combine(ObjectIdentifier(self))
     }
 }
 
