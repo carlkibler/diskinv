@@ -25,12 +25,12 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 PROFILE="dix-notarize"
-PROJECT="src/Disk Inventory X.xcodeproj"
-SCHEME="Disk Inventory X"
+PROJECT="DiskInventoryX/DiskInventoryX.xcodeproj"
+SCHEME="DiskInventoryX"
 ARCHIVE="build/DiskInventoryX.xcarchive"
 EXPORT_DIR="build/export"
-APP="$EXPORT_DIR/Disk Inventory Xs.app"
-ZIP="build/Disk-Inventory-X.zip"
+APP="$EXPORT_DIR/Disk Inventory X-Ray.app"
+ZIP="build/Disk-Inventory-X-Ray.zip"
 
 if ! xcrun notarytool history --keychain-profile "$PROFILE" >/dev/null 2>&1; then
   echo "error: no stored notarization profile '$PROFILE'." >&2
@@ -38,7 +38,7 @@ if ! xcrun notarytool history --keychain-profile "$PROFILE" >/dev/null 2>&1; the
   exit 1
 fi
 
-pkill -9 -f "Disk Inventory Xs" 2>/dev/null || true
+pkill -9 -f "Disk Inventory X-Ray" 2>/dev/null || true
 
 echo "==> Archiving (Release)…"
 rm -rf "$ARCHIVE"

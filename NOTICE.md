@@ -1,6 +1,6 @@
 # Notices
 
-Disk Inventory X was originally created by Tjark Derlien. This repository is a modified fork of `diskinv/diskinv`.
+Disk Inventory X-Ray is based on Disk Inventory X, originally created by Tjark Derlien. This repository is a modified fork of `diskinv/diskinv`.
 
 Copyright 2003–2024 Tjark Derlien and other upstream contributors.
 

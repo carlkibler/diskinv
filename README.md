@@ -1,12 +1,12 @@
-# Disk Inventory X
+# Disk Inventory X-Ray
 
-A macOS app that visualizes disk space usage with treemaps. This fork contains a modern SwiftUI rewrite of Tjark Derlien's original Disk Inventory X, with background scanning, safer deletion, and a layout focused on folder navigation.
+A macOS app that visualizes disk space usage with treemaps. This fork contains a modern SwiftUI successor to Tjark Derlien's original Disk Inventory X, with background scanning, safer deletion, and a layout focused on folder navigation.
 
 The original Objective-C application remains under `src/` for reference.
 
 ## Install
 
-Grab the latest release from [this fork](https://github.com/carlkibler/diskinv/releases). Unzip it and drag Disk Inventory X to `/Applications`.
+Grab the latest release from [this fork](https://github.com/carlkibler/diskinv/releases). Unzip it and drag Disk Inventory X-Ray to `/Applications`.
 
 Requirements: macOS 14 or later.
 
@@ -17,7 +17,7 @@ cd DiskInventoryX
 ./BuildRelease.sh
 ```
 
-The release app is written to `DiskInventoryX/build/Build/Products/Release/DiskInventoryX.app`.
+The release app is written to `DiskInventoryX/build/Build/Products/Release/Disk Inventory X-Ray.app`.
 
 ## Layout
 

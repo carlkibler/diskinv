@@ -106,7 +106,7 @@ struct AboutTab: View {
                 .font(.system(size: 64))
                 .foregroundStyle(.blue)
 
-            Text("Disk Inventory X")
+            Text("Disk Inventory X-Ray")
                 .font(.title)
                 .fontWeight(.bold)
 

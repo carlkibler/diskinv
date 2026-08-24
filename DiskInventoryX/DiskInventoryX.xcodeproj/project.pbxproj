@@ -51,7 +51,7 @@
 		A1000002234567890000014 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1000002234567890000015 /* DiskInventoryX.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DiskInventoryX.entitlements; sourceTree = "<group>"; };
 		A1000002234567890000016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A1000003234567890000001 /* DiskInventoryX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DiskInventoryX.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1000003234567890000001 /* DiskInventoryX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Disk Inventory X-Ray.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3000001234567890000001 /* DiskInventoryXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DiskInventoryXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2000001234567890000001 /* PerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -448,11 +448,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = C4QKJU6M7M;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Disk Inventory X";
+				INFOPLIST_KEY_CFBundleDisplayName = "Disk Inventory X-Ray";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2003-2024 Tjark Derlien; modifications 2026 Carl Kibler. GPL v3.";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -460,8 +460,9 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.derlien.DiskInventoryX;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.carlkibler.DiskInventoryXRay;
+				PRODUCT_MODULE_NAME = DiskInventoryX;
+				PRODUCT_NAME = "Disk Inventory X-Ray";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -476,11 +477,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = C4QKJU6M7M;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Disk Inventory X";
+				INFOPLIST_KEY_CFBundleDisplayName = "Disk Inventory X-Ray";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2003-2024 Tjark Derlien; modifications 2026 Carl Kibler. GPL v3.";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -488,8 +489,9 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.derlien.DiskInventoryX;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.carlkibler.DiskInventoryXRay;
+				PRODUCT_MODULE_NAME = DiskInventoryX;
+				PRODUCT_NAME = "Disk Inventory X-Ray";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -506,7 +508,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.derlien.DiskInventoryXTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DiskInventoryX.app/Contents/MacOS/DiskInventoryX";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Disk Inventory X-Ray.app/Contents/MacOS/Disk Inventory X-Ray";
 			};
 			name = Debug;
 		};
@@ -521,7 +523,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.derlien.DiskInventoryXTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DiskInventoryX.app/Contents/MacOS/DiskInventoryX";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Disk Inventory X-Ray.app/Contents/MacOS/Disk Inventory X-Ray";
 			};
 			name = Release;
 		};
