@@ -19,7 +19,7 @@ echo ""
 echo "Build complete!"
 echo "App location: build/Build/Products/Release/DiskInventoryX.app"
 
-# Verify universal binary
+# Report the release architecture
 echo ""
 echo "Architecture:"
 lipo -info "build/Build/Products/Release/DiskInventoryX.app/Contents/MacOS/DiskInventoryX"

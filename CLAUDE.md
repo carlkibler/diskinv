@@ -1,71 +1,40 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## Build Commands
+## Build and test
 
 ```bash
-# Build release version
-./BuildRelease.sh
+# Release build
+cd DiskInventoryX && ./BuildRelease.sh
 
-# Or directly with xcodebuild
-xcodebuild -project "Disk Inventory X.xcodeproj" -configuration Release
+# Debug build
+xcodebuild -project DiskInventoryX/DiskInventoryX.xcodeproj \
+  -scheme DiskInventoryX -configuration Debug
 
-# Build debug version
-xcodebuild -project "Disk Inventory X.xcodeproj" -configuration Debug
+# Tests
+xcodebuild test \
+  -project DiskInventoryX/DiskInventoryX.xcodeproj \
+  -scheme DiskInventoryX \
+  -configuration Debug \
+  -destination 'platform=macOS,arch=arm64' \
+  CODE_SIGN_IDENTITY=- \
+  CODE_SIGNING_REQUIRED=NO \
+  ENABLE_HARDENED_RUNTIME=NO
 ```
 
-No test suite exists. Benchmarking is available via `performRenderBenchmark` and `performLayoutBenchmark` methods in MainWindowController.
+## Current application
 
-## Architecture Overview
+The maintained app is the SwiftUI implementation under `DiskInventoryX/`. It targets macOS 14 or later and builds for Apple silicon.
 
-Disk Inventory X is a macOS Cocoa application (Objective-C) that visualizes disk space usage using treemaps. It follows a document-based architecture with NSDocument/NSDocumentController patterns.
+- `App/`: application state and lifecycle
+- `Models/`: filesystem tree and file-kind data
+- `Services/`: bounded background scanning and color assignment
+- `Views/`: chooser, progress, outline, treemap, settings, and trash confirmation
+- `Tests/`: scanner, cancellation, layout, accounting, and deletion-safety tests
 
-### Core Data Model
+Scanning must remain off the main actor. Keep filesystem concurrency bounded and avoid retaining duplicate scan trees or file contents. UI state mutations return to `AppState`, which is main-actor isolated.
 
-- **FSItem** (`FSItem.h/m`): Hierarchical representation of file system items. Root data structure for the entire scanned directory tree. Handles loading children, size calculation, and pasteboard operations. Uses delegate pattern for customization (e.g., `fsItemEnteringFolder:`, `fsItemShouldIgnoreCreatorCode:`).
-
-- **FileSystemDoc** (`FileSystemDoc.h/m`): NSDocument subclass managing the scanned file system state. Contains the root FSItem, zoom stack for navigation, file kind statistics, and view options. Posts notifications for state changes.
-
-- **FileKindStatistic**: Tracks count and total size of files by kind (e.g., all MP3 files). Defined within FileSystemDoc.h.
-
-### Key Notifications
-
-Components communicate via NSNotificationCenter:
-- `GlobalSelectionChangedNotification` - selection changed
-- `ZoomedItemChangedNotification` - user zoomed into/out of folder
-- `FSItemsChangedNotification` - items modified, deleted, or added
-- `ViewOptionChangedNotification` - display options changed
-
-### External Frameworks
-
-Located in project directory:
-- **TreeMapView.framework** - Treemap visualization rendering
-- **OmniAppKit/OmniFoundation/OmniBase** - Omni Group utility frameworks
-
-### View Controllers
-
-- `MainWindowController` - Primary window coordination
-- `TreeMapViewController` - Treemap visualization
-- `FilesOutlineViewController` - Left-side file browser
-- `FileKindsTableController` - File kind statistics drawer
-- `SelectionListController` - Selection list drawer
-
-## Key Design Patterns
-
-- **Document-based app**: Uses NSDocument lifecycle for per-scan state
-- **Notification-based**: Loose coupling between UI components
-- **Delegate pattern**: FSItem customization without subclassing
-- **Value transformers**: `FileSizeTransformer`, `VolumeNameTransformer` for bindings
-
-## macOS Considerations
-
-- Minimum deployment: macOS 10.13+
-- 64-bit Intel only
-- Handles privacy-protected folders (Documents, Desktop, Downloads, etc.) with appropriate permission descriptors
-- Dark mode support (10.14+)
-- Retina display support for treemap rendering
+The Objective-C code in `src/` and the older treemap implementation in `treemap/` are retained as upstream reference code. They are not part of the Swift application target.
 
 ## License
 
-GPL v3
+GPL v3. Preserve upstream notices and the separate notices on legacy reference files.
