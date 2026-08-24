@@ -83,6 +83,7 @@ struct FileRow: View {
             Button("Show in Finder") {
                 NSWorkspace.shared.selectFile(node.url.path, inFileViewerRootedAtPath: "")
             }
+            .disabled(node.isSpecialItem)
 
             if node.isDirectory {
                 Button("Zoom Into") {

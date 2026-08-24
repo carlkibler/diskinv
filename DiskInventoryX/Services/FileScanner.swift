@@ -9,6 +9,8 @@ import Foundation
 import UniformTypeIdentifiers
 
 actor FileScanner {
+    private static let maximumVisibleChildren = 500
+    private static let compactDirectoryThreshold: UInt64 = 8 * 1_024 * 1_024
     private static let maxConcurrentOperations = max(
         1,
         min(4, ProcessInfo.processInfo.activeProcessorCount / 2)
@@ -148,7 +150,7 @@ actor FileScanner {
                     try FileManager.default.contentsOfDirectory(
                         at: url,
                         includingPropertiesForKeys: mainDiskOnly ? [] : resourceKeyArray,
-                        options: [.skipsHiddenFiles]
+                        options: []
                     )
                 }
             }
@@ -162,7 +164,7 @@ actor FileScanner {
         try cancellation.throwIfCancelled()
         try Task.checkCancellation()
 
-        var children: [FileNode] = []
+        var children = ChildAccumulator(limit: Self.maximumVisibleChildren)
         if parallelizeChildren {
             // Only the root's immediate children run as tasks. Nested branches recurse
             // serially, so a million-file directory cannot create a million suspended tasks.
@@ -203,7 +205,7 @@ actor FileScanner {
                 while let child = try await group.next() {
                     if let child {
                         child.parent = node
-                        children.append(child)
+                        children.add(child)
                         node.size += child.size
                     }
                     addNextChildTask()
@@ -229,7 +231,7 @@ actor FileScanner {
                     )
                     guard let child else { continue }
                     child.parent = node
-                    children.append(child)
+                    children.add(child)
                     node.size += child.size
                 } catch is CancellationError {
                     throw CancellationError()
@@ -239,8 +241,21 @@ actor FileScanner {
             }
         }
 
-        node.children = children
+        node.children = children.finished()
+        if depth > 1 && node.size < Self.compactDirectoryThreshold && !node.children.isEmpty {
+            node.children = [FileNode(
+                url: summaryURL(),
+                name: "Summarized Items",
+                size: node.size,
+                type: .summary
+            )]
+        }
+        node.children.forEach { $0.parent = node }
         return node
+    }
+
+    private nonisolated static func summaryURL() -> URL {
+        URL(string: "disk-inventory-x-ray://summary/\(UUID().uuidString)")!
     }
 
     private nonisolated static func resourceKeys(usePhysicalSize: Bool) -> Set<URLResourceKey> {
@@ -295,6 +310,46 @@ actor FileScanner {
             await ioLimiter.release()
             throw error
         }
+    }
+}
+
+private struct ChildAccumulator {
+    private let limit: Int
+    private var retained: [FileNode] = []
+    private var summarizedSize: UInt64 = 0
+    private var summarizedCount = 0
+
+    init(limit: Int) {
+        self.limit = limit
+    }
+
+    mutating func add(_ child: FileNode) {
+        retained.append(child)
+        if retained.count >= limit * 2 {
+            compact()
+        }
+    }
+
+    mutating func finished() -> [FileNode] {
+        compact()
+        guard summarizedCount > 0 else { return retained }
+        retained.append(FileNode(
+            url: URL(string: "disk-inventory-x-ray://summary/\(UUID().uuidString)")!,
+            name: "Summarized Items (\(summarizedCount.formatted()))",
+            size: summarizedSize,
+            type: .summary
+        ))
+        return retained
+    }
+
+    private mutating func compact() {
+        guard retained.count > limit else { return }
+        retained.sort { $0.size > $1.size }
+        for child in retained.dropFirst(limit) {
+            summarizedSize += child.size
+            summarizedCount += 1
+        }
+        retained.removeSubrange(limit...)
     }
 }
 

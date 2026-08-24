@@ -322,7 +322,7 @@ class AppState: ObservableObject {
                 if visitedNodes.isMultiple(of: 1024) {
                     try Task.checkCancellation()
                 }
-                if !node.isDirectory {
+                if !node.isDirectory && !node.isSpecialItem {
                     let type = UTType(filenameExtension: node.url.pathExtension) ?? .data
                     let kind = type.localizedDescription ?? type.identifier
                     var stat = result[kind] ?? (count: 0, size: 0)

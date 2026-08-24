@@ -68,7 +68,7 @@ final class FileScannerTests: XCTestCase {
         XCTAssertTrue(linkNode.children.isEmpty)
     }
 
-    func testScanSkipsHiddenFiles() async throws {
+    func testScanIncludesHiddenFiles() async throws {
         try Data(repeating: 0, count: 23).write(to: temporaryDirectory.appendingPathComponent(".hidden-data"))
 
         let root = try await FileScanner().scan(
@@ -78,7 +78,30 @@ final class FileScannerTests: XCTestCase {
             progress: { _, _, _ in }
         )
 
-        XCTAssertNil(root.children.first { $0.name == ".hidden-data" })
+        XCTAssertEqual(root.children.first { $0.name == ".hidden-data" }?.size, 23)
+    }
+
+    func testMainDiskScanCompactsSmallDescendants() async throws {
+        let outer = temporaryDirectory.appendingPathComponent("outer", isDirectory: true)
+        let inner = outer.appendingPathComponent("inner", isDirectory: true)
+        try FileManager.default.createDirectory(at: inner, withIntermediateDirectories: true)
+        for index in 0..<20 {
+            try Data(repeating: 0, count: 32).write(to: inner.appendingPathComponent(".hidden-\(index)"))
+        }
+
+        let root = try await FileScanner().scan(
+            url: temporaryDirectory,
+            showPackageContents: false,
+            usePhysicalSize: false,
+            mainDiskOnly: true,
+            progress: { _, _, _ in }
+        )
+
+        let innerNode = try XCTUnwrap(root.children.first?.children.first)
+        XCTAssertEqual(innerNode.size, 640)
+        XCTAssertEqual(innerNode.children.count, 1)
+        XCTAssertEqual(innerNode.children.first?.type, .summary)
+        XCTAssertEqual(innerNode.children.first?.size, 640)
     }
 
     func testProgressReportsDirectoriesAndMonotonicTotals() async throws {

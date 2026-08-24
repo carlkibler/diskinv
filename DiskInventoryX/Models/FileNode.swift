@@ -13,6 +13,7 @@ enum FileNodeType: Equatable {
     case regular
     case otherSpace
     case freeSpace
+    case summary
 }
 
 class FileNode: Identifiable {
@@ -57,6 +58,8 @@ class FileNode: Identifiable {
             _kindName = "Other Space"
         case .freeSpace:
             _kindName = "Free Space"
+        case .summary:
+            _kindName = "Summarized Items"
         case .regular:
             if isDirectory && !isPackage {
                 _kindName = "Folder"
@@ -89,6 +92,9 @@ class FileNode: Identifiable {
                 ?? NSImage(named: NSImage.folderName)!
         case .otherSpace:
             _icon = NSImage(systemSymbolName: "questionmark.folder", accessibilityDescription: "Other Space")
+                ?? NSImage(named: NSImage.folderName)!
+        case .summary:
+            _icon = NSImage(systemSymbolName: "ellipsis.circle", accessibilityDescription: "Summarized Items")
                 ?? NSImage(named: NSImage.folderName)!
         case .regular:
             _icon = NSWorkspace.shared.icon(forFile: url.path)
