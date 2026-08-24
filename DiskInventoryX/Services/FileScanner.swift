@@ -148,7 +148,7 @@ actor FileScanner {
                     try FileManager.default.contentsOfDirectory(
                         at: url,
                         includingPropertiesForKeys: mainDiskOnly ? [] : resourceKeyArray,
-                        options: []
+                        options: [.skipsHiddenFiles]
                     )
                 }
             }

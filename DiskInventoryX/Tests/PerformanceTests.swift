@@ -68,7 +68,7 @@ final class FileScannerTests: XCTestCase {
         XCTAssertTrue(linkNode.children.isEmpty)
     }
 
-    func testScanIncludesHiddenFiles() async throws {
+    func testScanSkipsHiddenFiles() async throws {
         try Data(repeating: 0, count: 23).write(to: temporaryDirectory.appendingPathComponent(".hidden-data"))
 
         let root = try await FileScanner().scan(
@@ -78,7 +78,7 @@ final class FileScannerTests: XCTestCase {
             progress: { _, _, _ in }
         )
 
-        XCTAssertEqual(root.children.first { $0.name == ".hidden-data" }?.size, 23)
+        XCTAssertNil(root.children.first { $0.name == ".hidden-data" })
     }
 
     func testProgressReportsDirectoriesAndMonotonicTotals() async throws {
