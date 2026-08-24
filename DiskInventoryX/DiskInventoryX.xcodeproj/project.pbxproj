@@ -21,7 +21,18 @@
 		A1000001234567890000012 /* FileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002234567890000012 /* FileListView.swift */; };
 		A1000001234567890000013 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002234567890000013 /* SettingsView.swift */; };
 		A1000001234567890000014 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000002234567890000014 /* Assets.xcassets */; };
+		B1000001234567890000001 /* PerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2000001234567890000001 /* PerformanceTests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B9000001234567890000002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A100000A234567890000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1000006234567890000001;
+			remoteInfo = DiskInventoryX;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		A1000002234567890000001 /* DiskInventoryXApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskInventoryXApp.swift; sourceTree = "<group>"; };
@@ -41,10 +52,19 @@
 		A1000002234567890000015 /* DiskInventoryX.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DiskInventoryX.entitlements; sourceTree = "<group>"; };
 		A1000002234567890000016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1000003234567890000001 /* DiskInventoryX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DiskInventoryX.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3000001234567890000001 /* DiskInventoryXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DiskInventoryXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2000001234567890000001 /* PerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A1000004234567890000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4000001234567890000001 /* DiskInventoryXTests Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -58,8 +78,17 @@
 			isa = PBXGroup;
 			children = (
 				A1000005234567890000002 /* DiskInventoryX */,
+				B5000001234567890000001 /* DiskInventoryXTests */,
 				A1000005234567890000003 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		B5000001234567890000001 /* DiskInventoryXTests */ = {
+			isa = PBXGroup;
+			children = (
+				B2000001234567890000001 /* PerformanceTests.swift */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		A1000005234567890000002 /* DiskInventoryX */ = {
@@ -81,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				A1000003234567890000001 /* DiskInventoryX.app */,
+				B3000001234567890000001 /* DiskInventoryXTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -185,7 +215,32 @@
 			productReference = A1000003234567890000001 /* DiskInventoryX.app */;
 			productType = "com.apple.product-type.application";
 		};
+		B6000001234567890000001 /* DiskInventoryXTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B7000001234567890000001 /* Build configuration list for PBXNativeTarget "DiskInventoryXTests" */;
+			buildPhases = (
+				B8000001234567890000001 /* DiskInventoryXTests Sources */,
+				B4000001234567890000001 /* DiskInventoryXTests Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B9000001234567890000001 /* PBXTargetDependency */,
+			);
+			name = DiskInventoryXTests;
+			productName = DiskInventoryXTests;
+			productReference = B3000001234567890000001 /* DiskInventoryXTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
+
+/* Begin PBXTargetDependency section */
+		B9000001234567890000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1000006234567890000001 /* DiskInventoryX */;
+			targetProxy = B9000001234567890000002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXProject section */
 		A100000A234567890000001 /* Project object */ = {
@@ -197,6 +252,10 @@
 				TargetAttributes = {
 					A1000006234567890000001 = {
 						CreatedOnToolsVersion = 15.0;
+					};
+					B6000001234567890000001 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = A1000006234567890000001;
 					};
 				};
 			};
@@ -214,6 +273,7 @@
 			projectRoot = "";
 			targets = (
 				A1000006234567890000001 /* DiskInventoryX */,
+				B6000001234567890000001 /* DiskInventoryXTests */,
 			);
 		};
 /* End PBXProject section */
@@ -247,6 +307,14 @@
 				A1000001234567890000011 /* SidebarView.swift in Sources */,
 				A1000001234567890000012 /* FileListView.swift in Sources */,
 				A1000001234567890000013 /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B8000001234567890000001 /* DiskInventoryXTests Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1000001234567890000001 /* PerformanceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,6 +495,36 @@
 			};
 			name = Release;
 		};
+		B7000001234567890000002 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGNING_REQUIRED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.derlien.DiskInventoryXTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DiskInventoryX.app/Contents/MacOS/DiskInventoryX";
+			};
+			name = Debug;
+		};
+		B7000001234567890000003 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGNING_REQUIRED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.derlien.DiskInventoryXTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DiskInventoryX.app/Contents/MacOS/DiskInventoryX";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -444,6 +542,15 @@
 			buildConfigurations = (
 				A100000C234567890000001 /* Debug */,
 				A100000C234567890000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B7000001234567890000001 /* Build configuration list for PBXNativeTarget "DiskInventoryXTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B7000001234567890000002 /* Debug */,
+				B7000001234567890000003 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
