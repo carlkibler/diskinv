@@ -178,6 +178,8 @@ final class TrashProtectionTests: XCTestCase {
         XCTAssertTrue(appState.isProtectedFromTrash(home.appendingPathComponent("Documents"), isDirectory: true))
         XCTAssertTrue(appState.isProtectedFromTrash(home.appendingPathComponent("Music"), isDirectory: true))
         XCTAssertTrue(appState.isProtectedFromTrash(home.appendingPathComponent("Library/Mobile Documents/com~apple~CloudDocs"), isDirectory: true))
+        XCTAssertTrue(appState.isProtectedFromTrash(URL(fileURLWithPath: "/var/db"), isDirectory: true))
+        XCTAssertTrue(appState.isProtectedFromTrash(URL(fileURLWithPath: "/etc"), isDirectory: true))
     }
 
     func testAllowsOrdinaryFoldersAndFiles() {
@@ -199,5 +201,13 @@ final class TrashProtectionTests: XCTestCase {
 
         XCTAssertTrue(appState.nextSelection(afterDeleting: [second]) === third)
         XCTAssertTrue(appState.nextSelection(afterDeleting: [second, third]) === first)
+    }
+
+    func testUnscannedSizeSaturatesAccountingDifferences() {
+        let appState = AppState()
+
+        XCTAssertEqual(appState.unscannedSize(total: 1_000, free: 400, scanned: 250), 350)
+        XCTAssertEqual(appState.unscannedSize(total: 1_000, free: 400, scanned: 700), 0)
+        XCTAssertEqual(appState.unscannedSize(total: 400, free: 500, scanned: 0), 0)
     }
 }

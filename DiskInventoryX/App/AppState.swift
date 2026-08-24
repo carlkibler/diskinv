@@ -207,39 +207,42 @@ class AppState: ObservableObject {
         pendingTrashNodes = []
         guard !nodes.isEmpty else { return }
         let nextSelection = nextSelection(afterDeleting: Set(nodes))
+        let urls = nodes.map(\.url)
 
-        do {
-            for node in nodes {
-                try FileManager.default.trashItem(at: node.url, resultingItemURL: nil)
-            }
+        Task {
+            do {
+                try await Task.detached(priority: .utility) {
+                    for url in urls {
+                        try FileManager.default.trashItem(at: url, resultingItemURL: nil)
+                    }
+                }.value
 
-            for node in nodes {
-                node.parent?.children.removeAll { $0 === node }
-            }
+                for node in nodes {
+                    node.parent?.children.removeAll { $0 === node }
+                }
 
-            var ancestors = Set(nodes.compactMap(\.parent))
-            while !ancestors.isEmpty {
-                let currentLevel = ancestors
-                ancestors.removeAll()
-                for node in currentLevel {
-                    node.recalculateSize()
-                    if let parent = node.parent {
-                        ancestors.insert(parent)
+                var ancestors = Set(nodes.compactMap(\.parent))
+                while !ancestors.isEmpty {
+                    let currentLevel = ancestors
+                    ancestors.removeAll()
+                    for node in currentLevel {
+                        node.recalculateSize()
+                        if let parent = node.parent {
+                            ancestors.insert(parent)
+                        }
                     }
                 }
-            }
 
-            selectedNode = nextSelection
-            selectedNodes = nextSelection.map { [$0] } ?? []
-            Task {
+                selectedNode = nextSelection
+                selectedNodes = nextSelection.map { [$0] } ?? []
                 try? await calculateStatistics(for: rootNode)
+                if let root = rootNode {
+                    rootNode = root
+                }
+            } catch {
+                errorMessage = error.localizedDescription
+                await refresh()
             }
-            if let root = rootNode {
-                rootNode = root
-            }
-        } catch {
-            errorMessage = error.localizedDescription
-            Task { await refresh() }
         }
     }
 
@@ -266,9 +269,11 @@ class AppState: ObservableObject {
     func isProtectedFromTrash(_ url: URL, isDirectory: Bool) -> Bool {
         guard isDirectory else { return false }
 
-        let path = url.standardizedFileURL.path
-        let parentPath = url.deletingLastPathComponent().standardizedFileURL.path
-        let homePath = FileManager.default.homeDirectoryForCurrentUser.standardizedFileURL.path
+        let resolvedURL = url.standardizedFileURL.resolvingSymlinksInPath()
+        let path = resolvedURL.path
+        let parentPath = resolvedURL.deletingLastPathComponent().path
+        let homePath = FileManager.default.homeDirectoryForCurrentUser
+            .standardizedFileURL.resolvingSymlinksInPath().path
 
         if path == homePath || parentPath == "/" || parentPath == "/Users" || parentPath == "/Volumes" {
             return true
@@ -276,6 +281,7 @@ class AppState: ObservableObject {
 
         let protectedTrees = [
             "/System", "/Library", "/bin", "/sbin", "/usr", "/private",
+            "/etc", "/tmp", "/var",
             homePath + "/Library"
         ]
         if protectedTrees.contains(where: { path == $0 || path.hasPrefix($0 + "/") }) {
@@ -291,6 +297,11 @@ class AppState: ObservableObject {
 
     func color(for kindName: String) -> Color {
         colorAssigner.color(for: kindName)
+    }
+
+    func unscannedSize(total: UInt64, free: UInt64, scanned: UInt64) -> UInt64 {
+        let used = total > free ? total - free : 0
+        return used > scanned ? used - scanned : 0
     }
 
     // MARK: - Private Methods
@@ -382,7 +393,7 @@ class AppState: ObservableObject {
             let scannedSize = root.size
             let totalSize = UInt64(totalCapacity)
             let freeSize = UInt64(availableCapacity)
-            let otherSize = totalSize - freeSize - scannedSize
+            let otherSize = unscannedSize(total: totalSize, free: freeSize, scanned: scannedSize)
 
             if showOtherSpace && otherSize > 0 {
                 let otherItem = FileNode(
