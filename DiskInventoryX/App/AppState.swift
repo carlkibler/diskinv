@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import UniformTypeIdentifiers
 
 @MainActor
 class AppState: ObservableObject {
@@ -15,11 +16,14 @@ class AppState: ObservableObject {
     @Published var rootNode: FileNode?
     @Published var zoomedNode: FileNode?
     @Published var selectedNode: FileNode?
+    @Published var selectedNodes: Set<FileNode> = []
     @Published var zoomStack: [FileNode] = []
 
     @Published var isScanning = false
     @Published var scanProgress: ScanProgress?
     @Published var errorMessage: String?
+    @Published var trashProtectionMessage: String?
+    @Published var pendingTrashNodes: [FileNode] = []
 
     @Published var kindStatistics: [FileKindStatistic] = []
     @Published var selectedKind: String?
@@ -36,6 +40,7 @@ class AppState: ObservableObject {
 
     private var scanner: FileScanner?
     private var colorAssigner = FileKindColorAssigner()
+    private var hasExplainedProtectedFolders = false
 
     // MARK: - Computed Properties
 
@@ -46,6 +51,7 @@ class AppState: ObservableObject {
     // MARK: - Actions
 
     func showOpenPanel() {
+        guard !isScanning else { return }
         let panel = NSOpenPanel()
         panel.canChooseFiles = false
         panel.canChooseDirectories = true
@@ -71,6 +77,7 @@ class AppState: ObservableObject {
         zoomedNode = nil
         zoomStack = []
         selectedNode = nil
+        selectedNodes = []
         kindStatistics = []
 
         let newScanner = FileScanner()
@@ -91,8 +98,8 @@ class AppState: ObservableObject {
                 }
             }
 
+            try await calculateStatistics(for: root)
             rootNode = root
-            calculateStatistics()
 
             // Add free space and other space items if scanning a volume root
             if showFreeSpace || showOtherSpace {
@@ -107,6 +114,31 @@ class AppState: ObservableObject {
 
         isScanning = false
         scanProgress = nil
+    }
+
+    func scanPreset(url: URL) async {
+        let protectedFolders = protectedFoldersWithin(url)
+        if !protectedFolders.isEmpty {
+            if !hasExplainedProtectedFolders {
+                let alert = NSAlert()
+                alert.messageText = "Folder Access Required"
+                alert.informativeText = "macOS may ask for access to Desktop, Documents, and Downloads. Approve each request now so the scan can include them. Some system data requires Full Disk Access in System Settings."
+                alert.addButton(withTitle: "Continue")
+                alert.addButton(withTitle: "Cancel")
+                guard alert.runModal() == .alertFirstButtonReturn else { return }
+                hasExplainedProtectedFolders = true
+            }
+
+            for folder in protectedFolders {
+                _ = try? FileManager.default.contentsOfDirectory(
+                    at: folder,
+                    includingPropertiesForKeys: nil,
+                    options: [.skipsSubdirectoryDescendants]
+                )
+            }
+        }
+
+        await scan(url: url)
     }
 
     func refresh() async {
@@ -140,35 +172,166 @@ class AppState: ObservableObject {
         zoomStack = []
     }
 
+    func requestMoveSelectedToTrash() {
+        let nodes = selectedNodes.isEmpty ? [selectedNode].compactMap { $0 } : Array(selectedNodes)
+        requestMoveToTrash(nodes)
+    }
+
+    func requestMoveToTrash(_ nodes: [FileNode]) {
+        let candidates = nodes
+            .filter { !$0.isSpecialItem }
+            .sorted { $0.url.pathComponents.count < $1.url.pathComponents.count }
+        var nodes: [FileNode] = []
+        for candidate in candidates {
+            let path = candidate.url.standardizedFileURL.path
+            if !nodes.contains(where: {
+                let parentPath = $0.url.standardizedFileURL.path
+                return path.hasPrefix(parentPath + "/")
+            }) {
+                nodes.append(candidate)
+            }
+        }
+        guard !nodes.isEmpty else { return }
+        guard let protectedNode = nodes.first(where: {
+            isProtectedFromTrash($0.url, isDirectory: $0.isDirectory)
+        }) else {
+            pendingTrashNodes = nodes.sorted { $0.displayPath < $1.displayPath }
+            return
+        }
+
+        trashProtectionMessage = "\(protectedNode.name) is a top-level or system folder. Removing it here is too dangerous, so Disk Inventory X will not enable that action."
+    }
+
+    func confirmMoveToTrash() {
+        let nodes = pendingTrashNodes
+        pendingTrashNodes = []
+        guard !nodes.isEmpty else { return }
+        let nextSelection = nextSelection(afterDeleting: Set(nodes))
+
+        do {
+            for node in nodes {
+                try FileManager.default.trashItem(at: node.url, resultingItemURL: nil)
+            }
+
+            for node in nodes {
+                node.parent?.children.removeAll { $0 === node }
+            }
+
+            var ancestors = Set(nodes.compactMap(\.parent))
+            while !ancestors.isEmpty {
+                let currentLevel = ancestors
+                ancestors.removeAll()
+                for node in currentLevel {
+                    node.recalculateSize()
+                    if let parent = node.parent {
+                        ancestors.insert(parent)
+                    }
+                }
+            }
+
+            selectedNode = nextSelection
+            selectedNodes = nextSelection.map { [$0] } ?? []
+            Task {
+                try? await calculateStatistics(for: rootNode)
+            }
+            if let root = rootNode {
+                rootNode = root
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+            Task { await refresh() }
+        }
+    }
+
+    func cancelMoveToTrash() {
+        pendingTrashNodes = []
+    }
+
+    func nextSelection(afterDeleting nodes: Set<FileNode>) -> FileNode? {
+        guard let anchor = nodes.first, let parent = anchor.parent,
+              let index = parent.children.firstIndex(where: { $0 === anchor }) else {
+            return nil
+        }
+
+        if let next = parent.children[index...].first(where: { !nodes.contains($0) }) {
+            return next
+        }
+        return parent.children[..<index].last(where: { !nodes.contains($0) })
+    }
+
+    func moveToTrash(_ node: FileNode) {
+        requestMoveToTrash([node])
+    }
+
+    func isProtectedFromTrash(_ url: URL, isDirectory: Bool) -> Bool {
+        guard isDirectory else { return false }
+
+        let path = url.standardizedFileURL.path
+        let parentPath = url.deletingLastPathComponent().standardizedFileURL.path
+        let homePath = FileManager.default.homeDirectoryForCurrentUser.standardizedFileURL.path
+
+        if path == homePath || parentPath == "/" || parentPath == "/Users" || parentPath == "/Volumes" {
+            return true
+        }
+
+        let protectedTrees = [
+            "/System", "/Library", "/bin", "/sbin", "/usr", "/private",
+            homePath + "/Library"
+        ]
+        if protectedTrees.contains(where: { path == $0 || path.hasPrefix($0 + "/") }) {
+            return true
+        }
+
+        let protectedHomeFolders = [
+            "Applications", "Desktop", "Documents", "Downloads", "Movies",
+            "Music", "Pictures", "Public"
+        ].map { homePath + "/" + $0 }
+        return protectedHomeFolders.contains(path)
+    }
+
     func color(for kindName: String) -> Color {
         colorAssigner.color(for: kindName)
     }
 
     // MARK: - Private Methods
 
-    private func calculateStatistics() {
-        guard let root = rootNode else {
+    private func calculateStatistics(for root: FileNode?) async throws {
+        guard let root else {
             kindStatistics = []
             return
         }
 
-        var stats: [String: (count: Int, size: UInt64)] = [:]
+        let statisticsTask = Task.detached(priority: .utility) {
+            var result: [String: (count: Int, size: UInt64)] = [:]
+            var visitedNodes = 0
 
-        func collect(_ node: FileNode) {
-            if !node.isDirectory {
-                let kind = node.kindName
-                var stat = stats[kind] ?? (count: 0, size: 0)
-                stat.count += 1
-                stat.size += node.size
-                stats[kind] = stat
+            func collect(_ node: FileNode) throws {
+                visitedNodes += 1
+                if visitedNodes.isMultiple(of: 1024) {
+                    try Task.checkCancellation()
+                }
+                if !node.isDirectory {
+                    let type = UTType(filenameExtension: node.url.pathExtension) ?? .data
+                    let kind = type.localizedDescription ?? type.identifier
+                    var stat = result[kind] ?? (count: 0, size: 0)
+                    stat.count += 1
+                    stat.size += node.size
+                    result[kind] = stat
+                }
+
+                for child in node.children {
+                    try collect(child)
+                }
             }
 
-            for child in node.children {
-                collect(child)
-            }
+            try collect(root)
+            return result
         }
-
-        collect(root)
+        let stats = try await withTaskCancellationHandler {
+            try await statisticsTask.value
+        } onCancel: {
+            statisticsTask.cancel()
+        }
 
         kindStatistics = stats.map { kind, stat in
             FileKindStatistic(
@@ -178,6 +341,17 @@ class AppState: ObservableObject {
                 color: colorAssigner.color(for: kind)
             )
         }.sorted { $0.totalSize > $1.totalSize }
+    }
+
+    private func protectedFoldersWithin(_ scanURL: URL) -> [URL] {
+        let home = FileManager.default.homeDirectoryForCurrentUser
+        let scanPath = scanURL.standardizedFileURL.path
+        return ["Desktop", "Documents", "Downloads"]
+            .map { home.appendingPathComponent($0, isDirectory: true) }
+            .filter { folder in
+                let folderPath = folder.standardizedFileURL.path
+                return folderPath == scanPath || folderPath.hasPrefix(scanPath == "/" ? "/" : scanPath + "/")
+            }
     }
 
     private func addVolumeSpaceItems(for url: URL) async {
@@ -233,6 +407,9 @@ class AppState: ObservableObject {
                 )
                 root.children.append(freeItem)
             }
+
+            root.size = root.children.reduce(0) { $0 + $1.size }
+            root.children.sort { $0.size > $1.size }
 
         } catch {
             // Ignore volume info errors
