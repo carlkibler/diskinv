@@ -13,6 +13,8 @@ struct TreeMapView: View {
     @Binding var selectedNode: FileNode?
     let colorProvider: (String) -> Color
 
+    @EnvironmentObject private var appState: AppState
+
     @State private var hoveredNode: FileNode?
     @State private var layoutRootID: ObjectIdentifier?
     @State private var layoutSize: CGSize = .zero
@@ -83,6 +85,20 @@ struct TreeMapView: View {
         .overlay(alignment: .bottom) {
             if let hovered = hoveredNode ?? selectedNode {
                 InfoBar(node: hovered)
+            }
+        }
+        .contextMenu {
+            if let node = hoveredNode ?? selectedNode {
+                FileNodeContextMenu(
+                    node: node,
+                    zoomAction: node.isDirectory ? {
+                        selectedNode = node
+                        NotificationCenter.default.post(name: .zoomIn, object: nil)
+                    } : nil,
+                    trashAction: {
+                        appState.moveToTrash(node)
+                    }
+                )
             }
         }
     }
@@ -253,7 +269,7 @@ struct InfoBar: View {
                 .fontWeight(.medium)
                 .monospacedDigit()
         }
-        .font(.caption)
+        .font(.body)
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
         .background(.ultraThinMaterial)
@@ -278,5 +294,6 @@ extension Notification.Name {
         selectedNode: .constant(nil),
         colorProvider: { _ in .blue }
     )
+    .environmentObject(AppState())
     .frame(width: 600, height: 400)
 }

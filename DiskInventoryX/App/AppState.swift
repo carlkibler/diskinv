@@ -30,7 +30,7 @@ class AppState: ObservableObject {
 
     // MARK: - Settings
 
-    @AppStorage("showPhysicalSize") var showPhysicalSize = false
+    @AppStorage("showPhysicalSize") var showPhysicalSize = true
     @AppStorage("showPackageContents") var showPackageContents = false
     @AppStorage("ignoreCreatorCodes") var ignoreCreatorCodes = true
     @AppStorage("showFreeSpace") var showFreeSpace = true
@@ -40,7 +40,6 @@ class AppState: ObservableObject {
 
     private var scanner: FileScanner?
     private var colorAssigner = FileKindColorAssigner()
-    private var hasExplainedProtectedFolders = false
 
     // MARK: - Computed Properties
 
@@ -118,27 +117,6 @@ class AppState: ObservableObject {
     }
 
     func scanPreset(url: URL) async {
-        let protectedFolders = protectedFoldersWithin(url)
-        if !protectedFolders.isEmpty {
-            if !hasExplainedProtectedFolders {
-                let alert = NSAlert()
-                alert.messageText = "Folder Access Required"
-                alert.informativeText = "macOS may ask for access to Desktop, Documents, and Downloads. Approve each request now so the scan can include them. Some system data requires Full Disk Access in System Settings."
-                alert.addButton(withTitle: "Continue")
-                alert.addButton(withTitle: "Cancel")
-                guard alert.runModal() == .alertFirstButtonReturn else { return }
-                hasExplainedProtectedFolders = true
-            }
-
-            for folder in protectedFolders {
-                _ = try? FileManager.default.contentsOfDirectory(
-                    at: folder,
-                    includingPropertiesForKeys: nil,
-                    options: [.skipsSubdirectoryDescendants]
-                )
-            }
-        }
-
         await scan(url: url)
     }
 
@@ -355,17 +333,6 @@ class AppState: ObservableObject {
         }.sorted { $0.totalSize > $1.totalSize }
     }
 
-    private func protectedFoldersWithin(_ scanURL: URL) -> [URL] {
-        let home = FileManager.default.homeDirectoryForCurrentUser
-        let scanPath = scanURL.standardizedFileURL.path
-        return ["Desktop", "Documents", "Downloads"]
-            .map { home.appendingPathComponent($0, isDirectory: true) }
-            .filter { folder in
-                let folderPath = folder.standardizedFileURL.path
-                return folderPath == scanPath || folderPath.hasPrefix(scanPath == "/" ? "/" : scanPath + "/")
-            }
-    }
-
     private func addVolumeSpaceItems(for url: URL) async {
         guard let root = rootNode else { return }
 
@@ -397,13 +364,14 @@ class AppState: ObservableObject {
             let otherSize = unscannedSize(total: totalSize, free: freeSize, scanned: scannedSize)
 
             if showOtherSpace && otherSize > 0 {
+                let scanIsIncomplete = root.containsNode { $0.type == .incompleteSummary }
                 let otherItem = FileNode(
-                    url: url.appendingPathComponent("<Other Space>"),
-                    name: "Other Space",
+                    url: url.appendingPathComponent(scanIsIncomplete ? "<Not Scanned>" : "<Other Space>"),
+                    name: scanIsIncomplete ? "Not Scanned" : "Other Space",
                     isDirectory: false,
                     isPackage: false,
                     size: otherSize,
-                    type: .otherSpace
+                    type: scanIsIncomplete ? .unscannedSpace : .otherSpace
                 )
                 root.children.append(otherItem)
             }

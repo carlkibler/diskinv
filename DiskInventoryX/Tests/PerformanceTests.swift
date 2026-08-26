@@ -63,9 +63,168 @@ final class FileScannerTests: XCTestCase {
         let packageNode = try XCTUnwrap(root.children.first { $0.name == "sample.bundle" })
         XCTAssertTrue(packageNode.isPackage)
         XCTAssertTrue(packageNode.children.isEmpty)
+        XCTAssertGreaterThanOrEqual(packageNode.size, 13)
 
         let linkNode = try XCTUnwrap(root.children.first { $0.name == "linked" })
         XCTAssertTrue(linkNode.children.isEmpty)
+    }
+
+    func testKnownHighCardinalityTreeUsesFastAggregateSize() async throws {
+        let dependencyTree = temporaryDirectory.appendingPathComponent("node_modules/pkg", isDirectory: true)
+        try FileManager.default.createDirectory(at: dependencyTree, withIntermediateDirectories: true)
+        try Data(repeating: 0x03, count: 4_096).write(to: dependencyTree.appendingPathComponent("index.js"))
+
+        var filesReported = 0
+        let root = try await FileScanner().scan(
+            url: temporaryDirectory,
+            showPackageContents: false,
+            usePhysicalSize: false,
+            progress: { _, files, _ in filesReported = files }
+        )
+
+        let dependencies = try XCTUnwrap(root.children.first { $0.name == "node_modules" })
+        XCTAssertGreaterThanOrEqual(dependencies.size, 4_096)
+        XCTAssertEqual(dependencies.children.count, 1)
+        XCTAssertEqual(dependencies.children.first?.type, .summary)
+        XCTAssertEqual(dependencies.children.first?.size, dependencies.size)
+        XCTAssertEqual(filesReported, 0)
+    }
+
+    func testAggregateSizingStopsAtTheScanLimit() async throws {
+        let dependencyTree = temporaryDirectory.appendingPathComponent("node_modules/pkg", isDirectory: true)
+        try FileManager.default.createDirectory(at: dependencyTree, withIntermediateDirectories: true)
+        try Data(repeating: 0x06, count: 4_096).write(to: dependencyTree.appendingPathComponent("index.js"))
+
+        let startedAt = ProcessInfo.processInfo.systemUptime
+        let root = try await FileScanner().scan(
+            url: temporaryDirectory,
+            showPackageContents: false,
+            usePhysicalSize: false,
+            limits: ScanLimits(
+                maximumDetailedNodes: 1_000,
+                maximumDetailedDuration: 60,
+                maximumDirectoryEntries: 10_000,
+                maximumSummaryDuration: 0,
+                maximumTotalDuration: 60
+            ),
+            progress: { _, _, _ in }
+        )
+
+        let dependencies = try XCTUnwrap(root.children.first { $0.name == "node_modules" })
+        XCTAssertLessThan(ProcessInfo.processInfo.systemUptime - startedAt, 1)
+        XCTAssertEqual(dependencies.size, 0)
+        XCTAssertEqual(dependencies.children.first?.name, "Contents not sized before the scan limit")
+        XCTAssertEqual(dependencies.children.first?.type, .incompleteSummary)
+    }
+
+    func testStandardScanAllowsANormalHomeDirectoryBeforeSummarizing() {
+        XCTAssertGreaterThanOrEqual(ScanLimits.standard.maximumDetailedNodes, 1_000_000)
+        XCTAssertTrue(ScanLimits.standard.maximumDetailedDuration.isInfinite)
+    }
+
+    func testUserDataIsScannedBeforeSystemBranches() {
+        let ordered = FileScanner.prioritizedUserData(in: [
+            URL(fileURLWithPath: "/System"),
+            URL(fileURLWithPath: "/Library"),
+            URL(fileURLWithPath: "/Users")
+        ])
+
+        XCTAssertEqual(ordered.map(\.path), ["/Users", "/System", "/Library"])
+    }
+
+    func testParseableAggregateOutputWithNonzeroExitIsIncomplete() {
+        let result = FileScanner.parseAggregateResult(
+            output: Data("401931272 /Users\n".utf8),
+            terminationStatus: 1
+        )
+
+        XCTAssertEqual(result, AggregateResult(size: 401_931_272 * 1_024, isComplete: false))
+    }
+
+    func testParseableAggregateOutputWithZeroExitIsComplete() {
+        let result = FileScanner.parseAggregateResult(
+            output: Data("4 /tmp/example\n".utf8),
+            terminationStatus: 0
+        )
+
+        XCTAssertEqual(result, AggregateResult(size: 4_096, isComplete: true))
+    }
+
+    func testDetailedScanBudgetFallsBackToAggregateSize() async throws {
+        let ordinaryTree = temporaryDirectory.appendingPathComponent("ordinary/a/b", isDirectory: true)
+        try FileManager.default.createDirectory(at: ordinaryTree, withIntermediateDirectories: true)
+        try Data(repeating: 0x04, count: 2_048).write(to: ordinaryTree.appendingPathComponent("item"))
+
+        let root = try await FileScanner().scan(
+            url: temporaryDirectory,
+            showPackageContents: false,
+            usePhysicalSize: false,
+            limits: ScanLimits(
+                maximumDetailedNodes: 2,
+                maximumDetailedDuration: 60,
+                maximumDirectoryEntries: 10_000
+            ),
+            progress: { _, _, _ in }
+        )
+
+        let ordinary = try XCTUnwrap(root.children.first { $0.name == "ordinary" })
+        XCTAssertGreaterThanOrEqual(ordinary.size, 2_048)
+        XCTAssertEqual(ordinary.children.first?.type, .summary)
+        XCTAssertEqual(ordinary.children.first?.size, ordinary.size)
+    }
+
+    func testImmediateBranchesHaveIndependentDetailedBudgets() async throws {
+        for name in ["first", "second"] {
+            let directory = temporaryDirectory.appendingPathComponent(name, isDirectory: true)
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            try Data(repeating: 0x07, count: 32).write(to: directory.appendingPathComponent("item"))
+        }
+
+        let root = try await FileScanner().scan(
+            url: temporaryDirectory,
+            showPackageContents: false,
+            usePhysicalSize: false,
+            limits: ScanLimits(
+                maximumDetailedNodes: 2,
+                maximumDetailedDuration: 60,
+                maximumDirectoryEntries: 10_000
+            ),
+            progress: { _, _, _ in }
+        )
+
+        XCTAssertEqual(root.children.count, 2)
+        XCTAssertTrue(root.children.allSatisfy { $0.children.first?.name == "item" })
+    }
+
+    func testSelectedRootKeepsItsImmediateBreakdown() async throws {
+        for index in 0..<3 {
+            try Data(repeating: 0x05, count: 1_024).write(
+                to: temporaryDirectory.appendingPathComponent("item-\(index)")
+            )
+        }
+
+        let root = try await FileScanner().scan(
+            url: temporaryDirectory,
+            showPackageContents: false,
+            usePhysicalSize: false,
+            limits: ScanLimits(
+                maximumDetailedNodes: 1_000,
+                maximumDetailedDuration: 60,
+                maximumDirectoryEntries: 2
+            ),
+            progress: { _, _, _ in }
+        )
+
+        XCTAssertGreaterThanOrEqual(root.size, 3_072)
+        XCTAssertEqual(root.children.count, 3)
+        XCTAssertEqual(Set(root.children.map(\.name)), ["item-0", "item-1", "item-2"])
+    }
+
+    func testHighCardinalityPolicyCoversRepositoriesAndDependencyCaches() {
+        XCTAssertTrue(FileScanner.isKnownHighCardinalityDirectory(URL(fileURLWithPath: "/tmp/repo/.git")))
+        XCTAssertTrue(FileScanner.isKnownHighCardinalityDirectory(URL(fileURLWithPath: "/tmp/repo/.venv")))
+        XCTAssertTrue(FileScanner.isKnownHighCardinalityDirectory(URL(fileURLWithPath: "/tmp/repo/Pods")))
+        XCTAssertFalse(FileScanner.isKnownHighCardinalityDirectory(URL(fileURLWithPath: "/tmp/repo/Sources")))
     }
 
     func testScanIncludesHiddenFiles() async throws {
@@ -159,16 +318,12 @@ final class FileScannerTests: XCTestCase {
         let home = FileManager.default.homeDirectoryForCurrentUser
 
         XCTAssertTrue(FileScanner.shouldSkipDuringMainDiskScan(
-            url: home.appendingPathComponent("Library/CloudStorage/OneDrive-Corporate"),
-            volumeURL: URL(fileURLWithPath: "/")
-        ))
-        XCTAssertTrue(FileScanner.shouldSkipDuringMainDiskScan(
             url: URL(fileURLWithPath: "/System/Volumes/Data"),
             volumeURL: URL(fileURLWithPath: "/System/Volumes/Data")
         ))
         XCTAssertTrue(FileScanner.shouldSkipDuringMainDiskScan(
-            url: home.appendingPathComponent("MountedS3"),
-            volumeURL: URL(fileURLWithPath: "/Users/carl/MountedS3")
+            url: home.appendingPathComponent("Library/CloudStorage/OneDrive-Corporate"),
+            volumeURL: URL(fileURLWithPath: "/")
         ))
         XCTAssertTrue(FileScanner.shouldSkipDuringMainDiskScan(
             url: home.appendingPathComponent("UnknownMount"),
@@ -178,6 +333,72 @@ final class FileScannerTests: XCTestCase {
             url: home.appendingPathComponent("Documents"),
             volumeURL: URL(fileURLWithPath: "/")
         ))
+    }
+
+    func testMainDiskScanSkipsRootLookupNamespaces() throws {
+        for path in ["/.file", "/.nofollow", "/.resolve", "/.vol"] {
+            XCTAssertTrue(FileScanner.shouldSkipDuringMainDiskScan(
+                url: URL(fileURLWithPath: path, isDirectory: true),
+                volumeURL: URL(fileURLWithPath: "/")
+            ))
+        }
+
+        let rootEntries = try FileManager.default.contentsOfDirectory(
+            at: URL(fileURLWithPath: "/"),
+            includingPropertiesForKeys: [],
+            options: []
+        )
+        let nofollow = try XCTUnwrap(rootEntries.first { $0.lastPathComponent == ".nofollow" })
+        XCTAssertTrue(FileScanner.shouldSkipDuringMainDiskScan(
+            url: nofollow,
+            volumeURL: URL(fileURLWithPath: "/")
+        ))
+
+        XCTAssertFalse(FileScanner.shouldSkipDuringMainDiskScan(
+            url: URL(fileURLWithPath: "/Users/example/.nofollow"),
+            volumeURL: URL(fileURLWithPath: "/")
+        ))
+    }
+
+    func testLiveMainDiskScanRespectsItsDeadline() async throws {
+        let startedAt = ProcessInfo.processInfo.systemUptime
+        let root = try await FileScanner().scan(
+            url: URL(fileURLWithPath: "/"),
+            showPackageContents: false,
+            usePhysicalSize: false,
+            mainDiskOnly: true,
+            limits: ScanLimits(
+                maximumDetailedNodes: 5_000,
+                maximumDetailedDuration: 1,
+                maximumDirectoryEntries: 10_000,
+                maximumSummaryDuration: 2,
+                maximumTotalDuration: 5
+            ),
+            progress: { _, _, _ in }
+        )
+
+        XCTAssertLessThan(ProcessInfo.processInfo.systemUptime - startedAt, 12)
+        XCTAssertTrue(root.children.allSatisfy {
+            ![".file", ".nofollow", ".resolve", ".vol"].contains($0.name)
+        })
+    }
+
+    func testMainDiskAggregateExclusionsAreScopedToTheirRealParents() {
+        XCTAssertEqual(
+            FileScanner.summaryExcludedNames(for: URL(fileURLWithPath: "/System"), mainDiskOnly: true),
+            ["Volumes"]
+        )
+        XCTAssertEqual(
+            Set(FileScanner.summaryExcludedNames(
+                for: URL(fileURLWithPath: "/Users"),
+                mainDiskOnly: true
+            )),
+            ["CloudStorage", "Mobile Documents"]
+        )
+        XCTAssertTrue(FileScanner.summaryExcludedNames(
+            for: URL(fileURLWithPath: "/Users/carl/Documents/Volumes"),
+            mainDiskOnly: true
+        ).isEmpty)
     }
 }
 

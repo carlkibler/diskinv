@@ -30,7 +30,7 @@ struct SettingsView: View {
 }
 
 struct GeneralSettingsTab: View {
-    @AppStorage("showPhysicalSize") private var showPhysicalSize = false
+    @AppStorage("showPhysicalSize") private var showPhysicalSize = true
     @AppStorage("showPackageContents") private var showPackageContents = false
     @AppStorage("ignoreCreatorCodes") private var ignoreCreatorCodes = true
     @AppStorage("showFreeSpace") private var showFreeSpace = true
@@ -90,7 +90,7 @@ struct TreeMapSettingsTab: View {
                 .help("Minimum size in pixels for treemap rectangles")
 
                 Text("Smaller values show more detail but may be slower")
-                    .font(.caption)
+                    .font(.body)
                     .foregroundStyle(.secondary)
             }
         }
@@ -120,27 +120,27 @@ struct AboutTab: View {
             Divider()
 
             Text("Originally by Tjark Derlien")
-                .font(.caption)
+                .font(.body)
                 .foregroundStyle(.tertiary)
 
             Text("Swift rewrite - 2024")
-                .font(.caption)
+                .font(.body)
                 .foregroundStyle(.tertiary)
 
             Text("Improvements © 2026 Carl Kibler")
-                .font(.caption)
+                .font(.body)
                 .foregroundStyle(.tertiary)
 
             Text("Provided without warranty. You may share and modify it under GPL v3.")
-                .font(.caption)
+                .font(.body)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.tertiary)
 
             Link("GPL v3 License", destination: URL(string: "https://www.gnu.org/licenses/gpl-3.0.html")!)
-                .font(.caption)
+                .font(.body)
 
             Link("Source Code", destination: URL(string: "https://github.com/carlkibler/diskinv")!)
-                .font(.caption)
+                .font(.body)
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)

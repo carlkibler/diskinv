@@ -66,14 +66,14 @@ struct FileKindRow: View {
                     .lineLimit(1)
 
                 Text("\(statistic.formattedCount) files")
-                    .font(.caption)
+                    .font(.body)
                     .foregroundStyle(.secondary)
             }
 
             Spacer()
 
             Text(statistic.formattedSize)
-                .font(.caption)
+                .font(.body)
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
         }

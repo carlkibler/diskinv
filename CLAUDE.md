@@ -15,10 +15,7 @@ xcodebuild test \
   -project DiskInventoryX/DiskInventoryX.xcodeproj \
   -scheme DiskInventoryX \
   -configuration Debug \
-  -destination 'platform=macOS,arch=arm64' \
-  CODE_SIGN_IDENTITY=- \
-  CODE_SIGNING_REQUIRED=NO \
-  ENABLE_HARDENED_RUNTIME=NO
+  -destination 'platform=macOS,arch=arm64'
 ```
 
 ## Current application

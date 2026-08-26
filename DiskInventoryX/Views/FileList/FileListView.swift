@@ -58,14 +58,14 @@ struct FileRow: View {
             // Kind (for non-folders)
             if !node.isDirectory {
                 Text(node.kindName)
-                    .font(.caption)
+                    .font(.body)
                     .foregroundStyle(.tertiary)
                     .lineLimit(1)
             }
 
             // Size
             Text(FileSizeFormatter.string(from: node.size))
-                .font(.caption)
+                .font(.body)
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
                 .frame(width: 70, alignment: .trailing)
@@ -80,29 +80,88 @@ struct FileRow: View {
         }
         .padding(.vertical, 2)
         .contextMenu {
-            Button("Show in Finder") {
-                NSWorkspace.shared.selectFile(node.url.path, inFileViewerRootedAtPath: "")
-            }
-            .disabled(node.isSpecialItem)
-
-            if node.isDirectory {
-                Button("Zoom Into") {
+            FileNodeContextMenu(
+                node: node,
+                zoomAction: node.isDirectory ? {
                     appState.selectedNode = node
                     appState.zoomIn()
+                } : nil,
+                trashAction: {
+                    moveToTrash(node)
                 }
-            }
-
-            Divider()
-
-            Button("Move to Trash", role: .destructive) {
-                moveToTrash(node)
-            }
-            .disabled(node.isSpecialItem)
+            )
         }
     }
 
     private func moveToTrash(_ node: FileNode) {
         appState.moveToTrash(node)
+    }
+}
+
+struct FileNodeContextMenu: View {
+    let node: FileNode
+    let zoomAction: (() -> Void)?
+    let trashAction: (() -> Void)?
+
+    var body: some View {
+        Button("Show in Finder") {
+            NSWorkspace.shared.selectFile(node.url.path, inFileViewerRootedAtPath: "")
+        }
+        .disabled(node.isSpecialItem)
+
+        Button("Copy Path") {
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(node.url.path, forType: .string)
+        }
+        .disabled(node.isSpecialItem)
+
+        if node.isDirectory {
+            Button("Open in Terminal") {
+                openInTerminal(node.url)
+            }
+            .disabled(node.isSpecialItem)
+
+            if let zoomAction {
+                Button("Zoom Into", action: zoomAction)
+            }
+        }
+
+        if let trashAction {
+            Divider()
+
+            Button("Move to Trash", role: .destructive, action: trashAction)
+                .disabled(node.isSpecialItem)
+        }
+    }
+
+    private func openInTerminal(_ directory: URL) {
+        let workspace = NSWorkspace.shared
+
+        if let ghostty = workspace.urlForApplication(withBundleIdentifier: "com.mitchellh.ghostty") {
+            let configuration = NSWorkspace.OpenConfiguration()
+            configuration.arguments = ["--working-directory=\(directory.path)"]
+            configuration.createsNewApplicationInstance = true
+            workspace.openApplication(at: ghostty, configuration: configuration) { _, error in
+                if error != nil {
+                    openInAppleTerminal(directory)
+                }
+            }
+            return
+        }
+
+        openInAppleTerminal(directory)
+    }
+
+    private func openInAppleTerminal(_ directory: URL) {
+        guard let terminal = NSWorkspace.shared.urlForApplication(
+            withBundleIdentifier: "com.apple.Terminal"
+        ) else { return }
+
+        NSWorkspace.shared.open(
+            [directory],
+            withApplicationAt: terminal,
+            configuration: NSWorkspace.OpenConfiguration()
+        )
     }
 }
 

@@ -12,8 +12,10 @@ import UniformTypeIdentifiers
 enum FileNodeType: Equatable {
     case regular
     case otherSpace
+    case unscannedSpace
     case freeSpace
     case summary
+    case incompleteSummary
 }
 
 class FileNode: Identifiable {
@@ -56,10 +58,14 @@ class FileNode: Identifiable {
         switch type {
         case .otherSpace:
             _kindName = "Other Space"
+        case .unscannedSpace:
+            _kindName = "Not Scanned"
         case .freeSpace:
             _kindName = "Free Space"
         case .summary:
             _kindName = "Summarized Items"
+        case .incompleteSummary:
+            _kindName = "Incomplete Scan"
         case .regular:
             if isDirectory && !isPackage {
                 _kindName = "Folder"
@@ -93,8 +99,14 @@ class FileNode: Identifiable {
         case .otherSpace:
             _icon = NSImage(systemSymbolName: "questionmark.folder", accessibilityDescription: "Other Space")
                 ?? NSImage(named: NSImage.folderName)!
+        case .unscannedSpace:
+            _icon = NSImage(systemSymbolName: "exclamationmark.folder", accessibilityDescription: "Not Scanned")
+                ?? NSImage(named: NSImage.folderName)!
         case .summary:
             _icon = NSImage(systemSymbolName: "ellipsis.circle", accessibilityDescription: "Summarized Items")
+                ?? NSImage(named: NSImage.folderName)!
+        case .incompleteSummary:
+            _icon = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "Incomplete Scan")
                 ?? NSImage(named: NSImage.folderName)!
         case .regular:
             _icon = NSWorkspace.shared.icon(forFile: url.path)
@@ -118,6 +130,10 @@ class FileNode: Identifiable {
 
     var isSpecialItem: Bool {
         type != .regular
+    }
+
+    func containsNode(where predicate: (FileNode) -> Bool) -> Bool {
+        predicate(self) || children.contains { $0.containsNode(where: predicate) }
     }
 
     // MARK: - Tree Operations

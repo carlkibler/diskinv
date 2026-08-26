@@ -200,7 +200,7 @@ struct WelcomeView: View {
             VStack(spacing: 6) {
                 Text("Scan your main disk, your user folder, or another directory.")
                 Text("Main-disk scans skip cloud storage and mounted volumes to avoid downloading remote files.")
-                    .font(.caption)
+                    .font(.title3)
                     .foregroundStyle(.secondary)
             }
                 .frame(width: 380)
@@ -254,6 +254,12 @@ struct ScanningOverlay: View {
                 Text("Scanning...")
                     .font(.headline)
 
+                Text("Slow folders are summarized with a fixed time limit, so every scan still finishes.")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+
                 if let progress = appState.scanProgress {
                     VStack(spacing: 4) {
                         Text(progress.currentFolder)
@@ -262,12 +268,13 @@ struct ScanningOverlay: View {
                             .lineLimit(1)
 
                         Text("\(progress.filesScanned) files, \(progress.foldersScanned) folders")
-                            .font(.caption)
+                            .font(.body)
                             .foregroundStyle(.tertiary)
                     }
                 }
             }
-            .frame(width: 360, height: 150)
+            .padding(24)
+            .frame(width: 460)
             .padding(32)
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
         }

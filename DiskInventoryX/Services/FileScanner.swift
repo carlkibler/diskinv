@@ -6,11 +6,23 @@
 //
 
 import Foundation
+import OSLog
 import UniformTypeIdentifiers
 
 actor FileScanner {
+    private static let logger = Logger(
+        subsystem: "com.carlkibler.DiskInventoryXRay",
+        category: "scanner"
+    )
     private static let maximumVisibleChildren = 500
     private static let compactDirectoryThreshold: UInt64 = 8 * 1_024 * 1_024
+    private static let highCardinalityDirectoryNames: Set<String> = [
+        ".build", ".cache", ".cargo", ".git", ".gradle", ".hg", ".m2", ".next",
+        ".nox", ".npm", ".nuxt", ".parcel-cache", ".pnpm-store", ".rustup", ".svn",
+        ".svelte-kit", ".terraform", ".terragrunt-cache", ".tox", ".turbo", ".venv",
+        ".yarn", "__pycache__", "bower_components", "Carthage", "DerivedData", "node_modules",
+        "Pods", "venv"
+    ]
     private static let maxConcurrentOperations = max(
         1,
         min(4, ProcessInfo.processInfo.activeProcessorCount / 2)
@@ -28,6 +40,7 @@ actor FileScanner {
         showPackageContents: Bool,
         usePhysicalSize: Bool,
         mainDiskOnly: Bool = false,
+        limits: ScanLimits = .standard,
         progress: @escaping (String, Int, Int) -> Void
     ) async throws -> FileNode {
         let cancellation = CancellationState()
@@ -36,6 +49,8 @@ actor FileScanner {
 
         let progressState = ProgressState(callback: progress)
         let ioLimiter = IOLimiter(maxConcurrentOperations: Self.maxConcurrentOperations)
+        let summaryLimiter = IOLimiter(maxConcurrentOperations: 2)
+        let detailBudget = DetailBudget(limits: limits)
         let resourceKeys = Self.resourceKeys(usePhysicalSize: usePhysicalSize)
         let resourceKeyArray = Array(resourceKeys)
         let scanTask = Task.detached(priority: .utility) {
@@ -48,6 +63,9 @@ actor FileScanner {
                 cancellation: cancellation,
                 progress: progressState,
                 ioLimiter: ioLimiter,
+                summaryLimiter: summaryLimiter,
+                detailBudget: detailBudget,
+                limits: limits,
                 mainDiskOnly: mainDiskOnly,
                 parallelizeChildren: true,
                 depth: 0
@@ -79,6 +97,9 @@ actor FileScanner {
         cancellation: CancellationState,
         progress: ProgressState,
         ioLimiter: IOLimiter,
+        summaryLimiter: IOLimiter,
+        detailBudget: DetailBudget,
+        limits: ScanLimits,
         mainDiskOnly: Bool,
         parallelizeChildren: Bool,
         depth: Int
@@ -88,6 +109,10 @@ actor FileScanner {
 
         if mainDiskOnly && depth > 0 && isExcludedMainDiskPath(url) {
             return nil
+        }
+
+        guard detailBudget.claimNode() else {
+            throw DetailBudgetExceeded()
         }
 
         let values = try await withIOPermit(ioLimiter) {
@@ -136,6 +161,45 @@ actor FileScanner {
             return node
         }
 
+        let knownOpaqueDirectory = isDirectory && (
+            Self.isKnownHighCardinalityDirectory(url) || (!showPackageContents && isPackage)
+        )
+        let directoryEntryCount: Int
+        if isDirectory && !knownOpaqueDirectory {
+            directoryEntryCount = (try? await withIOPermit(ioLimiter) {
+                try url.resourceValues(forKeys: [.directoryEntryCountKey]).directoryEntryCount ?? 0
+            }) ?? 0
+        } else {
+            directoryEntryCount = 0
+        }
+        let shouldSummarize = (depth > 0 || isPackage) && (
+            knownOpaqueDirectory || directoryEntryCount > limits.maximumDirectoryEntries
+        )
+        if shouldSummarize {
+            let aggregate: AggregateResult?
+            do {
+                aggregate = try await summarizedDirectorySize(
+                    url: url,
+                    usePhysicalSize: usePhysicalSize,
+                    cancellation: cancellation,
+                    summaryLimiter: summaryLimiter,
+                    detailBudget: detailBudget,
+                    limits: limits,
+                    mainDiskOnly: mainDiskOnly
+                )
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch {
+                aggregate = nil
+            }
+            node.size = aggregate?.size ?? 0
+            if !isPackage || aggregate?.isComplete != true {
+                node.children = [summaryNode(size: node.size, complete: aggregate?.isComplete == true)]
+                node.children[0].parent = node
+            }
+            return node
+        }
+
         // Scan children if this is a directory (and not a package, unless configured to show package contents).
         guard isDirectory && (showPackageContents || !isPackage) else {
             return node
@@ -157,13 +221,16 @@ actor FileScanner {
         } catch is CancellationError {
             throw CancellationError()
         } catch {
-            // Can't enumerate directory, return node with no children.
+            // Preserve the fact that this directory could not be measured.
+            node.children = [summaryNode(size: 0, complete: false)]
+            node.children[0].parent = node
             return node
         }
 
         try cancellation.throwIfCancelled()
         try Task.checkCancellation()
 
+        let orderedContents = prioritizedUserData(in: contents)
         var children = ChildAccumulator(limit: Self.maximumVisibleChildren)
         if parallelizeChildren {
             // Only the root's immediate children run as tasks. Nested branches recurse
@@ -171,8 +238,9 @@ actor FileScanner {
             try await withThrowingTaskGroup(of: FileNode?.self) { group in
                 var nextChildIndex = 0
                 func addNextChildTask() {
-                    guard nextChildIndex < contents.count else { return }
-                    let childURL = contents[nextChildIndex]
+                    guard nextChildIndex < orderedContents.count else { return }
+                    let childURL = orderedContents[nextChildIndex]
+                    let childDetailBudget = DetailBudget(limits: limits)
                     nextChildIndex += 1
                     group.addTask {
                         do {
@@ -185,20 +253,43 @@ actor FileScanner {
                                 cancellation: cancellation,
                                 progress: progress,
                                 ioLimiter: ioLimiter,
+                                summaryLimiter: summaryLimiter,
+                                detailBudget: childDetailBudget,
+                                limits: limits,
                                 mainDiskOnly: mainDiskOnly,
                                 parallelizeChildren: false,
                                 depth: depth + 1
                             )
                         } catch is CancellationError {
                             throw CancellationError()
+                        } catch is DetailBudgetExceeded {
+                            do {
+                                return try await summarizedNode(
+                                    at: childURL,
+                                    showPackageContents: showPackageContents,
+                                    usePhysicalSize: usePhysicalSize,
+                                    resourceKeys: resourceKeys,
+                                    cancellation: cancellation,
+                                    progress: progress,
+                                    ioLimiter: ioLimiter,
+                                    summaryLimiter: summaryLimiter,
+                                    detailBudget: childDetailBudget,
+                                    limits: limits,
+                                    mainDiskOnly: mainDiskOnly,
+                                    depth: depth + 1
+                                )
+                            } catch is CancellationError {
+                                throw CancellationError()
+                            } catch {
+                                return incompleteNode(for: childURL)
+                            }
                         } catch {
-                            // Skip files we can't access (permission denied, etc.).
-                            return nil
+                            return incompleteNode(for: childURL)
                         }
                     }
                 }
 
-                for _ in 0..<min(Self.maxConcurrentOperations, contents.count) {
+                for _ in 0..<min(Self.maxConcurrentOperations, orderedContents.count) {
                     addNextChildTask()
                 }
 
@@ -212,7 +303,7 @@ actor FileScanner {
                 }
             }
         } else {
-            for childURL in contents {
+            for childURL in orderedContents {
                 try cancellation.throwIfCancelled()
                 try Task.checkCancellation()
                 do {
@@ -225,6 +316,9 @@ actor FileScanner {
                         cancellation: cancellation,
                         progress: progress,
                         ioLimiter: ioLimiter,
+                        summaryLimiter: summaryLimiter,
+                        detailBudget: detailBudget,
+                        limits: limits,
                         mainDiskOnly: mainDiskOnly,
                         parallelizeChildren: false,
                         depth: depth + 1
@@ -235,14 +329,22 @@ actor FileScanner {
                     node.size += child.size
                 } catch is CancellationError {
                     throw CancellationError()
+                } catch is DetailBudgetExceeded {
+                    throw DetailBudgetExceeded()
                 } catch {
-                    // Skip files we can't access (permission denied, etc.).
+                    let child = incompleteNode(for: childURL)
+                    child.parent = node
+                    children.add(child)
                 }
             }
+
         }
 
         node.children = children.finished()
-        if depth > 1 && node.size < Self.compactDirectoryThreshold && !node.children.isEmpty {
+        if depth > 1
+            && node.size < Self.compactDirectoryThreshold
+            && !node.children.isEmpty
+            && !node.containsNode(where: { $0.type == .incompleteSummary }) {
             node.children = [FileNode(
                 url: summaryURL(),
                 name: "Summarized Items",
@@ -256,6 +358,191 @@ actor FileScanner {
 
     private nonisolated static func summaryURL() -> URL {
         URL(string: "disk-inventory-x-ray://summary/\(UUID().uuidString)")!
+    }
+
+    private nonisolated static func summaryNode(size: UInt64, complete: Bool = true) -> FileNode {
+        FileNode(
+            url: summaryURL(),
+            name: complete
+                ? "Contents summarized for faster scanning"
+                : "Contents not sized before the scan limit",
+            size: size,
+            type: complete ? .summary : .incompleteSummary
+        )
+    }
+
+    private nonisolated static func incompleteNode(for url: URL) -> FileNode {
+        FileNode(
+            url: url,
+            name: "Contents not sized before the scan limit",
+            size: 0,
+            type: .incompleteSummary
+        )
+    }
+
+    private nonisolated static func summarizedNode(
+        at url: URL,
+        showPackageContents: Bool,
+        usePhysicalSize: Bool,
+        resourceKeys: Set<URLResourceKey>,
+        cancellation: CancellationState,
+        progress: ProgressState,
+        ioLimiter: IOLimiter,
+        summaryLimiter: IOLimiter,
+        detailBudget: DetailBudget,
+        limits: ScanLimits,
+        mainDiskOnly: Bool,
+        depth: Int
+    ) async throws -> FileNode? {
+        let values = try await withIOPermit(ioLimiter) {
+            try cancellation.throwIfCancelled()
+            return try url.resourceValues(forKeys: resourceKeys)
+        }
+        guard values.isDirectory == true else {
+            let size = usePhysicalSize
+                ? UInt64(values.totalFileAllocatedSize ?? values.fileSize ?? 0)
+                : UInt64(values.fileSize ?? 0)
+            progress.recordFile()
+            return FileNode(url: url, name: values.name, size: size)
+        }
+        if mainDiskOnly && depth > 0 && shouldSkipDuringMainDiskScan(url: url, volumeURL: values.volume) {
+            return nil
+        }
+
+        progress.recordDirectory(url.lastPathComponent, displayName: depth <= 2)
+        let aggregate: AggregateResult?
+        do {
+            aggregate = try await summarizedDirectorySize(
+                url: url,
+                usePhysicalSize: usePhysicalSize,
+                cancellation: cancellation,
+                summaryLimiter: summaryLimiter,
+                detailBudget: detailBudget,
+                limits: limits,
+                mainDiskOnly: mainDiskOnly
+            )
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch {
+            aggregate = nil
+        }
+        let node = FileNode(
+            url: url,
+            name: values.name,
+            isDirectory: true,
+            isPackage: values.isPackage ?? false,
+            size: aggregate?.size ?? 0
+        )
+        if aggregate?.isComplete != true || showPackageContents || !node.isPackage {
+            node.children = [summaryNode(size: node.size, complete: aggregate?.isComplete == true)]
+            node.children[0].parent = node
+        }
+        return node
+    }
+
+    private nonisolated static func summarizedDirectorySize(
+        url: URL,
+        usePhysicalSize: Bool,
+        cancellation: CancellationState,
+        summaryLimiter: IOLimiter,
+        detailBudget: DetailBudget,
+        limits: ScanLimits,
+        mainDiskOnly: Bool
+    ) async throws -> AggregateResult? {
+        try await withIOPermit(summaryLimiter) {
+            try cancellation.throwIfCancelled()
+
+            let allowedDuration = detailBudget.allowedSummaryDuration(
+                maximum: limits.maximumSummaryDuration
+            )
+            guard allowedDuration > 0 else { return nil }
+
+            let process = Process()
+            let output = Pipe()
+            let exitState = ProcessExitState()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/du")
+            var arguments = usePhysicalSize ? ["-skx"] : ["-Askx"]
+            for name in summaryExcludedNames(for: url, mainDiskOnly: mainDiskOnly) {
+                arguments.append(contentsOf: ["-I", name])
+            }
+            arguments.append(url.path)
+            process.arguments = arguments
+            process.standardOutput = output
+            process.standardError = FileHandle.nullDevice
+            process.terminationHandler = { _ in exitState.signalExit() }
+            try process.run()
+            guard cancellation.register(process) else {
+                await terminate(process, exitState: exitState)
+                throw CancellationError()
+            }
+            defer { cancellation.unregister(process) }
+
+            if !(await exitState.wait(timeout: allowedDuration)) {
+                Self.logger.notice(
+                    "Aggregate sizing reached its \(allowedDuration, privacy: .public)-second limit for \(url.path, privacy: .private(mask: .hash))"
+                )
+                await terminate(process, exitState: exitState)
+                try cancellation.throwIfCancelled()
+                return nil
+            }
+
+            try cancellation.throwIfCancelled()
+            let data = output.fileHandleForReading.readDataToEndOfFile()
+            return parseAggregateResult(output: data, terminationStatus: process.terminationStatus)
+        }
+    }
+
+    nonisolated static func parseAggregateResult(
+        output: Data,
+        terminationStatus: Int32
+    ) -> AggregateResult? {
+        guard let text = String(data: output, encoding: .utf8),
+              let firstField = text.split(whereSeparator: \Character.isWhitespace).first,
+              let blocks = UInt64(firstField) else {
+            return nil
+        }
+        let bytes = blocks.multipliedReportingOverflow(by: 1_024)
+        return AggregateResult(
+            size: bytes.overflow ? UInt64.max : bytes.partialValue,
+            isComplete: terminationStatus == 0
+        )
+    }
+
+    private nonisolated static func terminate(
+        _ process: Process,
+        exitState: ProcessExitState
+    ) async {
+        process.terminate()
+        guard !(await exitState.wait(timeout: 1)), process.isRunning else { return }
+        kill(process.processIdentifier, SIGKILL)
+        _ = await exitState.wait(timeout: 1)
+    }
+
+    nonisolated static func isKnownHighCardinalityDirectory(_ url: URL) -> Bool {
+        if highCardinalityDirectoryNames.contains(url.lastPathComponent) {
+            return true
+        }
+
+        let path = url.standardizedFileURL.path
+        let home = FileManager.default.homeDirectoryForCurrentUser.standardizedFileURL.path
+        return path == home + "/Library/Caches"
+            || path == home + "/Library/Developer/Xcode/DerivedData"
+            || path == home + "/Library/pnpm/store"
+            || path.hasSuffix("/vendor/bundle")
+    }
+
+    nonisolated static func summaryExcludedNames(for url: URL, mainDiskOnly: Bool) -> [String] {
+        guard mainDiskOnly else { return [] }
+
+        let path = url.standardizedFileURL.path
+        let home = FileManager.default.homeDirectoryForCurrentUser.standardizedFileURL.path
+        if path == "/System" {
+            return ["Volumes"]
+        }
+        if path == "/Users" || path == home || path == home + "/Library" {
+            return ["CloudStorage", "Mobile Documents"]
+        }
+        return []
     }
 
     private nonisolated static func resourceKeys(usePhysicalSize: Bool) -> Set<URLResourceKey> {
@@ -283,9 +570,21 @@ actor FileScanner {
         return volumeURL.standardizedFileURL.path != "/"
     }
 
+    nonisolated static func prioritizedUserData(in contents: [URL]) -> [URL] {
+        let home = FileManager.default.homeDirectoryForCurrentUser.standardizedFileURL.path
+        return contents.filter {
+            let path = $0.standardizedFileURL.path
+            return path == "/Users" || path == home
+        } + contents.filter {
+            let path = $0.standardizedFileURL.path
+            return path != "/Users" && path != home
+        }
+    }
+
     private nonisolated static func isExcludedMainDiskPath(_ url: URL) -> Bool {
         let path = url.standardizedFileURL.path
         let home = FileManager.default.homeDirectoryForCurrentUser.standardizedFileURL.path
+        let rootLookupNamespaces = ["/.file", "/.nofollow", "/.resolve", "/.vol"]
         let excludedTrees = [
             "/Network",
             "/Volumes",
@@ -294,16 +593,17 @@ actor FileScanner {
             home + "/Library/Mobile Documents"
         ]
 
-        return excludedTrees.contains(where: { path == $0 || path.hasPrefix($0 + "/") })
+        return rootLookupNamespaces.contains(where: { path == $0 || path.hasPrefix($0 + "/") })
+            || excludedTrees.contains(where: { path == $0 || path.hasPrefix($0 + "/") })
     }
 
     private nonisolated static func withIOPermit<T>(
         _ ioLimiter: IOLimiter,
-        operation: () throws -> T
+        operation: () async throws -> T
     ) async throws -> T {
         await ioLimiter.acquire()
         do {
-            let result = try operation()
+            let result = try await operation()
             await ioLimiter.release()
             return result
         } catch {
@@ -313,11 +613,17 @@ actor FileScanner {
     }
 }
 
+struct AggregateResult: Equatable, Sendable {
+    let size: UInt64
+    let isComplete: Bool
+}
+
 private struct ChildAccumulator {
     private let limit: Int
     private var retained: [FileNode] = []
     private var summarizedSize: UInt64 = 0
     private var summarizedCount = 0
+    private var summarizedIncomplete = false
 
     init(limit: Int) {
         self.limit = limit
@@ -335,9 +641,11 @@ private struct ChildAccumulator {
         guard summarizedCount > 0 else { return retained }
         retained.append(FileNode(
             url: URL(string: "disk-inventory-x-ray://summary/\(UUID().uuidString)")!,
-            name: "Summarized Items (\(summarizedCount.formatted()))",
+            name: summarizedIncomplete
+                ? "Contents not fully scanned"
+                : "Summarized Items (\(summarizedCount.formatted()))",
             size: summarizedSize,
-            type: .summary
+            type: summarizedIncomplete ? .incompleteSummary : .summary
         ))
         return retained
     }
@@ -348,18 +656,80 @@ private struct ChildAccumulator {
         for child in retained.dropFirst(limit) {
             summarizedSize += child.size
             summarizedCount += 1
+            summarizedIncomplete = summarizedIncomplete
+                || child.containsNode(where: { $0.type == .incompleteSummary })
         }
         retained.removeSubrange(limit...)
+    }
+}
+
+private final class ProcessExitState: @unchecked Sendable {
+    private let lock = NSLock()
+    private var exited = false
+    private var nextWaiterID = 0
+    private var waiters: [Int: CheckedContinuation<Bool, Never>] = [:]
+
+    func signalExit() {
+        lock.lock()
+        exited = true
+        let continuations = Array(waiters.values)
+        waiters.removeAll()
+        lock.unlock()
+        continuations.forEach { $0.resume(returning: true) }
+    }
+
+    func wait(timeout: TimeInterval) async -> Bool {
+        await withCheckedContinuation { continuation in
+            lock.lock()
+            if exited {
+                lock.unlock()
+                continuation.resume(returning: true)
+                return
+            }
+
+            let waiterID = nextWaiterID
+            nextWaiterID += 1
+            waiters[waiterID] = continuation
+            lock.unlock()
+
+            DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + timeout) {
+                self.timeout(waiterID)
+            }
+        }
+    }
+
+    private func timeout(_ waiterID: Int) {
+        lock.lock()
+        let continuation = waiters.removeValue(forKey: waiterID)
+        lock.unlock()
+        continuation?.resume(returning: false)
     }
 }
 
 private final class CancellationState: @unchecked Sendable {
     private let lock = NSLock()
     private var cancelled = false
+    private var processes: [ObjectIdentifier: Process] = [:]
 
     func cancel() {
         lock.lock()
         cancelled = true
+        let runningProcesses = Array(processes.values)
+        lock.unlock()
+        runningProcesses.forEach { $0.terminate() }
+    }
+
+    func register(_ process: Process) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard !cancelled else { return false }
+        processes[ObjectIdentifier(process)] = process
+        return true
+    }
+
+    func unregister(_ process: Process) {
+        lock.lock()
+        processes.removeValue(forKey: ObjectIdentifier(process))
         lock.unlock()
     }
 
@@ -370,6 +740,65 @@ private final class CancellationState: @unchecked Sendable {
         if isCancelled {
             throw CancellationError()
         }
+    }
+}
+
+struct ScanLimits: Sendable {
+    static let standard = ScanLimits(
+        maximumDetailedNodes: 1_000_000,
+        maximumDetailedDuration: .infinity,
+        maximumDirectoryEntries: 10_000,
+        maximumSummaryDuration: 120,
+        maximumTotalDuration: 180
+    )
+
+    let maximumDetailedNodes: Int
+    let maximumDetailedDuration: TimeInterval
+    let maximumDirectoryEntries: Int
+    let maximumSummaryDuration: TimeInterval
+    let maximumTotalDuration: TimeInterval
+
+    init(
+        maximumDetailedNodes: Int,
+        maximumDetailedDuration: TimeInterval,
+        maximumDirectoryEntries: Int,
+        maximumSummaryDuration: TimeInterval = 120,
+        maximumTotalDuration: TimeInterval = 180
+    ) {
+        self.maximumDetailedNodes = maximumDetailedNodes
+        self.maximumDetailedDuration = maximumDetailedDuration
+        self.maximumDirectoryEntries = maximumDirectoryEntries
+        self.maximumSummaryDuration = maximumSummaryDuration
+        self.maximumTotalDuration = maximumTotalDuration
+    }
+}
+
+private struct DetailBudgetExceeded: Error {}
+
+private final class DetailBudget: @unchecked Sendable {
+    private let lock = NSLock()
+    private let limits: ScanLimits
+    private let startedAt = ProcessInfo.processInfo.systemUptime
+    private var claimedNodes = 0
+
+    init(limits: ScanLimits) {
+        self.limits = limits
+    }
+
+    func claimNode() -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        claimedNodes += 1
+        return claimedNodes <= limits.maximumDetailedNodes
+            && ProcessInfo.processInfo.systemUptime - startedAt <= limits.maximumDetailedDuration
+    }
+
+    func allowedSummaryDuration(maximum: TimeInterval) -> TimeInterval {
+        lock.lock()
+        defer { lock.unlock() }
+        let remaining = limits.maximumTotalDuration
+            - (ProcessInfo.processInfo.systemUptime - startedAt)
+        return min(maximum, max(0, remaining))
     }
 }
 
