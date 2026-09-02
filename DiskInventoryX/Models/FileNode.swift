@@ -28,6 +28,10 @@ class FileNode: Identifiable {
     let isPackage: Bool
     var size: UInt64
     let type: FileNodeType
+    /// True when the folder's size is known but its contents were deliberately not retained.
+    var isSummarized = false
+    /// True while a summarized folder is still waiting for its background size.
+    var isSizePending = false
 
     weak var parent: FileNode?
     var children: [FileNode] = []
@@ -68,7 +72,7 @@ class FileNode: Identifiable {
             _kindName = "Incomplete Scan"
         case .regular:
             if isDirectory && !isPackage {
-                _kindName = "Folder"
+                _kindName = isSummarized ? "Summarized Folder" : "Folder"
             } else if let utType = utType {
                 _kindName = utType.localizedDescription ?? utType.identifier
             } else {

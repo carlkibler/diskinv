@@ -124,7 +124,7 @@ enum TreeMapLayout {
                     if child.node.isDirectory && !child.node.children.isEmpty {
                         let childRects = layout(
                             node: child.node,
-                            rect: childRect.insetBy(dx: 1, dy: 1),
+                            rect: childRect,
                             colorProvider: colorProvider,
                             depth: depth + 1,
                             maxDepth: maxDepth

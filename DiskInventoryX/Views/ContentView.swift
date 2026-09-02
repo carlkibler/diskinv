@@ -196,32 +196,28 @@ struct WelcomeView: View {
     var body: some View {
         ContentUnavailableView {
             Text("Choose What to Scan")
+                .font(.title.weight(.semibold))
         } description: {
-            VStack(spacing: 6) {
-                Text("Scan your main disk, your user folder, or another directory.")
-                Text("Main-disk scans skip cloud storage and mounted volumes to avoid downloading remote files.")
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
-            }
+            Text("Scan your user folder, your main disk, or another directory.")
                 .frame(width: 380)
         } actions: {
             VStack(spacing: 10) {
-                Button {
-                    Task {
-                        await appState.scanPreset(url: URL(fileURLWithPath: "/", isDirectory: true))
-                    }
-                } label: {
-                    Text("Entire Main Disk")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-
                 Button {
                     Task {
                         await appState.scanPreset(url: FileManager.default.homeDirectoryForCurrentUser)
                     }
                 } label: {
                     Text("User Folder (\(FileManager.default.homeDirectoryForCurrentUser.path))")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button {
+                    Task {
+                        await appState.scanPreset(url: URL(fileURLWithPath: "/", isDirectory: true))
+                    }
+                } label: {
+                    Text("Entire Main Disk")
                         .frame(maxWidth: .infinity)
                 }
 
@@ -254,7 +250,7 @@ struct ScanningOverlay: View {
                 Text("Scanning...")
                     .font(.headline)
 
-                Text("Slow folders are summarized with a fixed time limit, so every scan still finishes.")
+                Text("Large caches and system folders are sized in the background once the tree appears.")
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)

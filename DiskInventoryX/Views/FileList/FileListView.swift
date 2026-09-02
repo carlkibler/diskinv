@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppKit
 
 struct FileListView: View {
     @EnvironmentObject private var appState: AppState
@@ -13,15 +14,11 @@ struct FileListView: View {
     var body: some View {
         Group {
             if let root = appState.displayRoot, !root.children.isEmpty {
-                List(selection: $appState.selectedNodes) {
-                    OutlineGroup(root.children, children: \.optionalChildren) { node in
-                        FileRow(node: node)
-                            .tag(node)
+                VStack(spacing: 0) {
+                    FileOutlineView(root: root, generation: appState.treeGeneration)
+                    if appState.pendingSummaryCount > 0 {
+                        BackgroundSizingBar(remaining: appState.pendingSummaryCount)
                     }
-                }
-                .listStyle(.inset(alternatesRowBackgrounds: true))
-                .onChange(of: appState.selectedNodes) { selections in
-                    appState.selectedNode = selections.first
                 }
             } else if appState.displayRoot != nil {
                 ContentUnavailableView(
@@ -37,8 +34,235 @@ struct FileListView: View {
     }
 }
 
+private struct BackgroundSizingBar: View {
+    let remaining: Int
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ProgressView()
+                .controlSize(.small)
+            Text("Sizing \(remaining) \(remaining == 1 ? "folder" : "folders") in the background…")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+            Spacer()
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(.bar)
+    }
+}
+
+// MARK: - Outline
+
+/// AppKit outline so the tree gets native keyboard handling: arrows move, left and right
+/// collapse and expand, Option-Right expands a whole subtree, typing jumps to a name.
+struct FileOutlineView: NSViewRepresentable {
+    let root: FileNode
+    let generation: Int
+    @EnvironmentObject private var appState: AppState
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(appState: appState)
+    }
+
+    func makeNSView(context: Context) -> NSScrollView {
+        let outline = NSOutlineView()
+        let column = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("item"))
+        column.resizingMask = .autoresizingMask
+        outline.addTableColumn(column)
+        outline.outlineTableColumn = column
+        outline.headerView = nil
+        outline.style = .inset
+        outline.usesAlternatingRowBackgroundColors = true
+        outline.rowHeight = 24
+        outline.indentationPerLevel = 14
+        outline.allowsMultipleSelection = true
+        outline.allowsEmptySelection = true
+        outline.columnAutoresizingStyle = .uniformColumnAutoresizingStyle
+        outline.dataSource = context.coordinator
+        outline.delegate = context.coordinator
+        outline.target = context.coordinator
+        outline.doubleAction = #selector(Coordinator.zoomIntoClickedRow(_:))
+
+        let scrollView = NSScrollView()
+        scrollView.documentView = outline
+        scrollView.hasVerticalScroller = true
+        scrollView.autohidesScrollers = true
+        context.coordinator.outlineView = outline
+        return scrollView
+    }
+
+    func updateNSView(_ scrollView: NSScrollView, context: Context) {
+        let coordinator = context.coordinator
+        coordinator.appState = appState
+        if coordinator.root !== root || coordinator.generation != generation {
+            let rootChanged = coordinator.root !== root
+            coordinator.root = root
+            coordinator.generation = generation
+            coordinator.outlineView?.reloadData()
+            if rootChanged, let outline = coordinator.outlineView {
+                DispatchQueue.main.async {
+                    outline.window?.makeFirstResponder(outline)
+                }
+            }
+        }
+        coordinator.syncSelection(to: appState.selectedNode)
+    }
+
+    final class Coordinator: NSObject, NSOutlineViewDataSource, NSOutlineViewDelegate {
+        var appState: AppState
+        var root: FileNode?
+        var generation = 0
+        weak var outlineView: NSOutlineView?
+        private var isSyncingSelection = false
+        private let cellIdentifier = NSUserInterfaceItemIdentifier("FileRowCell")
+
+        init(appState: AppState) {
+            self.appState = appState
+        }
+
+        private func node(for item: Any?) -> FileNode? {
+            item == nil ? root : item as? FileNode
+        }
+
+        // MARK: Data source
+
+        func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
+            node(for: item)?.children.count ?? 0
+        }
+
+        func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
+            node(for: item)!.children[index]
+        }
+
+        func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
+            !((item as? FileNode)?.children.isEmpty ?? true)
+        }
+
+        // MARK: Delegate
+
+        func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
+            guard let node = item as? FileNode else { return nil }
+            let cell = outlineView.makeView(withIdentifier: cellIdentifier, owner: nil) as? FileRowCellView
+                ?? FileRowCellView(identifier: cellIdentifier)
+            cell.configure(node: node, appState: appState)
+            return cell
+        }
+
+        func outlineView(_ outlineView: NSOutlineView, typeSelectStringFor tableColumn: NSTableColumn?, item: Any) -> String? {
+            (item as? FileNode)?.name
+        }
+
+        func outlineViewSelectionDidChange(_ notification: Notification) {
+            guard !isSyncingSelection, let outlineView else { return }
+            let nodes = outlineView.selectedRowIndexes.compactMap { outlineView.item(atRow: $0) as? FileNode }
+            MainActor.assumeIsolated {
+                appState.selectedNodes = Set(nodes)
+                appState.selectedNode = nodes.first
+            }
+        }
+
+        @objc func zoomIntoClickedRow(_ sender: Any?) {
+            guard let outlineView, outlineView.clickedRow >= 0,
+                  let node = outlineView.item(atRow: outlineView.clickedRow) as? FileNode,
+                  node.isDirectory, !node.children.isEmpty else { return }
+            MainActor.assumeIsolated {
+                appState.selectedNode = node
+                appState.zoomIn()
+            }
+        }
+
+        // MARK: Selection sync
+
+        /// Mirrors a selection made elsewhere (the treemap, a deletion) into the outline,
+        /// expanding ancestors so the row is visible.
+        @MainActor
+        func syncSelection(to node: FileNode?) {
+            guard let outlineView, !isSyncingSelection else { return }
+            let selected = outlineView.selectedRowIndexes.compactMap { outlineView.item(atRow: $0) as? FileNode }
+
+            guard let node else {
+                if !selected.isEmpty {
+                    isSyncingSelection = true
+                    outlineView.deselectAll(nil)
+                    isSyncingSelection = false
+                }
+                return
+            }
+            guard !selected.contains(where: { $0 === node }) else { return }
+
+            var ancestors: [FileNode] = []
+            var current = node.parent
+            while let ancestor = current, ancestor !== root {
+                ancestors.insert(ancestor, at: 0)
+                current = ancestor.parent
+            }
+            guard current === root else { return }
+
+            isSyncingSelection = true
+            defer { isSyncingSelection = false }
+            ancestors.forEach { outlineView.expandItem($0) }
+            let row = outlineView.row(forItem: node)
+            guard row >= 0 else { return }
+            outlineView.selectRowIndexes(IndexSet(integer: row), byExtendingSelection: false)
+            outlineView.scrollRowToVisible(row)
+            if appState.selectedNodes != [node] {
+                let appState = appState
+                DispatchQueue.main.async { appState.selectedNodes = [node] }
+            }
+        }
+    }
+}
+
+/// Hosts the SwiftUI row inside an AppKit cell so the row keeps its context menu and size bar.
+private final class FileRowCellView: NSTableCellView {
+    private let hostingView: NSHostingView<AnyView>
+    private var node: FileNode?
+    private weak var appState: AppState?
+
+    init(identifier: NSUserInterfaceItemIdentifier) {
+        hostingView = NSHostingView(rootView: AnyView(EmptyView()))
+        super.init(frame: .zero)
+        self.identifier = identifier
+        hostingView.sizingOptions = []
+        hostingView.autoresizingMask = [.width, .height]
+        addSubview(hostingView)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) is not supported")
+    }
+
+    func configure(node: FileNode, appState: AppState) {
+        self.node = node
+        self.appState = appState
+        render()
+    }
+
+    override var backgroundStyle: NSView.BackgroundStyle {
+        didSet { render() }
+    }
+
+    override func layout() {
+        super.layout()
+        hostingView.frame = bounds
+    }
+
+    private func render() {
+        guard let node, let appState else { return }
+        hostingView.rootView = AnyView(
+            FileRow(node: node, emphasized: backgroundStyle == .emphasized)
+                .environmentObject(appState)
+        )
+    }
+}
+
+// MARK: - Row
+
 struct FileRow: View {
     let node: FileNode
+    var emphasized = false
     @EnvironmentObject private var appState: AppState
 
     var body: some View {
@@ -55,8 +279,8 @@ struct FileRow: View {
 
             Spacer()
 
-            // Kind (for non-folders)
-            if !node.isDirectory {
+            // Kind (for non-folders and folders shown as one block)
+            if !node.isDirectory || node.isSummarized {
                 Text(node.kindName)
                     .font(.body)
                     .foregroundStyle(.tertiary)
@@ -64,7 +288,7 @@ struct FileRow: View {
             }
 
             // Size
-            Text(FileSizeFormatter.string(from: node.size))
+            Text(node.isSizePending ? "sizing…" : FileSizeFormatter.string(from: node.size))
                 .font(.body)
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
@@ -78,23 +302,21 @@ struct FileRow: View {
             )
             .frame(width: 60)
         }
-        .padding(.vertical, 2)
+        .foregroundStyle(emphasized ? Color.white : Color.primary)
+        .padding(.trailing, 8)
+        .contentShape(Rectangle())
         .contextMenu {
             FileNodeContextMenu(
                 node: node,
-                zoomAction: node.isDirectory ? {
+                zoomAction: node.isDirectory && !node.children.isEmpty ? {
                     appState.selectedNode = node
                     appState.zoomIn()
                 } : nil,
                 trashAction: {
-                    moveToTrash(node)
+                    appState.moveToTrash(node)
                 }
             )
         }
-    }
-
-    private func moveToTrash(_ node: FileNode) {
-        appState.moveToTrash(node)
     }
 }
 
@@ -185,15 +407,6 @@ struct SizeBar: View {
         }
         .frame(height: 8)
         .clipShape(RoundedRectangle(cornerRadius: 2))
-    }
-}
-
-// MARK: - FileNode Extension
-
-extension FileNode {
-    /// Returns children for OutlineGroup, or nil if no children
-    var optionalChildren: [FileNode]? {
-        children.isEmpty ? nil : children
     }
 }
 

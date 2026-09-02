@@ -21,6 +21,11 @@ class AppState: ObservableObject {
 
     @Published var isScanning = false
     @Published var scanProgress: ScanProgress?
+    /// Folders still being sized in the background after the tree appeared.
+    @Published var pendingSummaryCount = 0
+    /// Bumped whenever the tree changes in place (sizes resolved, items trashed) so views
+    /// that cache layout or rows know to rebuild.
+    @Published var treeGeneration = 0
     @Published var errorMessage: String?
     @Published var trashProtectionMessage: String?
     @Published var pendingTrashNodes: [FileNode] = []
@@ -39,6 +44,8 @@ class AppState: ObservableObject {
     // MARK: - Private
 
     private var scanner: FileScanner?
+    private var activeScanToken = UUID()
+    private var scannedVolumeURL: URL?
     private var colorAssigner = FileKindColorAssigner()
 
     // MARK: - Computed Properties
@@ -69,6 +76,8 @@ class AppState: ObservableObject {
         // Cancel any existing scan
         await scanner?.cancel()
 
+        let token = UUID()
+        activeScanToken = token
         isScanning = true
         scanProgress = ScanProgress(currentFolder: url.lastPathComponent, filesScanned: 0, foldersScanned: 0)
         errorMessage = nil
@@ -78,42 +87,69 @@ class AppState: ObservableObject {
         selectedNode = nil
         selectedNodes = []
         kindStatistics = []
+        pendingSummaryCount = 0
+        scannedVolumeURL = nil
 
         let newScanner = FileScanner()
         scanner = newScanner
 
         do {
-            let root = try await newScanner.scan(
+            _ = try await newScanner.scan(
                 url: url,
                 showPackageContents: showPackageContents,
                 usePhysicalSize: showPhysicalSize,
-                mainDiskOnly: url.standardizedFileURL.path == "/"
-            ) { [weak self] folder, files, folders in
-                Task { @MainActor in
-                    self?.scanProgress = ScanProgress(
-                        currentFolder: folder,
-                        filesScanned: files,
-                        foldersScanned: folders
-                    )
+                mainDiskOnly: url.standardizedFileURL.path == "/",
+                progress: { [weak self] folder, files, folders in
+                    Task { @MainActor in
+                        guard let self, self.activeScanToken == token else { return }
+                        self.scanProgress = ScanProgress(
+                            currentFolder: folder,
+                            filesScanned: files,
+                            foldersScanned: folders
+                        )
+                    }
+                },
+                treeReady: { [weak self] root, pending in
+                    Task { @MainActor in
+                        guard let self, self.activeScanToken == token else { return }
+                        self.presentTree(root, scannedURL: url, pendingSummaries: pending)
+                    }
+                },
+                sizesResolved: { [weak self] remaining in
+                    Task { @MainActor in
+                        guard let self, self.activeScanToken == token else { return }
+                        self.treeSizesChanged(remaining: remaining)
+                    }
                 }
-            }
-
-            try await calculateStatistics(for: root)
-            rootNode = root
-
-            // Add free space and other space items if scanning a volume root
-            if showFreeSpace || showOtherSpace {
-                await addVolumeSpaceItems(for: url)
-            }
-
+            )
         } catch is CancellationError {
             // Scan was cancelled, ignore
         } catch {
+            guard activeScanToken == token else { return }
             errorMessage = error.localizedDescription
         }
 
+        guard activeScanToken == token else { return }
         isScanning = false
         scanProgress = nil
+        pendingSummaryCount = 0
+    }
+
+    /// Shows the detailed tree while summarized folders are still being sized.
+    private func presentTree(_ root: FileNode, scannedURL: URL, pendingSummaries: Int) {
+        rootNode = root
+        isScanning = false
+        scanProgress = nil
+        pendingSummaryCount = pendingSummaries
+        scannedVolumeURL = scannedURL
+        calculateStatistics(for: root)
+        updateVolumeSpaceItems()
+    }
+
+    private func treeSizesChanged(remaining: Int) {
+        pendingSummaryCount = remaining
+        updateVolumeSpaceItems()
+        treeGeneration += 1
     }
 
     func scanPreset(url: URL) async {
@@ -171,22 +207,33 @@ class AppState: ObservableObject {
             }
         }
         guard !nodes.isEmpty else { return }
-        guard let protectedNode = nodes.first(where: {
+        if let protectedNode = nodes.first(where: {
             isProtectedFromTrash($0.url, isDirectory: $0.isDirectory)
-        }) else {
-            pendingTrashNodes = nodes.sorted { $0.displayPath < $1.displayPath }
+        }) {
+            trashProtectionMessage = "\(protectedNode.name) is a top-level or system folder. Removing it here is too dangerous, so Disk Inventory X-Ray will not enable that action."
             return
         }
 
-        trashProtectionMessage = "\(protectedNode.name) is a top-level or system folder. Removing it here is too dangerous, so Disk Inventory X-Ray will not enable that action."
+        // The Trash is reversible, so a single ordinary item goes straight there. Ask only
+        // for a batch, or for folders whose loss is hard to notice until something breaks.
+        if nodes.count == 1, !needsTrashConfirmation(nodes[0].url, isDirectory: nodes[0].isDirectory) {
+            performMoveToTrash(nodes)
+            return
+        }
+        pendingTrashNodes = nodes.sorted { $0.displayPath < $1.displayPath }
     }
 
     func confirmMoveToTrash() {
         let nodes = pendingTrashNodes
         pendingTrashNodes = []
+        performMoveToTrash(nodes)
+    }
+
+    private func performMoveToTrash(_ nodes: [FileNode]) {
         guard !nodes.isEmpty else { return }
         let nextSelection = nextSelection(afterDeleting: Set(nodes))
         let urls = nodes.map(\.url)
+        let token = activeScanToken
 
         Task {
             do {
@@ -195,12 +242,16 @@ class AppState: ObservableObject {
                         try FileManager.default.trashItem(at: url, resultingItemURL: nil)
                     }
                 }.value
-
-                for node in nodes {
-                    node.parent?.children.removeAll { $0 === node }
-                }
+                // A rescan replaced the tree these nodes belonged to; nothing left to update.
+                guard activeScanToken == token else { return }
 
                 var ancestors = Set(nodes.compactMap(\.parent))
+                for node in nodes {
+                    node.parent?.children.removeAll { $0 === node }
+                    // Detach so a background size landing later cannot flow into the live tree.
+                    node.parent = nil
+                }
+
                 while !ancestors.isEmpty {
                     let currentLevel = ancestors
                     ancestors.removeAll()
@@ -214,10 +265,9 @@ class AppState: ObservableObject {
 
                 selectedNode = nextSelection
                 selectedNodes = nextSelection.map { [$0] } ?? []
-                try? await calculateStatistics(for: rootNode)
-                if let root = rootNode {
-                    rootNode = root
-                }
+                calculateStatistics(for: rootNode)
+                updateVolumeSpaceItems()
+                treeGeneration += 1
             } catch {
                 errorMessage = error.localizedDescription
                 await refresh()
@@ -260,10 +310,16 @@ class AppState: ObservableObject {
 
         let protectedTrees = [
             "/System", "/Library", "/bin", "/sbin", "/usr", "/private",
-            "/etc", "/tmp", "/var",
-            homePath + "/Library"
+            "/etc", "/tmp", "/var"
         ]
         if protectedTrees.contains(where: { path == $0 || path.hasPrefix($0 + "/") }) {
+            return true
+        }
+
+        // ~/Library and its immediate children (Caches, Application Support, ...) stay
+        // put; folders inside them are fair game for cleanup, with confirmation.
+        let libraryPath = homePath + "/Library"
+        if path == libraryPath || parentPath == libraryPath {
             return true
         }
 
@@ -272,6 +328,30 @@ class AppState: ObservableObject {
             "Music", "Pictures", "Public"
         ].map { homePath + "/" + $0 }
         return protectedHomeFolders.contains(path)
+    }
+
+    /// Folders that are easy to trash by accident and painful to discover missing:
+    /// anything inside ~/Library, hidden config folders in the home directory, and
+    /// other folders sitting directly in the home directory.
+    func needsTrashConfirmation(_ url: URL, isDirectory: Bool) -> Bool {
+        guard isDirectory else { return false }
+
+        let resolvedURL = url.standardizedFileURL.resolvingSymlinksInPath()
+        let path = resolvedURL.path
+        let parentPath = resolvedURL.deletingLastPathComponent().path
+        let homePath = FileManager.default.homeDirectoryForCurrentUser
+            .standardizedFileURL.resolvingSymlinksInPath().path
+
+        if path.hasPrefix(homePath + "/Library/") {
+            return true
+        }
+        if parentPath == homePath {
+            return true
+        }
+        let hiddenHomeFolders = resolvedURL.pathComponents.dropFirst(
+            URL(fileURLWithPath: homePath).pathComponents.count
+        )
+        return hiddenHomeFolders.first?.hasPrefix(".") == true
     }
 
     func color(for kindName: String) -> Color {
@@ -285,45 +365,29 @@ class AppState: ObservableObject {
 
     // MARK: - Private Methods
 
-    private func calculateStatistics(for root: FileNode?) async throws {
+    /// Walks the tree on the main actor. Background sizing also writes on the main actor,
+    /// so this never observes a half-applied batch. One pass per scan is cheap enough.
+    private func calculateStatistics(for root: FileNode?) {
         guard let root else {
             kindStatistics = []
             return
         }
 
-        let statisticsTask = Task.detached(priority: .utility) {
-            var result: [String: (count: Int, size: UInt64)] = [:]
-            var visitedNodes = 0
-
-            func collect(_ node: FileNode) throws {
-                visitedNodes += 1
-                if visitedNodes.isMultiple(of: 1024) {
-                    try Task.checkCancellation()
-                }
-                if !node.isDirectory && !node.isSpecialItem {
-                    let type = UTType(filenameExtension: node.url.pathExtension) ?? .data
-                    let kind = type.localizedDescription ?? type.identifier
-                    var stat = result[kind] ?? (count: 0, size: 0)
-                    stat.count += 1
-                    stat.size += node.size
-                    result[kind] = stat
-                }
-
-                for child in node.children {
-                    try collect(child)
-                }
+        var result: [String: (count: Int, size: UInt64)] = [:]
+        var stack: [FileNode] = [root]
+        while let node = stack.popLast() {
+            if !node.isDirectory && !node.isSpecialItem {
+                let type = UTType(filenameExtension: node.url.pathExtension) ?? .data
+                let kind = type.localizedDescription ?? type.identifier
+                var stat = result[kind] ?? (count: 0, size: 0)
+                stat.count += 1
+                stat.size += node.size
+                result[kind] = stat
             }
-
-            try collect(root)
-            return result
-        }
-        let stats = try await withTaskCancellationHandler {
-            try await statisticsTask.value
-        } onCancel: {
-            statisticsTask.cancel()
+            stack.append(contentsOf: node.children)
         }
 
-        kindStatistics = stats.map { kind, stat in
+        kindStatistics = result.map { kind, stat in
             FileKindStatistic(
                 kindName: kind,
                 count: stat.count,
@@ -333,8 +397,16 @@ class AppState: ObservableObject {
         }.sorted { $0.totalSize > $1.totalSize }
     }
 
-    private func addVolumeSpaceItems(for url: URL) async {
-        guard let root = rootNode else { return }
+    /// Rebuilds the Free Space and Other Space rows from the current scanned total. Safe to
+    /// call repeatedly as background sizes land.
+    private func updateVolumeSpaceItems() {
+        guard let root = rootNode, let url = scannedVolumeURL else { return }
+
+        root.children.removeAll { [.otherSpace, .unscannedSpace, .freeSpace].contains($0.type) }
+        root.size = root.children.reduce(0) { $0 + $1.size }
+        defer { root.children.sort { $0.size > $1.size } }
+
+        guard showFreeSpace || showOtherSpace else { return }
 
         do {
             // Only add volume space items when scanning a volume root
@@ -373,6 +445,7 @@ class AppState: ObservableObject {
                     size: otherSize,
                     type: scanIsIncomplete ? .unscannedSpace : .otherSpace
                 )
+                otherItem.parent = root
                 root.children.append(otherItem)
             }
 
@@ -385,11 +458,11 @@ class AppState: ObservableObject {
                     size: freeSize,
                     type: .freeSpace
                 )
+                freeItem.parent = root
                 root.children.append(freeItem)
             }
 
             root.size = root.children.reduce(0) { $0 + $1.size }
-            root.children.sort { $0.size > $1.size }
 
         } catch {
             // Ignore volume info errors

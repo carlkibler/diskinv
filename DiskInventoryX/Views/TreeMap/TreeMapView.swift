@@ -80,6 +80,9 @@ struct TreeMapView: View {
             .onChange(of: geometry.size) { newSize in
                 updateLayoutIfNeeded(for: newSize)
             }
+            .onChange(of: appState.treeGeneration) { _ in
+                updateLayoutIfNeeded(for: geometry.size, force: true)
+            }
         }
         .background(Color(nsColor: .controlBackgroundColor))
         .overlay(alignment: .bottom) {
@@ -175,11 +178,17 @@ struct TreeMapView: View {
         let fontSize = min(11, rect.height - 6)
         guard fontSize >= 8 else { return }
 
-        let resolvedText = Text(text)
-            .font(.system(size: fontSize))
-            .foregroundColor(.white.opacity(0.85))
+        let resolvedText = context.resolve(
+            Text(text)
+                .font(.system(size: fontSize))
+                .foregroundColor(.white.opacity(0.85))
+        )
+        // Measure unconstrained so long names never wrap; skip the label if it does not fit.
+        let measured = resolvedText.measure(
+            in: CGSize(width: CGFloat.greatestFiniteMagnitude, height: rect.height)
+        )
+        guard measured.width <= rect.width - 6 else { return }
 
-        // Draw with shadow for readability
         context.draw(
             resolvedText,
             at: CGPoint(x: rect.midX, y: rect.midY),
@@ -206,11 +215,11 @@ struct TreeMapView: View {
 
     // MARK: - Hit Testing
 
-    private func updateLayoutIfNeeded(for size: CGSize) {
+    private func updateLayoutIfNeeded(for size: CGSize, force: Bool = false) {
         let rootID = ObjectIdentifier(root)
         let childCount = root.children.count
         let rootSize = root.size
-        guard rootID != layoutRootID || size != layoutSize ||
+        guard force || rootID != layoutRootID || size != layoutSize ||
                 childCount != layoutChildCount || rootSize != layoutRootSize else { return }
 
         let rects = TreeMapLayout.layout(

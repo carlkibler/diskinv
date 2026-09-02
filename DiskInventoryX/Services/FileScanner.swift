@@ -16,13 +16,33 @@ actor FileScanner {
     )
     private static let maximumVisibleChildren = 500
     private static let compactDirectoryThreshold: UInt64 = 8 * 1_024 * 1_024
-    private static let highCardinalityDirectoryNames: Set<String> = [
-        ".build", ".cache", ".cargo", ".git", ".gradle", ".hg", ".m2", ".next",
-        ".nox", ".npm", ".nuxt", ".parcel-cache", ".pnpm-store", ".rustup", ".svn",
-        ".svelte-kit", ".terraform", ".terragrunt-cache", ".tox", ".turbo", ".venv",
-        ".yarn", "__pycache__", "bower_components", "Carthage", "DerivedData", "node_modules",
-        "Pods", "venv"
+    private static let summaryBatchInterval: TimeInterval = 1
+
+    /// Folders whose contents nobody inspects. They are sized as one block and never expanded.
+    private static let opaqueDirectoryNames: Set<String> = [
+        ".build", ".cargo", ".git", ".gradle", ".hg", ".m2", ".next", ".nox", ".npm", ".nuxt",
+        ".parcel-cache", ".pnpm-store", ".rustup", ".svn", ".svelte-kit", ".terraform",
+        ".terragrunt-cache", ".tox", ".turbo", ".venv", ".yarn", "__pycache__",
+        "bower_components", "Carthage", "node_modules", "Pods", "venv"
     ]
+
+    /// Folders worth exactly one level of detail: each child is sized as a block, so the
+    /// user sees which app or project owns the space without the scanner walking every file.
+    private static let shallowDirectoryNames: Set<String> = [".cache", "DerivedData"]
+
+    private static func opaqueDirectoryPaths(home: String) -> [String] {
+        ["/System", "/private/var/folders", home + "/Library/pnpm/store"]
+    }
+
+    private static func shallowDirectoryPaths(home: String) -> [String] {
+        [
+            "/Library/Caches",
+            home + "/Library/Caches",
+            home + "/Library/Developer/CoreSimulator/Devices",
+            home + "/Library/Developer/Xcode/iOS DeviceSupport"
+        ]
+    }
+
     private static let maxConcurrentOperations = max(
         1,
         min(4, ProcessInfo.processInfo.activeProcessorCount / 2)
@@ -35,43 +55,52 @@ actor FileScanner {
         cancellationState?.cancel()
     }
 
+    /// Scans `url` and returns the fully sized tree.
+    ///
+    /// The detailed walk finishes first and `treeReady` delivers that tree along with the number
+    /// of folders still waiting for a size. Those folders are then sized in the background; every
+    /// batch is applied to the tree on the main actor before `sizesResolved` reports how many remain.
     func scan(
         url: URL,
         showPackageContents: Bool,
         usePhysicalSize: Bool,
         mainDiskOnly: Bool = false,
         limits: ScanLimits = .standard,
-        progress: @escaping (String, Int, Int) -> Void
+        progress: @escaping (String, Int, Int) -> Void,
+        treeReady: ((FileNode, Int) -> Void)? = nil,
+        sizesResolved: ((Int) -> Void)? = nil
     ) async throws -> FileNode {
         let cancellation = CancellationState()
         cancellationState = cancellation
         defer { cancellationState = nil }
 
-        let progressState = ProgressState(callback: progress)
-        let ioLimiter = IOLimiter(maxConcurrentOperations: Self.maxConcurrentOperations)
-        let summaryLimiter = IOLimiter(maxConcurrentOperations: 2)
-        let detailBudget = DetailBudget(limits: limits)
         let resourceKeys = Self.resourceKeys(usePhysicalSize: usePhysicalSize)
-        let resourceKeyArray = Array(resourceKeys)
+        let context = ScanContext(
+            showPackageContents: showPackageContents,
+            usePhysicalSize: usePhysicalSize,
+            mainDiskOnly: mainDiskOnly,
+            limits: limits,
+            resourceKeys: resourceKeys,
+            resourceKeyArray: Array(resourceKeys),
+            cancellation: cancellation,
+            progress: ProgressState(callback: progress),
+            ioLimiter: IOLimiter(maxConcurrentOperations: Self.maxConcurrentOperations),
+            pendingSummaries: PendingSummaries()
+        )
         let scanTask = Task.detached(priority: .utility) {
             let root = try await Self.scanNode(
                 url: url,
-                showPackageContents: showPackageContents,
-                usePhysicalSize: usePhysicalSize,
-                resourceKeys: resourceKeys,
-                resourceKeyArray: resourceKeyArray,
-                cancellation: cancellation,
-                progress: progressState,
-                ioLimiter: ioLimiter,
-                summaryLimiter: summaryLimiter,
-                detailBudget: detailBudget,
-                limits: limits,
-                mainDiskOnly: mainDiskOnly,
+                context: context,
+                detailBudget: DetailBudget(limits: limits),
                 parallelizeChildren: true,
                 depth: 0
             )
             guard let root else { throw CocoaError(.fileReadNoSuchFile) }
             root.sortChildrenBySize()
+
+            let jobs = context.pendingSummaries.drain()
+            treeReady?(root, jobs.count)
+            try await Self.resolveSummaries(jobs, context: context, sizesResolved: sizesResolved)
             return root
         }
         let root = try await withTaskCancellationHandler {
@@ -86,28 +115,19 @@ actor FileScanner {
         return root
     }
 
-    // MARK: - Private Implementation
+    // MARK: - Detailed walk
 
     private nonisolated static func scanNode(
         url: URL,
-        showPackageContents: Bool,
-        usePhysicalSize: Bool,
-        resourceKeys: Set<URLResourceKey>,
-        resourceKeyArray: [URLResourceKey],
-        cancellation: CancellationState,
-        progress: ProgressState,
-        ioLimiter: IOLimiter,
-        summaryLimiter: IOLimiter,
+        context: ScanContext,
         detailBudget: DetailBudget,
-        limits: ScanLimits,
-        mainDiskOnly: Bool,
         parallelizeChildren: Bool,
         depth: Int
     ) async throws -> FileNode? {
-        try cancellation.throwIfCancelled()
+        try context.cancellation.throwIfCancelled()
         try Task.checkCancellation()
 
-        if mainDiskOnly && depth > 0 && isExcludedMainDiskPath(url) {
+        if context.mainDiskOnly && depth > 0 && isExcludedMainDiskPath(url) {
             return nil
         }
 
@@ -115,15 +135,15 @@ actor FileScanner {
             throw DetailBudgetExceeded()
         }
 
-        let values = try await withIOPermit(ioLimiter) {
-            try cancellation.throwIfCancelled()
+        let values = try await withIOPermit(context.ioLimiter) {
+            try context.cancellation.throwIfCancelled()
             try Task.checkCancellation()
             return try autoreleasepool {
-                try url.resourceValues(forKeys: resourceKeys)
+                try url.resourceValues(forKeys: context.resourceKeys)
             }
         }
 
-        try cancellation.throwIfCancelled()
+        try context.cancellation.throwIfCancelled()
         try Task.checkCancellation()
 
         let isDirectory = values.isDirectory ?? false
@@ -131,12 +151,13 @@ actor FileScanner {
         let isSymlink = values.isSymbolicLink ?? false
         let isAlias = values.isAliasFile ?? false
 
-        if mainDiskOnly && depth > 0 && shouldSkipDuringMainDiskScan(url: url, volumeURL: values.volume) {
+        if context.mainDiskOnly && depth > 0
+            && shouldSkipDuringMainDiskScan(url: url, volumeURL: values.volume) {
             return nil
         }
 
         let size: UInt64
-        if usePhysicalSize {
+        if context.usePhysicalSize {
             size = UInt64(values.totalFileAllocatedSize ?? values.fileSize ?? 0)
         } else {
             size = UInt64(values.fileSize ?? 0)
@@ -151,9 +172,9 @@ actor FileScanner {
         )
 
         if isDirectory {
-            progress.recordDirectory(url.lastPathComponent, displayName: depth <= 2)
+            context.progress.recordDirectory(url.lastPathComponent, displayName: depth <= 2)
         } else {
-            progress.recordFile()
+            context.progress.recordFile()
         }
 
         // Don't follow symlinks or aliases to avoid infinite loops.
@@ -161,59 +182,39 @@ actor FileScanner {
             return node
         }
 
-        let knownOpaqueDirectory = isDirectory && (
-            Self.isKnownHighCardinalityDirectory(url) || (!showPackageContents && isPackage)
+        let opaque = isDirectory && (
+            Self.isSummarizedWithoutDetail(url) || (!context.showPackageContents && isPackage)
         )
         let directoryEntryCount: Int
-        if isDirectory && !knownOpaqueDirectory {
-            directoryEntryCount = (try? await withIOPermit(ioLimiter) {
+        if isDirectory && !opaque {
+            directoryEntryCount = (try? await withIOPermit(context.ioLimiter) {
                 try url.resourceValues(forKeys: [.directoryEntryCountKey]).directoryEntryCount ?? 0
             }) ?? 0
         } else {
             directoryEntryCount = 0
         }
         let shouldSummarize = (depth > 0 || isPackage) && (
-            knownOpaqueDirectory || directoryEntryCount > limits.maximumDirectoryEntries
+            opaque || directoryEntryCount > context.limits.maximumDirectoryEntries
         )
         if shouldSummarize {
-            let aggregate: AggregateResult?
-            do {
-                aggregate = try await summarizedDirectorySize(
-                    url: url,
-                    usePhysicalSize: usePhysicalSize,
-                    cancellation: cancellation,
-                    summaryLimiter: summaryLimiter,
-                    detailBudget: detailBudget,
-                    limits: limits,
-                    mainDiskOnly: mainDiskOnly
-                )
-            } catch is CancellationError {
-                throw CancellationError()
-            } catch {
-                aggregate = nil
-            }
-            node.size = aggregate?.size ?? 0
-            if !isPackage || aggregate?.isComplete != true {
-                node.children = [summaryNode(size: node.size, complete: aggregate?.isComplete == true)]
-                node.children[0].parent = node
-            }
+            deferSizing(of: node, context: context)
             return node
         }
 
         // Scan children if this is a directory (and not a package, unless configured to show package contents).
-        guard isDirectory && (showPackageContents || !isPackage) else {
+        guard isDirectory && (context.showPackageContents || !isPackage) else {
             return node
         }
 
         let contents: [URL]
         do {
-            contents = try await withIOPermit(ioLimiter) {
-                try cancellation.throwIfCancelled()
+            contents = try await withIOPermit(context.ioLimiter) {
+                try context.cancellation.throwIfCancelled()
                 try Task.checkCancellation()
                 return try autoreleasepool {
                     try FileManager.default.contentsOfDirectory(
                         at: url,
-                        includingPropertiesForKeys: mainDiskOnly ? [] : resourceKeyArray,
+                        includingPropertiesForKeys: context.mainDiskOnly ? [] : context.resourceKeyArray,
                         options: []
                     )
                 }
@@ -222,12 +223,12 @@ actor FileScanner {
             throw CancellationError()
         } catch {
             // Preserve the fact that this directory could not be measured.
-            node.children = [summaryNode(size: 0, complete: false)]
+            node.children = [incompleteMarker("Contents could not be read")]
             node.children[0].parent = node
             return node
         }
 
-        try cancellation.throwIfCancelled()
+        try context.cancellation.throwIfCancelled()
         try Task.checkCancellation()
 
         let orderedContents = prioritizedUserData(in: contents)
@@ -240,23 +241,14 @@ actor FileScanner {
                 func addNextChildTask() {
                     guard nextChildIndex < orderedContents.count else { return }
                     let childURL = orderedContents[nextChildIndex]
-                    let childDetailBudget = DetailBudget(limits: limits)
+                    let childDetailBudget = DetailBudget(limits: context.limits)
                     nextChildIndex += 1
                     group.addTask {
                         do {
                             return try await scanNode(
                                 url: childURL,
-                                showPackageContents: showPackageContents,
-                                usePhysicalSize: usePhysicalSize,
-                                resourceKeys: resourceKeys,
-                                resourceKeyArray: resourceKeyArray,
-                                cancellation: cancellation,
-                                progress: progress,
-                                ioLimiter: ioLimiter,
-                                summaryLimiter: summaryLimiter,
+                                context: context,
                                 detailBudget: childDetailBudget,
-                                limits: limits,
-                                mainDiskOnly: mainDiskOnly,
                                 parallelizeChildren: false,
                                 depth: depth + 1
                             )
@@ -266,16 +258,7 @@ actor FileScanner {
                             do {
                                 return try await summarizedNode(
                                     at: childURL,
-                                    showPackageContents: showPackageContents,
-                                    usePhysicalSize: usePhysicalSize,
-                                    resourceKeys: resourceKeys,
-                                    cancellation: cancellation,
-                                    progress: progress,
-                                    ioLimiter: ioLimiter,
-                                    summaryLimiter: summaryLimiter,
-                                    detailBudget: childDetailBudget,
-                                    limits: limits,
-                                    mainDiskOnly: mainDiskOnly,
+                                    context: context,
                                     depth: depth + 1
                                 )
                             } catch is CancellationError {
@@ -304,22 +287,13 @@ actor FileScanner {
             }
         } else {
             for childURL in orderedContents {
-                try cancellation.throwIfCancelled()
+                try context.cancellation.throwIfCancelled()
                 try Task.checkCancellation()
                 do {
                     let child = try await scanNode(
                         url: childURL,
-                        showPackageContents: showPackageContents,
-                        usePhysicalSize: usePhysicalSize,
-                        resourceKeys: resourceKeys,
-                        resourceKeyArray: resourceKeyArray,
-                        cancellation: cancellation,
-                        progress: progress,
-                        ioLimiter: ioLimiter,
-                        summaryLimiter: summaryLimiter,
+                        context: context,
                         detailBudget: detailBudget,
-                        limits: limits,
-                        mainDiskOnly: mainDiskOnly,
                         parallelizeChildren: false,
                         depth: depth + 1
                     )
@@ -344,152 +318,192 @@ actor FileScanner {
         if depth > 1
             && node.size < Self.compactDirectoryThreshold
             && !node.children.isEmpty
-            && !node.containsNode(where: { $0.type == .incompleteSummary }) {
-            node.children = [FileNode(
-                url: summaryURL(),
-                name: "Summarized Items",
-                size: node.size,
-                type: .summary
-            )]
+            && !node.containsNode(where: { $0.type == .incompleteSummary || $0.isSizePending }) {
+            // Small folders keep their total but drop their subtree, which bounds memory.
+            node.children = []
+            node.isSummarized = true
         }
         node.children.forEach { $0.parent = node }
         return node
+    }
+
+    /// Marks `node` as a block to be sized after the tree is shown.
+    private nonisolated static func deferSizing(of node: FileNode, context: ScanContext) {
+        node.isSummarized = true
+        node.isSizePending = true
+        context.pendingSummaries.enqueue(SummaryJob(node: node, url: node.url))
     }
 
     private nonisolated static func summaryURL() -> URL {
         URL(string: "disk-inventory-x-ray://summary/\(UUID().uuidString)")!
     }
 
-    private nonisolated static func summaryNode(size: UInt64, complete: Bool = true) -> FileNode {
-        FileNode(
-            url: summaryURL(),
-            name: complete
-                ? "Contents summarized for faster scanning"
-                : "Contents not sized before the scan limit",
-            size: size,
-            type: complete ? .summary : .incompleteSummary
-        )
+    private nonisolated static func incompleteMarker(_ name: String) -> FileNode {
+        FileNode(url: summaryURL(), name: name, size: 0, type: .incompleteSummary)
     }
 
     private nonisolated static func incompleteNode(for url: URL) -> FileNode {
-        FileNode(
-            url: url,
-            name: "Contents not sized before the scan limit",
-            size: 0,
-            type: .incompleteSummary
-        )
+        FileNode(url: url, name: "Could not be read", size: 0, type: .incompleteSummary)
     }
 
+    /// Fallback for a top-level branch whose detailed walk exceeded its budget.
     private nonisolated static func summarizedNode(
         at url: URL,
-        showPackageContents: Bool,
-        usePhysicalSize: Bool,
-        resourceKeys: Set<URLResourceKey>,
-        cancellation: CancellationState,
-        progress: ProgressState,
-        ioLimiter: IOLimiter,
-        summaryLimiter: IOLimiter,
-        detailBudget: DetailBudget,
-        limits: ScanLimits,
-        mainDiskOnly: Bool,
+        context: ScanContext,
         depth: Int
     ) async throws -> FileNode? {
-        let values = try await withIOPermit(ioLimiter) {
-            try cancellation.throwIfCancelled()
-            return try url.resourceValues(forKeys: resourceKeys)
+        let values = try await withIOPermit(context.ioLimiter) {
+            try context.cancellation.throwIfCancelled()
+            return try url.resourceValues(forKeys: context.resourceKeys)
         }
         guard values.isDirectory == true else {
-            let size = usePhysicalSize
+            let size = context.usePhysicalSize
                 ? UInt64(values.totalFileAllocatedSize ?? values.fileSize ?? 0)
                 : UInt64(values.fileSize ?? 0)
-            progress.recordFile()
+            context.progress.recordFile()
             return FileNode(url: url, name: values.name, size: size)
         }
-        if mainDiskOnly && depth > 0 && shouldSkipDuringMainDiskScan(url: url, volumeURL: values.volume) {
+        if context.mainDiskOnly && depth > 0
+            && shouldSkipDuringMainDiskScan(url: url, volumeURL: values.volume) {
             return nil
         }
 
-        progress.recordDirectory(url.lastPathComponent, displayName: depth <= 2)
-        let aggregate: AggregateResult?
-        do {
-            aggregate = try await summarizedDirectorySize(
-                url: url,
-                usePhysicalSize: usePhysicalSize,
-                cancellation: cancellation,
-                summaryLimiter: summaryLimiter,
-                detailBudget: detailBudget,
-                limits: limits,
-                mainDiskOnly: mainDiskOnly
-            )
-        } catch is CancellationError {
-            throw CancellationError()
-        } catch {
-            aggregate = nil
-        }
+        context.progress.recordDirectory(url.lastPathComponent, displayName: depth <= 2)
         let node = FileNode(
             url: url,
             name: values.name,
             isDirectory: true,
             isPackage: values.isPackage ?? false,
-            size: aggregate?.size ?? 0
+            size: 0
         )
-        if aggregate?.isComplete != true || showPackageContents || !node.isPackage {
-            node.children = [summaryNode(size: node.size, complete: aggregate?.isComplete == true)]
-            node.children[0].parent = node
-        }
+        deferSizing(of: node, context: context)
         return node
     }
 
-    private nonisolated static func summarizedDirectorySize(
-        url: URL,
-        usePhysicalSize: Bool,
-        cancellation: CancellationState,
-        summaryLimiter: IOLimiter,
-        detailBudget: DetailBudget,
-        limits: ScanLimits,
-        mainDiskOnly: Bool
-    ) async throws -> AggregateResult? {
-        try await withIOPermit(summaryLimiter) {
-            try cancellation.throwIfCancelled()
+    // MARK: - Background sizing
 
-            let allowedDuration = detailBudget.allowedSummaryDuration(
-                maximum: limits.maximumSummaryDuration
-            )
-            guard allowedDuration > 0 else { return nil }
+    private nonisolated static func resolveSummaries(
+        _ jobs: [SummaryJob],
+        context: ScanContext,
+        sizesResolved: ((Int) -> Void)?
+    ) async throws {
+        guard !jobs.isEmpty else { return }
 
-            let process = Process()
-            let output = Pipe()
-            let exitState = ProcessExitState()
-            process.executableURL = URL(fileURLWithPath: "/usr/bin/du")
-            var arguments = usePhysicalSize ? ["-skx"] : ["-Askx"]
-            for name in summaryExcludedNames(for: url, mainDiskOnly: mainDiskOnly) {
-                arguments.append(contentsOf: ["-I", name])
-            }
-            arguments.append(url.path)
-            process.arguments = arguments
-            process.standardOutput = output
-            process.standardError = FileHandle.nullDevice
-            process.terminationHandler = { _ in exitState.signalExit() }
-            try process.run()
-            guard cancellation.register(process) else {
-                await terminate(process, exitState: exitState)
-                throw CancellationError()
-            }
-            defer { cancellation.unregister(process) }
-
-            if !(await exitState.wait(timeout: allowedDuration)) {
-                Self.logger.notice(
-                    "Aggregate sizing reached its \(allowedDuration, privacy: .public)-second limit for \(url.path, privacy: .private(mask: .hash))"
-                )
-                await terminate(process, exitState: exitState)
-                try cancellation.throwIfCancelled()
-                return nil
+        try await withThrowingTaskGroup(of: SummaryResolution.self) { group in
+            var nextJobIndex = 0
+            func addNextJob() {
+                guard nextJobIndex < jobs.count else { return }
+                let job = jobs[nextJobIndex]
+                nextJobIndex += 1
+                group.addTask {
+                    SummaryResolution(job: job, result: try await aggregateSize(of: job.url, context: context))
+                }
             }
 
-            try cancellation.throwIfCancelled()
-            let data = output.fileHandleForReading.readDataToEndOfFile()
-            return parseAggregateResult(output: data, terminationStatus: process.terminationStatus)
+            for _ in 0..<min(Self.maxConcurrentOperations, jobs.count) {
+                addNextJob()
+            }
+
+            var remaining = jobs.count
+            var batch: [SummaryResolution] = []
+            var lastFlush = ProcessInfo.processInfo.systemUptime
+            while let resolution = try await group.next() {
+                batch.append(resolution)
+                remaining -= 1
+                addNextJob()
+
+                let now = ProcessInfo.processInfo.systemUptime
+                guard remaining == 0 || now - lastFlush >= Self.summaryBatchInterval else { continue }
+                let toApply = batch
+                batch = []
+                lastFlush = now
+                await MainActor.run { Self.apply(toApply) }
+                sizesResolved?(remaining)
+            }
         }
+    }
+
+    /// Writes resolved sizes into the tree. Runs on the main actor so the UI never reads a
+    /// half-updated node.
+    @MainActor
+    private static func apply(_ resolutions: [SummaryResolution]) {
+        var parentsToSort = Set<FileNode>()
+        for resolution in resolutions {
+            let node = resolution.job.node
+            let size = resolution.result?.size ?? 0
+            node.isSizePending = false
+            node.size = size
+            if resolution.result?.isComplete != true {
+                let marker = incompleteMarker(
+                    resolution.result == nil ? "Contents could not be sized" : "Some contents could not be read"
+                )
+                marker.parent = node
+                node.children = [marker]
+            }
+
+            var ancestor = node.parent
+            while let current = ancestor {
+                current.size += size
+                parentsToSort.insert(current)
+                ancestor = current.parent
+            }
+        }
+        for parent in parentsToSort {
+            parent.children.sort { $0.size > $1.size }
+        }
+    }
+
+    private nonisolated static func aggregateSize(
+        of url: URL,
+        context: ScanContext
+    ) async throws -> AggregateResult? {
+        try context.cancellation.throwIfCancelled()
+
+        let allowedDuration = context.limits.maximumSummaryDuration
+        guard allowedDuration > 0 else { return nil }
+
+        let process = Process()
+        let output = Pipe()
+        let exitState = ProcessExitState()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/du")
+        var arguments = context.usePhysicalSize ? ["-skx"] : ["-Askx"]
+        for name in summaryExcludedNames(for: url, mainDiskOnly: context.mainDiskOnly) {
+            arguments.append(contentsOf: ["-I", name])
+        }
+        arguments.append(url.path)
+        process.arguments = arguments
+        process.standardOutput = output
+        process.standardError = FileHandle.nullDevice
+        process.terminationHandler = { _ in exitState.signalExit() }
+        do {
+            try process.run()
+        } catch {
+            return nil
+        }
+        guard context.cancellation.register(process) else {
+            await terminate(process, exitState: exitState)
+            throw CancellationError()
+        }
+        defer { context.cancellation.unregister(process) }
+
+        // Read concurrently so a large tree cannot fill the pipe and stall du.
+        let reader = Task.detached(priority: .utility) {
+            output.fileHandleForReading.readDataToEndOfFile()
+        }
+
+        if !(await exitState.wait(timeout: allowedDuration)) {
+            Self.logger.notice(
+                "Aggregate sizing reached its \(allowedDuration, privacy: .public)-second limit for \(url.path, privacy: .private(mask: .hash))"
+            )
+            await terminate(process, exitState: exitState)
+            reader.cancel()
+            try context.cancellation.throwIfCancelled()
+            return nil
+        }
+
+        try context.cancellation.throwIfCancelled()
+        let data = await reader.value
+        return parseAggregateResult(output: data, terminationStatus: process.terminationStatus)
     }
 
     nonisolated static func parseAggregateResult(
@@ -518,17 +532,25 @@ actor FileScanner {
         _ = await exitState.wait(timeout: 1)
     }
 
-    nonisolated static func isKnownHighCardinalityDirectory(_ url: URL) -> Bool {
-        if highCardinalityDirectoryNames.contains(url.lastPathComponent) {
+    // MARK: - Policy
+
+    /// True for folders that are sized as a single block: version-control and dependency
+    /// caches, sealed system trees, and the immediate children of shallow folders such as
+    /// `~/Library/Caches`, where the interesting question is which app owns the space.
+    nonisolated static func isSummarizedWithoutDetail(_ url: URL) -> Bool {
+        if opaqueDirectoryNames.contains(url.lastPathComponent) {
             return true
         }
 
-        let path = url.standardizedFileURL.path
         let home = FileManager.default.homeDirectoryForCurrentUser.standardizedFileURL.path
-        return path == home + "/Library/Caches"
-            || path == home + "/Library/Developer/Xcode/DerivedData"
-            || path == home + "/Library/pnpm/store"
-            || path.hasSuffix("/vendor/bundle")
+        let path = url.standardizedFileURL.path
+        if opaqueDirectoryPaths(home: home).contains(path) || path.hasSuffix("/vendor/bundle") {
+            return true
+        }
+
+        let parent = url.deletingLastPathComponent()
+        return shallowDirectoryNames.contains(parent.lastPathComponent)
+            || shallowDirectoryPaths(home: home).contains(parent.standardizedFileURL.path)
     }
 
     nonisolated static func summaryExcludedNames(for url: URL, mainDiskOnly: Bool) -> [String] {
@@ -618,6 +640,49 @@ struct AggregateResult: Equatable, Sendable {
     let isComplete: Bool
 }
 
+/// Everything a scan shares across its tasks. One instance per `scan` call.
+private struct ScanContext: @unchecked Sendable {
+    let showPackageContents: Bool
+    let usePhysicalSize: Bool
+    let mainDiskOnly: Bool
+    let limits: ScanLimits
+    let resourceKeys: Set<URLResourceKey>
+    let resourceKeyArray: [URLResourceKey]
+    let cancellation: CancellationState
+    let progress: ProgressState
+    let ioLimiter: IOLimiter
+    let pendingSummaries: PendingSummaries
+}
+
+private struct SummaryJob: @unchecked Sendable {
+    let node: FileNode
+    let url: URL
+}
+
+private struct SummaryResolution: @unchecked Sendable {
+    let job: SummaryJob
+    let result: AggregateResult?
+}
+
+private final class PendingSummaries: @unchecked Sendable {
+    private let lock = NSLock()
+    private var jobs: [SummaryJob] = []
+
+    func enqueue(_ job: SummaryJob) {
+        lock.lock()
+        jobs.append(job)
+        lock.unlock()
+    }
+
+    func drain() -> [SummaryJob] {
+        lock.lock()
+        defer { lock.unlock() }
+        let drained = jobs
+        jobs = []
+        return drained
+    }
+}
+
 private struct ChildAccumulator {
     private let limit: Int
     private var retained: [FileNode] = []
@@ -653,13 +718,19 @@ private struct ChildAccumulator {
     private mutating func compact() {
         guard retained.count > limit else { return }
         retained.sort { $0.size > $1.size }
+        // A child still waiting for its size cannot be folded into the total yet, so keep it.
+        var kept: [FileNode] = Array(retained.prefix(limit))
         for child in retained.dropFirst(limit) {
+            if child.containsNode(where: { $0.isSizePending }) {
+                kept.append(child)
+                continue
+            }
             summarizedSize += child.size
             summarizedCount += 1
             summarizedIncomplete = summarizedIncomplete
                 || child.containsNode(where: { $0.type == .incompleteSummary })
         }
-        retained.removeSubrange(limit...)
+        retained = kept
     }
 }
 
@@ -747,29 +818,28 @@ struct ScanLimits: Sendable {
     static let standard = ScanLimits(
         maximumDetailedNodes: 1_000_000,
         maximumDetailedDuration: .infinity,
-        maximumDirectoryEntries: 10_000,
-        maximumSummaryDuration: 120,
-        maximumTotalDuration: 180
+        maximumDirectoryEntries: 10_000
     )
 
+    /// Nodes one top-level branch may walk in detail before it falls back to a block size.
     let maximumDetailedNodes: Int
     let maximumDetailedDuration: TimeInterval
+    /// Directories with more entries than this are sized as a block instead of listed.
     let maximumDirectoryEntries: Int
+    /// Safety net per block: a `du` that runs longer than this is abandoned and the folder
+    /// is marked as unsized. Blocks run in the background, so this can be generous.
     let maximumSummaryDuration: TimeInterval
-    let maximumTotalDuration: TimeInterval
 
     init(
         maximumDetailedNodes: Int,
         maximumDetailedDuration: TimeInterval,
         maximumDirectoryEntries: Int,
-        maximumSummaryDuration: TimeInterval = 120,
-        maximumTotalDuration: TimeInterval = 180
+        maximumSummaryDuration: TimeInterval = 600
     ) {
         self.maximumDetailedNodes = maximumDetailedNodes
         self.maximumDetailedDuration = maximumDetailedDuration
         self.maximumDirectoryEntries = maximumDirectoryEntries
         self.maximumSummaryDuration = maximumSummaryDuration
-        self.maximumTotalDuration = maximumTotalDuration
     }
 }
 
@@ -791,14 +861,6 @@ private final class DetailBudget: @unchecked Sendable {
         claimedNodes += 1
         return claimedNodes <= limits.maximumDetailedNodes
             && ProcessInfo.processInfo.systemUptime - startedAt <= limits.maximumDetailedDuration
-    }
-
-    func allowedSummaryDuration(maximum: TimeInterval) -> TimeInterval {
-        lock.lock()
-        defer { lock.unlock() }
-        let remaining = limits.maximumTotalDuration
-            - (ProcessInfo.processInfo.systemUptime - startedAt)
-        return min(maximum, max(0, remaining))
     }
 }
 

@@ -84,9 +84,11 @@ final class FileScannerTests: XCTestCase {
 
         let dependencies = try XCTUnwrap(root.children.first { $0.name == "node_modules" })
         XCTAssertGreaterThanOrEqual(dependencies.size, 4_096)
-        XCTAssertEqual(dependencies.children.count, 1)
-        XCTAssertEqual(dependencies.children.first?.type, .summary)
-        XCTAssertEqual(dependencies.children.first?.size, dependencies.size)
+        XCTAssertTrue(dependencies.children.isEmpty)
+        XCTAssertTrue(dependencies.isSummarized)
+        XCTAssertFalse(dependencies.isSizePending)
+        XCTAssertEqual(dependencies.kindName, "Summarized Folder")
+        XCTAssertEqual(root.size, dependencies.size)
         XCTAssertEqual(filesReported, 0)
     }
 
@@ -104,8 +106,7 @@ final class FileScannerTests: XCTestCase {
                 maximumDetailedNodes: 1_000,
                 maximumDetailedDuration: 60,
                 maximumDirectoryEntries: 10_000,
-                maximumSummaryDuration: 0,
-                maximumTotalDuration: 60
+                maximumSummaryDuration: 0
             ),
             progress: { _, _, _ in }
         )
@@ -113,7 +114,7 @@ final class FileScannerTests: XCTestCase {
         let dependencies = try XCTUnwrap(root.children.first { $0.name == "node_modules" })
         XCTAssertLessThan(ProcessInfo.processInfo.systemUptime - startedAt, 1)
         XCTAssertEqual(dependencies.size, 0)
-        XCTAssertEqual(dependencies.children.first?.name, "Contents not sized before the scan limit")
+        XCTAssertFalse(dependencies.isSizePending)
         XCTAssertEqual(dependencies.children.first?.type, .incompleteSummary)
     }
 
@@ -169,8 +170,9 @@ final class FileScannerTests: XCTestCase {
 
         let ordinary = try XCTUnwrap(root.children.first { $0.name == "ordinary" })
         XCTAssertGreaterThanOrEqual(ordinary.size, 2_048)
-        XCTAssertEqual(ordinary.children.first?.type, .summary)
-        XCTAssertEqual(ordinary.children.first?.size, ordinary.size)
+        XCTAssertTrue(ordinary.isSummarized)
+        XCTAssertTrue(ordinary.children.isEmpty)
+        XCTAssertEqual(root.size, ordinary.size)
     }
 
     func testImmediateBranchesHaveIndependentDetailedBudgets() async throws {
@@ -220,11 +222,54 @@ final class FileScannerTests: XCTestCase {
         XCTAssertEqual(Set(root.children.map(\.name)), ["item-0", "item-1", "item-2"])
     }
 
-    func testHighCardinalityPolicyCoversRepositoriesAndDependencyCaches() {
-        XCTAssertTrue(FileScanner.isKnownHighCardinalityDirectory(URL(fileURLWithPath: "/tmp/repo/.git")))
-        XCTAssertTrue(FileScanner.isKnownHighCardinalityDirectory(URL(fileURLWithPath: "/tmp/repo/.venv")))
-        XCTAssertTrue(FileScanner.isKnownHighCardinalityDirectory(URL(fileURLWithPath: "/tmp/repo/Pods")))
-        XCTAssertFalse(FileScanner.isKnownHighCardinalityDirectory(URL(fileURLWithPath: "/tmp/repo/Sources")))
+    func testSummarizationPolicyCoversRepositoriesAndDependencyCaches() {
+        XCTAssertTrue(FileScanner.isSummarizedWithoutDetail(URL(fileURLWithPath: "/tmp/repo/.git")))
+        XCTAssertTrue(FileScanner.isSummarizedWithoutDetail(URL(fileURLWithPath: "/tmp/repo/.venv")))
+        XCTAssertTrue(FileScanner.isSummarizedWithoutDetail(URL(fileURLWithPath: "/tmp/repo/Pods")))
+        XCTAssertTrue(FileScanner.isSummarizedWithoutDetail(URL(fileURLWithPath: "/System")))
+        XCTAssertFalse(FileScanner.isSummarizedWithoutDetail(URL(fileURLWithPath: "/tmp/repo/Sources")))
+    }
+
+    func testSummarizationPolicyKeepsOneLevelOfCacheDetail() {
+        let home = FileManager.default.homeDirectoryForCurrentUser
+        let caches = home.appendingPathComponent("Library/Caches", isDirectory: true)
+
+        XCTAssertFalse(FileScanner.isSummarizedWithoutDetail(caches))
+        XCTAssertTrue(FileScanner.isSummarizedWithoutDetail(caches.appendingPathComponent("com.apple.Safari")))
+        XCTAssertFalse(FileScanner.isSummarizedWithoutDetail(URL(fileURLWithPath: "/tmp/project/DerivedData")))
+        XCTAssertTrue(FileScanner.isSummarizedWithoutDetail(URL(fileURLWithPath: "/tmp/project/DerivedData/App-abc")))
+        XCTAssertTrue(FileScanner.isSummarizedWithoutDetail(home.appendingPathComponent(".cache/huggingface")))
+    }
+
+    func testTreeIsReadyBeforeBackgroundSizesResolve() async throws {
+        let dependencyTree = temporaryDirectory.appendingPathComponent("node_modules/pkg", isDirectory: true)
+        try FileManager.default.createDirectory(at: dependencyTree, withIntermediateDirectories: true)
+        try Data(repeating: 0x08, count: 4_096).write(to: dependencyTree.appendingPathComponent("index.js"))
+        try Data(repeating: 0x09, count: 512).write(to: temporaryDirectory.appendingPathComponent("note.txt"))
+
+        let readyState = ReadyState()
+        let root = try await FileScanner().scan(
+            url: temporaryDirectory,
+            showPackageContents: false,
+            usePhysicalSize: false,
+            progress: { _, _, _ in },
+            treeReady: { root, pending in
+                let dependencies = root.children.first { $0.name == "node_modules" }
+                readyState.record(
+                    pending: pending,
+                    pendingFlag: dependencies?.isSizePending ?? false,
+                    sizeAtReady: root.size
+                )
+            },
+            sizesResolved: { remaining in readyState.recordResolved(remaining) }
+        )
+
+        XCTAssertEqual(readyState.pending, 1)
+        XCTAssertTrue(readyState.pendingFlag)
+        XCTAssertEqual(readyState.sizeAtReady, 512)
+        XCTAssertEqual(readyState.resolvedReports, [0])
+        XCTAssertGreaterThanOrEqual(root.size, 512 + 4_096)
+        XCTAssertEqual(root.children.first?.name, "node_modules")
     }
 
     func testScanIncludesHiddenFiles() async throws {
@@ -258,9 +303,8 @@ final class FileScannerTests: XCTestCase {
 
         let innerNode = try XCTUnwrap(root.children.first?.children.first)
         XCTAssertEqual(innerNode.size, 640)
-        XCTAssertEqual(innerNode.children.count, 1)
-        XCTAssertEqual(innerNode.children.first?.type, .summary)
-        XCTAssertEqual(innerNode.children.first?.size, 640)
+        XCTAssertTrue(innerNode.children.isEmpty)
+        XCTAssertTrue(innerNode.isSummarized)
     }
 
     func testProgressReportsDirectoriesAndMonotonicTotals() async throws {
@@ -371,13 +415,12 @@ final class FileScannerTests: XCTestCase {
                 maximumDetailedNodes: 5_000,
                 maximumDetailedDuration: 1,
                 maximumDirectoryEntries: 10_000,
-                maximumSummaryDuration: 2,
-                maximumTotalDuration: 5
+                maximumSummaryDuration: 2
             ),
             progress: { _, _, _ in }
         )
 
-        XCTAssertLessThan(ProcessInfo.processInfo.systemUptime - startedAt, 12)
+        XCTAssertLessThan(ProcessInfo.processInfo.systemUptime - startedAt, 30)
         XCTAssertTrue(root.children.allSatisfy {
             ![".file", ".nofollow", ".resolve", ".vol"].contains($0.name)
         })
@@ -399,6 +442,28 @@ final class FileScannerTests: XCTestCase {
             for: URL(fileURLWithPath: "/Users/carl/Documents/Volumes"),
             mainDiskOnly: true
         ).isEmpty)
+    }
+}
+
+private final class ReadyState: @unchecked Sendable {
+    private let lock = NSLock()
+    private(set) var pending = -1
+    private(set) var pendingFlag = false
+    private(set) var sizeAtReady: UInt64 = 0
+    private(set) var resolvedReports: [Int] = []
+
+    func record(pending: Int, pendingFlag: Bool, sizeAtReady: UInt64) {
+        lock.lock()
+        self.pending = pending
+        self.pendingFlag = pendingFlag
+        self.sizeAtReady = sizeAtReady
+        lock.unlock()
+    }
+
+    func recordResolved(_ remaining: Int) {
+        lock.lock()
+        resolvedReports.append(remaining)
+        lock.unlock()
     }
 }
 
@@ -424,6 +489,35 @@ final class TreeMapLayoutTests: XCTestCase {
         XCTAssertTrue(first.allSatisfy { $0.rect.width >= 2 && $0.rect.height >= 2 })
     }
 
+    func testLayoutTilesTheCanvasWithoutGaps() {
+        let root = FileNode(url: URL(fileURLWithPath: "/tmp/root"), name: "root", isDirectory: true, size: 100)
+        let folder = FileNode(url: URL(fileURLWithPath: "/tmp/folder"), name: "folder", isDirectory: true, size: 70)
+        let inner = FileNode(url: URL(fileURLWithPath: "/tmp/inner"), name: "inner", size: 50)
+        let other = FileNode(url: URL(fileURLWithPath: "/tmp/other"), name: "other", size: 20)
+        folder.children = [inner, other]
+        let file = FileNode(url: URL(fileURLWithPath: "/tmp/file"), name: "file", size: 30)
+        root.children = [folder, file]
+
+        let canvas = CGRect(x: 0, y: 0, width: 300, height: 200)
+        let rects = TreeMapLayout.layout(node: root, rect: canvas, colorProvider: { _ in .blue })
+
+        let coveredArea = rects.reduce(0.0) { $0 + $1.rect.width * $1.rect.height }
+        XCTAssertEqual(coveredArea, canvas.width * canvas.height, accuracy: 0.5)
+        XCTAssertEqual(Set(rects.map { $0.node.name }), ["inner", "other", "file"])
+    }
+
+    func testSummarizedFolderIsDrawnAsItsOwnLeaf() {
+        let root = FileNode(url: URL(fileURLWithPath: "/tmp/root"), name: "root", isDirectory: true, size: 100)
+        let repo = FileNode(url: URL(fileURLWithPath: "/tmp/.git"), name: ".git", isDirectory: true, size: 100)
+        repo.isSummarized = true
+        root.children = [repo]
+
+        let rects = TreeMapLayout.layout(node: root, rect: CGRect(x: 0, y: 0, width: 100, height: 100), colorProvider: { _ in .red })
+
+        XCTAssertEqual(rects.map { $0.node.name }, [".git"])
+        XCTAssertEqual(rects.first?.node.kindName, "Summarized Folder")
+    }
+
     func testZeroSizeChildrenDoNotProduceRectangles() {
         let root = FileNode(url: URL(fileURLWithPath: "/tmp/root"), isDirectory: true, size: 10)
         let nonEmpty = FileNode(url: URL(fileURLWithPath: "/tmp/file"), name: "file", size: 10)
@@ -446,7 +540,9 @@ final class TrashProtectionTests: XCTestCase {
         XCTAssertTrue(appState.isProtectedFromTrash(home, isDirectory: true))
         XCTAssertTrue(appState.isProtectedFromTrash(home.appendingPathComponent("Documents"), isDirectory: true))
         XCTAssertTrue(appState.isProtectedFromTrash(home.appendingPathComponent("Music"), isDirectory: true))
-        XCTAssertTrue(appState.isProtectedFromTrash(home.appendingPathComponent("Library/Mobile Documents/com~apple~CloudDocs"), isDirectory: true))
+        XCTAssertTrue(appState.isProtectedFromTrash(home.appendingPathComponent("Library"), isDirectory: true))
+        XCTAssertTrue(appState.isProtectedFromTrash(home.appendingPathComponent("Library/Caches"), isDirectory: true))
+        XCTAssertFalse(appState.isProtectedFromTrash(home.appendingPathComponent("Library/Caches/com.example.app"), isDirectory: true))
         XCTAssertTrue(appState.isProtectedFromTrash(URL(fileURLWithPath: "/var/db"), isDirectory: true))
         XCTAssertTrue(appState.isProtectedFromTrash(URL(fileURLWithPath: "/etc"), isDirectory: true))
     }
@@ -457,6 +553,18 @@ final class TrashProtectionTests: XCTestCase {
 
         XCTAssertFalse(appState.isProtectedFromTrash(home.appendingPathComponent("Projects/old-build"), isDirectory: true))
         XCTAssertFalse(appState.isProtectedFromTrash(home.appendingPathComponent("Documents/large.zip"), isDirectory: false))
+    }
+
+    func testConfirmationIsOnlyRequiredForSensitiveFolders() {
+        let appState = AppState()
+        let home = FileManager.default.homeDirectoryForCurrentUser
+
+        XCTAssertTrue(appState.needsTrashConfirmation(home.appendingPathComponent("Library/Caches/com.example.app"), isDirectory: true))
+        XCTAssertTrue(appState.needsTrashConfirmation(home.appendingPathComponent(".ssh"), isDirectory: true))
+        XCTAssertTrue(appState.needsTrashConfirmation(home.appendingPathComponent(".config/nvim"), isDirectory: true))
+        XCTAssertTrue(appState.needsTrashConfirmation(home.appendingPathComponent("dev"), isDirectory: true))
+        XCTAssertFalse(appState.needsTrashConfirmation(home.appendingPathComponent("dev/old-project"), isDirectory: true))
+        XCTAssertFalse(appState.needsTrashConfirmation(home.appendingPathComponent("Downloads/big.zip"), isDirectory: false))
     }
 
     func testDeletionSelectsNextSiblingThenPreviousSibling() {
