@@ -11,20 +11,20 @@
 # signature lacks the timestamp and carries get-task-allow, both of which make
 # notarization fail.
 #
-# Uses notarization credentials stored in the keychain under "dix-notarize".
-# To (re)create them:
+# Uses notarization credentials stored in the keychain. The profile name comes
+# from NOTARIZE_PROFILE (default "dix-notarize"). To (re)create one:
 #
 #   xcrun notarytool store-credentials "dix-notarize" \
 #       --apple-id "you@example.com" \
-#       --team-id V29E8BPY35 \
+#       --team-id YOUR_TEAM_ID \
 #       --password "abcd-efgh-ijkl-mnop"   # app-specific password from appleid.apple.com
 #
-# Then just run:  ./notarize.sh
+# Then run:  ./notarize.sh            (or NOTARIZE_PROFILE=other ./notarize.sh)
 #
 set -euo pipefail
 cd "$(dirname "$0")"
 
-PROFILE="dix-notarize"
+PROFILE="${NOTARIZE_PROFILE:-dix-notarize}"
 PROJECT="DiskInventoryX/DiskInventoryX.xcodeproj"
 SCHEME="DiskInventoryX"
 ARCHIVE="build/DiskInventoryX.xcarchive"

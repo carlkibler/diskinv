@@ -447,7 +447,7 @@
 				CODE_SIGN_ENTITLEMENTS = DiskInventoryX.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = C4QKJU6M7M;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -459,7 +459,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.carlkibler.DiskInventoryXRay;
 				PRODUCT_MODULE_NAME = DiskInventoryX;
 				PRODUCT_NAME = "Disk Inventory X-Ray";
@@ -476,7 +476,7 @@
 				CODE_SIGN_ENTITLEMENTS = DiskInventoryX.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = C4QKJU6M7M;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -488,7 +488,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.carlkibler.DiskInventoryXRay;
 				PRODUCT_MODULE_NAME = DiskInventoryX;
 				PRODUCT_NAME = "Disk Inventory X-Ray";

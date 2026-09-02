@@ -19,7 +19,8 @@
 ## Build and notarize
 
 ```sh
-./notarize.sh
+./notarize.sh                          # uses the dix-notarize profile
+NOTARIZE_PROFILE=my-profile ./notarize.sh   # or any other stored profile
 ```
 
 The script archives `DiskInventoryX/DiskInventoryX.xcodeproj`, exports a Developer ID build, verifies it, submits it to Apple, staples the ticket, and writes:
@@ -34,4 +35,4 @@ Before publishing, confirm the final assessment reports `accepted`:
 spctl -a -vvv -t execute "build/export/Disk Inventory X-Ray.app"
 ```
 
-Never put Apple credentials in this repository. The script reads the stored `dix-notarize` Keychain profile.
+Never put Apple credentials in this repository. The script reads the Keychain profile named by `NOTARIZE_PROFILE`, defaulting to `dix-notarize`.
